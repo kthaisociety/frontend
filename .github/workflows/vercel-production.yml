@@ -41,8 +41,31 @@ jobs:
       - name: Deploy Project Artifacts to Vercel
         id: deploy
         run: echo "url=$(vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }})" >> $GITHUB_OUTPUT
+        continue-on-error: true
+
+      - name: Notify Mattermost
+        if: always()
+        run: |
+          STATUS="${{ steps.deploy.outcome }}"
+          MESSAGE="Production Deployment to [next-gen.kthais.com](https://next-gen.kthais.com) "
+          if [ "$STATUS" == "success" ]; then
+            MESSAGE+="✅ succeeded"
+          else
+            MESSAGE+="❌ failed"
+          fi
+          MESSAGE+="\nCommit: \`${{ github.sha }}\`"
+          
+          curl -i -X POST \
+            -H 'Content-Type: application/json' \
+            -H "Authorization: Bearer ${{ secrets.MATTERMOST_GH_ACTIONS_TOKEN }}" \
+            -d "{
+              \"channel_id\": \"${{ secrets.MATTERMOST_TEAM_IT_CHANNELID }}\",
+              \"message\": \"${MESSAGE}\"
+            }" \
+            "${{ secrets.MATTERMOST_URL }}/api/v4/posts"
 
       - name: Create GitHub Deployment
+        if: steps.deploy.outcome == 'success'
         uses: actions/github-script@v6
         with:
           script: |
