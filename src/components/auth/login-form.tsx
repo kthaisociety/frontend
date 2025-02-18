@@ -1,10 +1,10 @@
 "use client";
 
-import Link from "next/link";
-import type { z } from "zod";
-import { useForm } from "react-hook-form";
+import { useLogin } from "@/hooks/auth";
+import { loginSchema } from "@/validators/auth";
 import { zodResolver } from "@hookform/resolvers/zod";
-
+import { useForm } from "react-hook-form";
+import type { z } from "zod";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -15,24 +15,38 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { LoadingSpinner } from "@/components/ui/loading-spinner";
-import { loginSchema } from "@/validators/auth";
 import { CardWrapper } from "./card-wrapper";
+import { useSearchParams } from "next/navigation";
+import { useEffect } from "react";
+import { useToast } from "@/hooks/use-toast";
 
 type LoginFormFields = z.infer<typeof loginSchema>;
 
 export function LoginForm() {
+  const searchParams = useSearchParams();
+  const login = useLogin();
+  const { toast } = useToast();
+  // Show error message from URL if present
+  useEffect(() => {
+    const error = searchParams.get("error");
+    if (error) {
+      toast({
+        title: "Error",
+        description: decodeURIComponent(error),
+      });
+    }
+  }, [searchParams]);
+
   const form = useForm<LoginFormFields>({
-    defaultValues: { email: "", password: "" },
     resolver: zodResolver(loginSchema),
+    defaultValues: {
+      email: "",
+      password: "",
+    },
   });
 
   const onSubmit = async (data: LoginFormFields) => {
-    try {
-      console.log(data);
-    } catch (error) {
-      console.error("Error:", error);
-    }
+    await login.mutateAsync(data);
   };
 
   return (
@@ -41,50 +55,48 @@ export function LoginForm() {
       description='Enter your email and password to login'
       backButtonLabel="Don't have an account?"
       backButtonHref='/auth/signup'
-      showSocial={true}
+      showSocial
     >
-      <form onSubmit={form.handleSubmit(onSubmit)} action=''>
-        <Form {...form}>
-          <div className='mb-4 space-y-6'>
-            <FormField
-              control={form.control}
-              name='email'
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Email</FormLabel>
-                  <FormControl>
-                    <Input {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name='password'
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Password</FormLabel>
-                  <FormControl>
-                    <Input {...field} type='password' />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-          <Button variant='link' className='mb-4 p-0'>
-            <Link href='/auth/reset'>Forgot password?</Link>
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-6'>
+          <FormField
+            control={form.control}
+            name='email'
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Email</FormLabel>
+                <FormControl>
+                  <Input {...field} type='email' disabled={login.isPending} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name='password'
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Password</FormLabel>
+                <FormControl>
+                  <Input
+                    {...field}
+                    type='password'
+                    disabled={login.isPending}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          {login.error && (
+            <div className='text-sm text-red-500'>{login.error.message}</div>
+          )}
+          <Button type='submit' className='w-full' disabled={login.isPending}>
+            {login.isPending ? "Logging in..." : "Login"}
           </Button>
-          <Button
-            type='submit'
-            className='w-full'
-            disabled={form.formState.isSubmitting}
-          >
-            {form.formState.isSubmitting ? <LoadingSpinner /> : "Login"}
-          </Button>
-        </Form>
-      </form>
+        </form>
+      </Form>
     </CardWrapper>
   );
 }
