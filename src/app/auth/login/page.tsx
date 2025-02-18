@@ -1,3 +1,3 @@
-export default function page() {
-  return <div>page</div>;
-}
+import { LoginForm } from "@/components/auth/login-form";
+
+export default LoginForm;
