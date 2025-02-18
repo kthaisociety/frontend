@@ -1,3 +1,4 @@
+// Start of Selection
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 
@@ -15,13 +16,10 @@ export function AuthLayout({ children }: { children: React.ReactNode }) {
         </Link>
       </div>
 
-      {/* Left side - Image */}
-      <div className='relative hidden w-2/5 lg:block'>
-        <div className='absolute inset-0 bg-cover bg-center bg-no-repeat'>
-          <div className='absolute inset-0 bg-black/30' />{" "}
-          {/* Optional overlay */}
-        </div>
-
+      {/* Left side - Image Background */}
+      <div className='relative hidden w-2/5 lg:block bg-[url("/images/logo_blue.png")] bg-cover bg-center bg-no-repeat'>
+        <div className='absolute inset-0 bg-black/30' />{" "}
+        {/* Optional overlay */}
         {/* Back button for desktop */}
         <div className='absolute left-8 top-8 z-20'>
           <Link
@@ -32,21 +30,15 @@ export function AuthLayout({ children }: { children: React.ReactNode }) {
             Back to home
           </Link>
         </div>
-
         {/* Optional branding/text overlay */}
         <div className='relative z-10 flex h-full items-center justify-center p-8 text-white'>
-          <div className='text-center'>
-            <h1 className='text-4xl font-bold'>KTH AI Society</h1>
-            <p className='mt-4 text-lg'>
-              Cultivating the next generation of AI leaders
-            </p>
-          </div>
+          <div className='text-center'></div>
         </div>
       </div>
 
       {/* Right side - Auth Form */}
       <div className='flex w-full items-center justify-center bg-background lg:w-1/2'>
-        <div className='w-full max-w-md p-8'>{children}</div>
+        <div className='w-full max-w-lg p-8'>{children}</div>
       </div>
     </div>
   );
