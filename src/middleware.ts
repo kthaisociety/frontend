@@ -1,4 +1,3 @@
-// Start of Selection
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
@@ -7,9 +6,20 @@ const publicPaths = ["/auth/login", "/auth/signup", "/"];
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
+
+  // Check if the path is public
+  if (publicPaths.includes(pathname)) {
+    return NextResponse.next();
+  }
+
+  // Check for auth cookie
   const authCookie = request.cookies.get("kthais_session");
 
-  // If user is accessing auth pages and is authenticated, redirect to dashboard
+  if (!authCookie) {
+    const loginUrl = new URL("/auth/login", request.url);
+    loginUrl.searchParams.set("from", pathname);
+    return NextResponse.redirect(loginUrl);
+  }
   if (
     (pathname === "/auth/login" || pathname === "/auth/signup") &&
     authCookie
@@ -17,14 +27,6 @@ export function middleware(request: NextRequest) {
     const dashboardUrl = new URL("/dashboard", request.url);
     return NextResponse.redirect(dashboardUrl);
   }
-
-  // If the path is not public and user is not authenticated, redirect to login
-  if (!publicPaths.includes(pathname) && !authCookie) {
-    const loginUrl = new URL("/auth/login", request.url);
-    loginUrl.searchParams.set("from", pathname);
-    return NextResponse.redirect(loginUrl);
-  }
-
   return NextResponse.next();
 }
 
