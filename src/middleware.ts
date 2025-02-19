@@ -15,18 +15,25 @@ export function middleware(request: NextRequest) {
   // Check for auth cookie
   const authCookie = request.cookies.get("kthais_session");
 
-  if (!authCookie) {
+  // Add debug logging
+  console.log("Auth cookie:", authCookie);
+
+  if (!authCookie || authCookie.value === "") {
     const loginUrl = new URL("/auth/login", request.url);
-    loginUrl.searchParams.set("from", pathname);
+    if (!publicPaths.includes(pathname)) {
+      loginUrl.searchParams.set("from", pathname);
+    }
     return NextResponse.redirect(loginUrl);
   }
+
+  // Handle auth pages when already authenticated
   if (
     (pathname === "/auth/login" || pathname === "/auth/signup") &&
     authCookie
   ) {
-    const dashboardUrl = new URL("/dashboard", request.url);
-    return NextResponse.redirect(dashboardUrl);
+    return NextResponse.redirect(new URL("/dashboard", request.url));
   }
+
   return NextResponse.next();
 }
 

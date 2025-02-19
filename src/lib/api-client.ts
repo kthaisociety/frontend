@@ -45,15 +45,19 @@ async function handleResponse<T>(response: Response): Promise<T> {
   return response.json();
 }
 
+const defaultOptions: RequestInit = {
+  credentials: "include",
+  headers: {
+    "Content-Type": "application/json",
+  },
+};
+
 export const authApi = {
   login: async (credentials: LoginCredentials) => {
     try {
       const response = await fetch(`${API_URL}/auth/login`, {
+        ...defaultOptions,
         method: "POST",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-        },
         body: JSON.stringify(credentials),
       });
       return handleResponse<AuthResponse>(response);
@@ -65,11 +69,8 @@ export const authApi = {
 
   register: async (credentials: RegisterCredentials) => {
     const response = await fetch(`${API_URL}/auth/register`, {
+      ...defaultOptions,
       method: "POST",
-      credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-      },
       body: JSON.stringify(credentials),
     });
 
@@ -78,8 +79,8 @@ export const authApi = {
 
   logout: async () => {
     const response = await fetch(`${API_URL}/auth/logout`, {
+      ...defaultOptions,
       method: "GET",
-      credentials: "include",
     });
 
     return handleResponse(response);
@@ -88,29 +89,25 @@ export const authApi = {
   getSession: async () => {
     try {
       const response = await fetch(`${API_URL}/auth/status`, {
+        ...defaultOptions,
         method: "GET",
-        credentials: "include",
       });
 
-      const data = await handleResponse<{
-        authenticated: boolean;
-        user_id?: number;
-        email?: string;
-      }>(response);
+      if (!response.ok) {
+        throw new ApiError(response.status, "Failed to fetch session");
+      }
+
+      const data = await response.json();
 
       if (!data.authenticated) {
         throw new ApiError(401, "Not authenticated");
       }
 
-      // If authenticated, fetch the full user data
+      // Fetch user data
       const userResponse = await fetch(`${API_URL}/auth/user`, {
+        ...defaultOptions,
         method: "GET",
-        credentials: "include",
       });
-
-      if (!userResponse.ok) {
-        throw new ApiError(userResponse.status, "Failed to fetch user data");
-      }
 
       return handleResponse<AuthResponse>(userResponse);
     } catch (error) {
