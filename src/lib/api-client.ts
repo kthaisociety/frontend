@@ -18,11 +18,9 @@ export type AuthResponse = {
     id: number;
     email: string;
     provider: string;
-    profile: {
-      firstName: string;
-      lastName: string;
-      image?: string;
-    };
+    firstName: string;
+    lastName: string;
+    image?: string;
   };
   message?: string;
 };

@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
-
+import Image from "next/image";
 export default function DashboardPage() {
   const { data: session, isLoading, isError } = useSession();
   const logout = useLogout();
@@ -47,25 +47,26 @@ export default function DashboardPage() {
             </label>
             <p className='text-lg'>{session.user.email}</p>
           </div>
-          {session.user.profile && (
+          {session.user && (
             <>
               <div>
                 <label className='text-sm font-medium text-muted-foreground'>
                   Name
                 </label>
                 <p className='text-lg'>
-                  {session.user.profile.firstName}{" "}
-                  {session.user.profile.lastName}
+                  {session.user.firstName} {session.user.lastName}
                 </p>
               </div>
-              {session.user.profile.image && (
+              {session.user.image && (
                 <div>
                   <label className='text-sm font-medium text-muted-foreground'>
                     Profile Image
                   </label>
-                  <img
-                    src={session.user.profile.image}
+                  <Image
+                    src={session.user.image}
                     alt='Profile'
+                    width={80}
+                    height={80}
                     className='w-20 h-20 rounded-full mt-2'
                   />
                 </div>
