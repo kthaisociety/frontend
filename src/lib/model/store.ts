@@ -2,7 +2,7 @@ import { configureStore } from "@reduxjs/toolkit";
 import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
 import dummySlice from "./slices/dummy/dummySlice";
 
-// This is where we manage our states
+// This is where we manage our states 
 
 export const makeStore = () =>{
     return configureStore({
