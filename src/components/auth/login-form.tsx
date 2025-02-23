@@ -35,7 +35,7 @@ export function LoginForm() {
         description: decodeURIComponent(error),
       });
     }
-  }, [searchParams]);
+  }, [searchParams, toast]);
 
   const form = useForm<LoginFormFields>({
     resolver: zodResolver(loginSchema),
