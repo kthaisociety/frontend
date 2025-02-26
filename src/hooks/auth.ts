@@ -4,7 +4,7 @@ import {
   type LoginCredentials,
   type RegisterCredentials,
   type AuthResponse,
-} from "@/lib/api-client";
+} from "@/lib/integration/api-client";
 import { useRouter } from "next/navigation";
 
 export function useLogin() {
