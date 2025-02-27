@@ -14,44 +14,46 @@ import {
   NavigationMenuTrigger,
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu"
+import { Label } from "@radix-ui/react-label"
 
 const components: { title: string; href: string; description: string }[] = [
   {
-    title: "Alert Dialog",
+    title: "Getting Started with AI",
     href: "/docs/primitives/alert-dialog",
     description:
-      "A modal dialog that interrupts the user with important content and expects a response.",
+      "Learn the basics of AI and how to get started with it.",
   },
   {
-    title: "Hover Card",
+    title: "KTH Courses about AI",
     href: "/docs/primitives/hover-card",
     description:
-      "For sighted users to preview content available behind a link.",
+      "Explore all the course about AI that KTH offers.",
   },
   {
-    title: "Progress",
+    title: "Tutorial Challenges: ",
     href: "/docs/primitives/progress",
     description:
-      "Displays an indicator showing the completion progress of a task, typically displayed as a progress bar.",
+      "Decision Trees and Forests and some other stuff",
   },
   {
-    title: "Scroll-area",
+    title: "Other Learning Resources",
     href: "/docs/primitives/scroll-area",
     description: "Visually or semantically separates content.",
   },
-  {
-    title: "Tabs",
-    href: "/docs/primitives/tabs",
-    description:
-      "A set of layered sections of content?known as tab panels?that are displayed one at a time.",
-  },
-  {
-    title: "Tooltip",
-    href: "/docs/primitives/tooltip",
-    description:
-      "A popup that displays information related to an element when the element receives keyboard focus or the mouse hovers over it.",
-  },
 ]
+
+const MiniSection = () =>{
+  return(
+    <div className=" flex flex-col hover:bg-gray-100 rounded-sm  w-[300px] px-2">
+      <Label className=""> Events</Label>
+      <ul className=" text-ellipsis text-gray-500 cursor-pointer  ">
+        <li className="hover:underline"><a href="/">Latest Event</a></li>
+        <li className="hover:underline"><a href="/">Upcomming Event</a></li>
+        <li className="hover:underline"><a href="/">Previous Events</a></li>
+      </ul>
+    </div>
+  )
+}
 
 export default function Navbar() {
   return (
@@ -60,7 +62,7 @@ export default function Navbar() {
     <NavigationMenu className="border border-black lg:block hidden">
       <NavigationMenuList>
         <NavigationMenuItem>
-          <NavigationMenuTrigger>Getting started</NavigationMenuTrigger>
+          <NavigationMenuTrigger>Home</NavigationMenuTrigger>
           <NavigationMenuContent>
             <ul className="grid gap-3 p-6 md:w-[400px] lg:w-[500px] lg:grid-cols-[.75fr_1fr]">
               <li className="row-span-3">
@@ -71,7 +73,7 @@ export default function Navbar() {
                     >
                     {/* <Icons.logo className="h-6 w-6" /> */}
                     <div className="mb-2 mt-4 text-lg font-medium">
-                      shadcn/ui
+                      Speakers
                     </div>
                     <p className="text-sm leading-tight text-muted-foreground">
                       Beautifully designed components that you can copy and
@@ -81,24 +83,31 @@ export default function Navbar() {
                   </a>
                 </NavigationMenuLink>
               </li>
-              <ListItem href="/docs" title="Introduction">
+              {/* <ListItem href="/docs" title="Events">
                 Re-usable components built using Radix UI and Tailwind CSS.
-              </ListItem>
-              <ListItem href="/docs/installation" title="Installation">
+              </ListItem> */}
+              <MiniSection/>
+
+              <ListItem href="/docs/installation" title="News">
+              <div className="flex flex-col">
+
+              <a>LINK 1</a>
+              <a>LINK 2</a>
+              </div>
                 How to install dependencies and structure your app.
               </ListItem>
-              <ListItem href="/docs/primitives/typography" title="Typography">
+              <ListItem href="/docs/primitives/typography" title="About">
                 Styles for headings, paragraphs, lists...etc
               </ListItem>
             </ul>
           </NavigationMenuContent>
         </NavigationMenuItem>
         <NavigationMenuItem>
-          <NavigationMenuTrigger>Components</NavigationMenuTrigger>
+          <NavigationMenuTrigger>Learning</NavigationMenuTrigger>
           <NavigationMenuContent>
             <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
               {components.map((component) => (
-                <ListItem
+                <ListItem className="hover:underline"
                 key={component.title}
                 title={component.title}
                   href={component.href}
@@ -112,7 +121,7 @@ export default function Navbar() {
         <NavigationMenuItem>
           <Link href="/docs" legacyBehavior passHref>
             <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-              Documentation
+              Sponsor 
             </NavigationMenuLink>
           </Link>
         </NavigationMenuItem>
