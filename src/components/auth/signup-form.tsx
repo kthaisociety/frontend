@@ -1,10 +1,9 @@
 "use client";
-
-import { useRegister } from "@/hooks/auth";
-import { signUpSchema } from "@/validators/auth";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import type { z } from "zod";
+import { useRegister } from "@/hooks/auth";
+import { signUpSchema } from "@/validators/auth";
 import { Button } from "@/components/ui/button";
 import {
   Form,

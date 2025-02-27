@@ -1,8 +1,3 @@
-"use client";
-import { redirect } from 'next/navigation';
+import { Homepage } from "@/components/home";
 
-const DefaultPage = () => {
-  redirect('/auth/login');
-}
-
-export default DefaultPage  
+export default Homepage;
