@@ -90,7 +90,7 @@ const eslintConfig = [
       "react/jsx-no-constructed-context-values": "warn",
       "react/jsx-no-target-blank": "warn",
       "react/jsx-no-useless-fragment": "warn",
-      "react/jsx-props-no-spreading": "warn",
+      "react/jsx-props-no-spreading": "off",
       "react/no-array-index-key": "warn",
       "react/no-unstable-nested-components": "warn",
 
@@ -171,6 +171,14 @@ const eslintConfig = [
     },
   },
   {
+    files: ["**/page.tsx"],
+    rules: {
+      "import/no-default-export": "off",
+      "import/prefer-default-export": "error",
+      "react-refresh/only-export-components": "off",
+    },
+  },
+  {
     files: ["components/ui/**/*.{ts,tsx}"],
     rules: {
       "react/jsx-props-no-spreading": "off",
@@ -189,6 +197,14 @@ const eslintConfig = [
       "import/no-default-export": "off",
       "@typescript-eslint/no-explicit-any": "off",
       "@typescript-eslint/no-use-before-define": "off",
+    },
+  },
+  {
+    files: ["**/layout.tsx"],
+    rules: {
+      "import/no-default-export": "off",
+      "import/prefer-default-export": "error",
+      "react-refresh/only-export-components": "off",
     },
   },
 ];

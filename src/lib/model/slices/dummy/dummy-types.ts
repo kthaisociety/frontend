@@ -1,4 +1,4 @@
 export interface dummyState {
-    text: string;
-    counter: number;
+  text: string;
+  counter: number;
 }
