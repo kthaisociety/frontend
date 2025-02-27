@@ -24,6 +24,56 @@ You can start editing the page by modifying `app/page.tsx`. The page auto-update
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
+## Code Structure & Best Practices
+
+### Folder Structure
+
+- `src/app/`: Contains Next.js App Router pages and layouts
+  - Only page components (`page.tsx`) and layout components (`layout.tsx`) should be here
+  - No reusable components should be placed in this directory
+- `src/components/`: Contains all reusable React components
+  - `ui/`: UI components (buttons, forms, etc.) - mostly from shadcn/ui
+  - `dashboard/`, `home/`, etc.: Feature-specific components
+  - Each primary component should be in its own folder with an `index.tsx` for exporting and sub-components can have file names
+- `src/hooks/`: Custom React hooks
+- `src/lib/`: Utility functions and configuration
+- `src/types/`: TypeScript type definitions
+
+e.g. of how to structure components:
+
+```tsx
+// src/components/home/index.tsx
+export function Homepage() {
+  return <div>Home</div>;
+}
+```
+
+```tsx
+// src/app/page.tsx
+import { Homepage } from "@/components/home";
+
+export default Homepage;
+```
+
+### ESLint & TypeScript Best Practices
+
+- Use named exports instead of default exports for components (except for page/layout components)
+- Use TypeScript for type safety - avoid using `any` type
+- Use consistent type imports with `import type { ... } from '...'`
+- Use React function components with explicit return types
+- Use path aliases (`@/components/...`) for imports
+- UI components from shadcn have special ESLint exceptions to accommodate their patterns
+
+See [eslint.config.mjs](eslint.config.mjs) for more details.
+
+### Component Guidelines
+
+- Create client components with the `"use client"` directive when they use hooks or browser APIs
+- Keep components small and focused on a single responsibility
+- Use TypeScript interfaces to define component props
+- Use custom hooks to extract complex logic from components
+- For data fetching components, separate the data fetching logic from the presentation
+
 ## Git Workflow
 
 This project adhers to [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) for commit messages. This is to ensure that the project is easily maintainable and that the commit history is clean and easy to understand.
