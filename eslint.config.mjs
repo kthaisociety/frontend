@@ -179,10 +179,21 @@ const eslintConfig = [
     },
   },
   {
-    files: ["components/ui/**/*.{ts,tsx}"],
+    files: ["components/ui/**/*.{ts,tsx}", "src/components/ui/**/*.{ts,tsx}"],
     rules: {
       "react/jsx-props-no-spreading": "off",
       "react-refresh/only-export-components": "off",
+      "@typescript-eslint/no-explicit-any": "off",
+      "react/button-has-type": "off",
+      "react/function-component-definition": "off",
+      "react/jsx-no-useless-fragment": "off",
+      "react/destructuring-assignment": "off",
+      "react/no-array-index-key": "off",
+      "react/no-unstable-nested-components": "off",
+      "prefer-destructuring": "off",
+      "no-param-reassign": "off",
+      "react/jsx-no-constructed-context-values": "off",
+      "@typescript-eslint/no-use-before-define": "off",
     },
   },
   {
