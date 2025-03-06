@@ -4,7 +4,7 @@ import { FaGoogle } from "react-icons/fa";
 import { Button } from "@/components/ui/button";
 
 const API_URL =
-  process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080/api/v1";
+  (process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080") + "/api/v1";
 
 export function Social() {
   const [isLoading, setIsLoading] = useState(false);
