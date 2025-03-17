@@ -1,3 +1,11 @@
+import { Hero } from "./hero";
+import { ScrollEffect } from "./sections/scroll-effect";
+
 export function Homepage() {
-  return <div>Home</div>;
+  return (
+    <div>
+      <Hero />
+     
+    </div>
+  );
 }
