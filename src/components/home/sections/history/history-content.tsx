@@ -1,35 +1,38 @@
 
 export const years = [
     { year: "2025", 
-      position: { top: "20%", left: "78%" },
+      position: { top: "21%", left: "75%" },
       activities: [
+        { logo: "/images/partherships/timeline/lovable.svg", description: "Lovable Hackathon" },
+        { logo: "/images/partherships/timeline/emfas.png", description: "Emfas Afterwork" },
       ],
     },
 
     { year: "2024", 
-      position: { top: "26%", left: "48%" },
+      position: { top: "20%", left: "48%" },
       activities: [
         { logo: "/images/partherships/timeline/spotify.png", description: "Spotify Lecture" },
-        { logo: "/images/partherships/timeline/quantumblack.png", description: "Quantumblack workshop" },
+        { logo: "/images/partherships/timeline/quantumblack.png", description: "Quantumblack Workshop" },
         { logo: "/images/partherships/timeline/nordea.png", description: "Nordea Hackathon" },
       ],
      },
 
     { year: "2023", 
-      position: { top: "43%", left: "62%" },
+      position: { top: "43%", left: "60%" },
       activities: [
-        { logo: "/images/company1.png", description: "Workshop with Company 1" },
-        { logo: "/images/company2.png", description: "AI Panel Discussion" },
-        { logo: "/images/company3.png", description: "Hackathon event" },
+        { logo: "/images/partherships/timeline/ericsson.png", description: "Ericsson Lecture" },
+        { logo: "/images/partherships/timeline/kollin.png", description: "Kollin AI Model Development" },
+        { logo: "/images/partherships/timeline/google.png", description: "Google Lecture" },
+        { logo: "/images/partherships/timeline/tedx.png", description: "TEDx Lecture" },
       ],
      },
 
     { year: "2022", 
-      position: { top: "48%", left: "28%" },
+      position: { top: "42%", left: "30%" },
       activities: [
-        { logo: "/images/company1.png", description: "Workshop with Company 1" },
-        { logo: "/images/company2.png", description: "AI Panel Discussion" },
-        { logo: "/images/company3.png", description: "Hackathon event" },
+        { logo: "/images/partherships/timeline/quantumblack.png", description: "Quantumblack Workshop" },
+        { logo: "/images/partherships/timeline/matlab.png", description: "Matlab Lecture" },
+        { logo: "/images/brand_assets/ais-symbol-white/blue.jpg", description: "KTHAIS Hackathon" },
       ],
      },
   ];

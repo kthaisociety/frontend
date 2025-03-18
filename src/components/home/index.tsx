@@ -5,7 +5,7 @@ export function Homepage() {
   return (
     <div>
       <Hero />
-     
+     <ScrollEffect/>
     </div>
   );
 }
