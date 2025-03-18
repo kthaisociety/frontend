@@ -2,14 +2,20 @@
 import { useState } from "react";
 import Image from "next/image";
 import { speakers } from "./speaker-content";
-
-
+import { useMobileLayout } from "@/hooks/use-mobile";
 
 export function SpeakerHof() {
   const [hoveredSpeaker, setHoveredSpeaker] = useState<string | null>(null);
+  const isMobile = useMobileLayout();
 
   return (
-    <section className="relative w-full h-screen flex items-center justify-center bg-white">
+    <section
+      className="relative w-full h-screen flex items-center justify-center bg-white"
+      style={{
+        transform: isMobile ? "scale(0.5)" : "none", // Scale down 90% on mobile
+        transformOrigin: "center",
+      }}
+    >
       {/* Circular Path */}
       <div className="relative w-[750px] h-[750px] flex items-center justify-center">
         {/* Visible Circle Outline */}
@@ -17,38 +23,36 @@ export function SpeakerHof() {
 
         {/* Logo in the Center */}
         <div className="absolute w-[140px] h-[140px] bg-primary rounded-full flex items-center justify-center overflow-hidden">
-        <Image
-          src="/images/brand_assets/ais-symbol-white/blue.jpg"
-          alt="AI Society Logo"
-          width={140} // Matches div width
-          height={140} // Matches div height
-          className="object-cover w-full h-full"
-        />
-      </div>
-
+          <Image
+            src="/images/brand_assets/ais-symbol-white/blue.jpg"
+            alt="AI Society Logo"
+            width={140} // Matches div width
+            height={140} // Matches div height
+            className="object-cover w-full h-full"
+          />
+        </div>
 
         {/* Speaker Cards */}
         {speakers.map((speaker, index) => {
-        const angle = (index / speakers.length) * (2 * Math.PI);
-        const radius = 280;
-        const x = Math.round(Math.cos(angle) * radius); // Ensures consistent float values
-        const y = Math.round(Math.sin(angle) * radius);
+          const angle = (index / speakers.length) * (2 * Math.PI);
+          const radius = 280;
+          const x = Math.round(Math.cos(angle) * radius); // Ensures consistent float values
+          const y = Math.round(Math.sin(angle) * radius);
 
-        return (
-        <div
-            key={speaker.name}
-            onMouseEnter={() => setHoveredSpeaker(speaker.name)}
-            onMouseLeave={() => setHoveredSpeaker(null)}
-            className={`absolute bg-white shadow-lg rounded-lg p-4 flex flex-col items-center text-center transform transition-all duration-300 ${
-            hoveredSpeaker === speaker.name ? "scale-110 z-20 shadow-2xl" : "scale-100"
-            }`}
-            style={{
-            transform: `translate(${x}px, ${y}px)`, // Now rounded to prevent mismatches
-            width: `${hoveredSpeaker === speaker.name ? 180 : 160}px`,
-            height: `${hoveredSpeaker === speaker.name ? 200 : 180}px`,
-            }}
-        >
-
+          return (
+            <div
+              key={speaker.name}
+              onMouseEnter={() => setHoveredSpeaker(speaker.name)}
+              onMouseLeave={() => setHoveredSpeaker(null)}
+              className={`absolute bg-white shadow-lg rounded-lg p-4 flex flex-col items-center text-center transform transition-all duration-300 ${
+                hoveredSpeaker === speaker.name ? "scale-110 z-20 shadow-2xl" : "scale-100"
+              }`}
+              style={{
+                transform: `translate(${x}px, ${y}px)`, // Now rounded to prevent mismatches
+                width: `${hoveredSpeaker === speaker.name ? 180 : 160}px`,
+                height: `${hoveredSpeaker === speaker.name ? 200 : 180}px`,
+              }}
+            >
               {/* Image - Enlarges on hover */}
               <Image
                 src={speaker.image}
