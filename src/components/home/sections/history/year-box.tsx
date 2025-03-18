@@ -8,7 +8,7 @@ export function YearBox({ year, index, totalYears }) {
   // For mobile, we use a fixed left value and ignore any calculated horizontal translation.
   const mobileTop =
     isMobile && totalYears
-      ? `${(100 / (totalYears + 1)) * (index + 1)}%`
+      ? `${(100 / (totalYears + 1.5)) * (index + 0.8)}%`
       : year.position.top;
 
   return (
@@ -39,8 +39,8 @@ export function YearBox({ year, index, totalYears }) {
         <div
           className="shadow-lg rounded-xl flex items-center justify-center font-bold text-lg bg-[#1751A6] text-white"
           style={{
-            width: "100%",           // Fill the container’s width
-            height: isMobile ? "50px" : "60px",
+            width: isMobile? "70%" : "100%",           // Fill the container’s width
+            height: isMobile ? "40px" : "60px",
           }}
         >
           <h3>{year.year}</h3>

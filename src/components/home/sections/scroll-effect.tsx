@@ -1,7 +1,7 @@
 "use client";
 import { useScrollProgress } from "@/hooks/use-scroll";
 import { Timeline } from "./history/history-timeline";
-// import { SpeakerHof } from "./speakers/speaker-hof"; // If needed
+import { SpeakerHof } from "./speakers/speaker-hof";
 
 export function ScrollEffect() {
   const scrollProgress = useScrollProgress();
@@ -13,6 +13,12 @@ export function ScrollEffect() {
         transform: `translate3d(0, ${(1 - scrollProgress) * 100}%, 0)`,
       }}
     >
+      <div>
+        <SpeakerHof/>
+      </div>
+      <div>
+        <Timeline/>
+      </div>
 
     </section>
   );

@@ -5,6 +5,7 @@ export const years = [
       activities: [
         { logo: "/images/partherships/timeline/lovable.svg", description: "Lovable Hackathon" },
         { logo: "/images/partherships/timeline/emfas.png", description: "Emfas Afterwork" },
+        { logo: "/images/brand_assets/ais-symbol-white/blue.jpg", description: "AI Bootcamp" },
       ],
     },
 

@@ -47,7 +47,7 @@ export function Timeline() {
       {/* VERTICAL TIMELINE - Mobile (Now Using div) */}
             {isMobile && (
         <div 
-          className="absolute h-full w-[4px] left-[30%] transform -translate-x-1/2 bg-gradient-to-b from-transparent via-[#1751A6] to-transparent"
+          className="absolute h-[90%] w-[4px] left-[22%] transform -translate-x-1/2 bg-gradient-to-b from-transparent via-[#1751A6] to-transparent"
         />
       )}
 
