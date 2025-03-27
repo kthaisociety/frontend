@@ -5,7 +5,7 @@ export function useMobileLayout() {
 
   useEffect(() => {
     const checkScreenSize = () => {
-      setIsMobile(window.innerWidth <= 768); // set Mobile if screen width is 768px or less
+      setIsMobile(window.innerWidth <= 1192); // set Mobile if screen width is 768px or less
     };
 
     checkScreenSize(); // Run once when component mounts

@@ -8,7 +8,7 @@ export function Timeline() {
 
   return (
     <motion.div
-      className="relative w-full h-[1400px] flex justify-center items-center bg-white"
+      className="relative w-full h-screen flex justify-center items-center bg-white"
       initial={{ opacity: 0, y: 100 }} // Start hidden below
       whileInView={{ opacity: 1, y: 0 }} // Slide up when in view
       transition={{ duration: 1, ease: "easeOut" }} // Smooth animation
@@ -19,8 +19,8 @@ export function Timeline() {
         <svg
         width="100%"
         height="100%"
-        viewBox="0 0 1400 1300"
-        preserveAspectRatio="none"  // ✅ No aspect ratio preserved
+        viewBox="0 0 1500 1000"
+        preserveAspectRatio="none"  
         className="absolute"
 >
           <defs>
@@ -33,7 +33,7 @@ export function Timeline() {
 
           {/* Line Slides Up with Timeline */}
           <motion.path
-            d="M1200,100 C800,400 800,900 0,900"
+            d="M1300,200 C500,400 1000,1000 0,1000"
             stroke="url(#timelineGradient)"
             strokeWidth="4"
             fill="transparent"
