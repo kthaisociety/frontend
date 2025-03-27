@@ -2,7 +2,13 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import { useMobileLayout } from "@/hooks/use-mobile";
 
-export function YearBox({ year, index, totalYears }) {
+interface YearBoxProps {
+  year: {year: string, position: {top: string, left: string}, activities: {}};      // or string, depending on your use-case
+  index: number;
+  totalYears: number;
+}
+
+export function YearBox({ year, index, totalYears }: YearBoxProps) {
   const isMobile = useMobileLayout();
 
   // For mobile, we use a fixed left value and ignore any calculated horizontal translation.
