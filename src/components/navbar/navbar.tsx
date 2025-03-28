@@ -13,6 +13,7 @@ import {
   NavigationMenuList,
   NavigationMenuTrigger,
   navigationMenuTriggerStyle,
+  NavigationMenuViewport,
 } from "@/components/ui/navigation-menu"
 import { Label } from "@radix-ui/react-label"
 
@@ -57,21 +58,37 @@ const MiniSection = () =>{
 
 export default function Navbar() {
   return (
-    <div className="border border-black flex h-16 justify-between items-center">
-    <div className="border border-black px-4">KTH AIS LOGO</div>
-    <NavigationMenu className="border border-black lg:block hidden">
-      <NavigationMenuList>
-        <NavigationMenuItem>
-          <NavigationMenuTrigger>Home</NavigationMenuTrigger>
-          <NavigationMenuContent>
-            <ul className="grid gap-3 p-6 md:w-[400px] lg:w-[500px] lg:grid-cols-[.75fr_1fr]">
+    <div className=" flex h-[80px] justify-between 2xl:justify-around items-center bg-[#1751A6]">
+    <div className="  flex items-center px-4 ">
+    <div className=" md:w-[250px] w-[120px]  flex items-center justify-center ">
+    <img src="/navbar_icons/logo.svg" alt="KTH AI Society Logo" className="lg:h-[50px] lg:w-[150px] md:h[50px] md:w-[150px] h-[40px] w-[110px]"></img>
+    </div>  
+    
+    {/* <div className="border text-white font-sans text-2xl border-black flex items-center justify-around w-[600px]">
+      <div>
+        <h2>For Students</h2>
+      </div>
+      <div>
+        <h2>For Companies</h2>
+      </div>
+      <div>
+        <h2>About Us</h2>
+      </div>
+    </div> */}
+
+
+    <NavigationMenu className=" text-white  font-sans  lg:block hidden">
+      <NavigationMenuList className="flex w-[500px] h-[80px]  items-center justify-around ">
+        <NavigationMenuItem className=" ">
+          <NavigationMenuTrigger className="text-xl  bg-transparent hover:bg-transparent focus:bg-transparent active:bg-transparent font-semibold">For Students</NavigationMenuTrigger>
+          <NavigationMenuContent className="lg:w-[600px] xl:w-[800px] xl:h-[400px] lg:h-[300px] bg-[#E5E6EB] ">
+            {/* <ul className="grid gap-3 p-6 md:w-[400px] lg:w-[500px] lg:grid-cols-[.75fr_1fr]">
               <li className="row-span-3">
                 <NavigationMenuLink asChild>
                   <a
                     className="flex h-full w-full select-none flex-col justify-end rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 no-underline outline-none focus:shadow-md"
                     href="/"
                     >
-                    {/* <Icons.logo className="h-6 w-6" /> */}
                     <div className="mb-2 mt-4 text-lg font-medium">
                       Speakers
                     </div>
@@ -83,9 +100,6 @@ export default function Navbar() {
                   </a>
                 </NavigationMenuLink>
               </li>
-              {/* <ListItem href="/docs" title="Events">
-                Re-usable components built using Radix UI and Tailwind CSS.
-              </ListItem> */}
               <MiniSection/>
 
               <ListItem href="/docs/installation" title="News">
@@ -99,12 +113,12 @@ export default function Navbar() {
               <ListItem href="/docs/primitives/typography" title="About">
                 Styles for headings, paragraphs, lists...etc
               </ListItem>
-            </ul>
+            </ul> */}
           </NavigationMenuContent>
         </NavigationMenuItem>
-        <NavigationMenuItem>
-          <NavigationMenuTrigger>Learning</NavigationMenuTrigger>
-          <NavigationMenuContent>
+        <NavigationMenuItem className=" ">
+          <NavigationMenuTrigger className="text-xl   bg-transparent hover:bg-transparent focus:bg-transparent active:bg-transparent font-semibold">For Companies</NavigationMenuTrigger>
+          <NavigationMenuContent className="lg:w-[600px] xl:w-[800px] xl:h-[400px] lg:h-[300px] border bg-[#E5E6EB] ">
             <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
               {components.map((component) => (
                 <ListItem className="hover:underline"
@@ -118,20 +132,32 @@ export default function Navbar() {
             </ul>
           </NavigationMenuContent>
         </NavigationMenuItem>
-        <NavigationMenuItem>
-          <Link href="/docs" legacyBehavior passHref>
-            <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-              Sponsor 
-            </NavigationMenuLink>
-          </Link>
+        <NavigationMenuItem className=" ">
+        <NavigationMenuTrigger className="text-xl   bg-transparent hover:bg-transparent focus:bg-transparent active:bg-transparent font-semibold">About Us</NavigationMenuTrigger>
+          <NavigationMenuContent className="lg:w-[600px] xl:w-[800px] xl:h-[400px] lg:h-[300px]  bg-[#E5E6EB]">
+            <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
+              {components.map((component) => (
+                <ListItem className="hover:underline"
+                key={component.title}
+                title={component.title}
+                  href={component.href}
+                  >
+                  {component.description}
+                </ListItem>
+              ))}
+            </ul>
+          </NavigationMenuContent>
         </NavigationMenuItem>
       </NavigationMenuList>
     </NavigationMenu>
 
-    <div className="border lg:flex-col lg:items-end flex justify-between items-center border-black  w-[300px] px-2">
-      <div className="border border-black  ">USER LOGIN SECTION</div>
-      
-    <div className="lg:hidden border border-black">
+    </div>
+
+
+
+    <div className=" lg:flex-col lg:items-end flex justify-between items-center   mr-4 px-2">
+      <img src="/navbar_icons/User.svg" alt="User Login Icon" className="h-[45px] w-[45px] hidden mr-12 lg:block"></img>
+    <div className="lg:hidden ">
       <SideNavbar/>
       </div>        
 
@@ -140,6 +166,9 @@ export default function Navbar() {
   </div>
   )
 }
+
+
+
 
 const ListItem = React.forwardRef<
   React.ElementRef<"a">,
