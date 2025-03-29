@@ -39,18 +39,57 @@ const components: { title: string; href: string; description: string }[] = [
   },
 ]
 
-const MiniSection = () =>{
+// const MiniSection = () =>{
+//   return(
+//     <div className=" flex flex-col hover:bg-gray-100 rounded-sm  w-[300px] px-2">
+//       <Label className=""> Events</Label>
+//       <ul className=" text-ellipsis text-gray-500 cursor-pointer  ">
+//         <li className="hover:underline"><a href="/">Latest Event</a></li>
+//         <li className="hover:underline"><a href="/">Upcomming Event</a></li>
+//         <li className="hover:underline"><a href="/">Previous Events</a></li>
+//       </ul>
+//     </div>
+//   )
+// }
+
+
+
+const MenuSection = () =>{
+  const [current_menu, setCurrentMenu] = React.useState("Job board")
+
+  const JobBoardSection = () =>{
+    return(
+      <div className=" flex  bg-blue-500 w-[300px] px-2">
+        Job board
+      </div>
+    )
+  }
+
+  const InternshipSection = () =>{
+    return(
+      <div className=" flex  bg-blue-500 w-[300px] px-2">
+        Internship
+      </div>
+    )
+  }
+
+  
+  
   return(
-    <div className=" flex flex-col hover:bg-gray-100 rounded-sm  w-[300px] px-2">
-      <Label className=""> Events</Label>
-      <ul className=" text-ellipsis text-gray-500 cursor-pointer  ">
-        <li className="hover:underline"><a href="/">Latest Event</a></li>
-        <li className="hover:underline"><a href="/">Upcomming Event</a></li>
-        <li className="hover:underline"><a href="/">Previous Events</a></li>
-      </ul>
+    <div className=" flex rounded-sm  w-[300px] px-2">
+    <div className="flex flex-col justify-around h-20 items-start mt-4 ml-4">
+      <button className="text-sm font-semibold active:bg-blue-800 text-[#C4C6CD] border border-black" onClick={() => setCurrentMenu("Job board")}> Job Board</button>
+      <button className="text-sm font-semibold text-[#C4C6CD] border border-black" onClick={() => setCurrentMenu("Internship")}> Internship</button>  
+    </div>    
+    <div className="border border-black">
+      {current_menu === "Job board" && (<JobBoardSection/>)}
+      {current_menu === "Internship" && (<InternshipSection/>)}  
+    </div>    
     </div>
   )
 }
+
+
 
 export default function Navbar() {
   return (
@@ -65,6 +104,7 @@ export default function Navbar() {
         <NavigationMenuItem className=" ">
           <NavigationMenuTrigger className="text-xl  bg-transparent hover:bg-transparent focus:bg-transparent active:bg-transparent font-semibold">For Students</NavigationMenuTrigger>
           <NavigationMenuContent className="lg:w-[600px] xl:w-[800px] xl:h-[400px] lg:h-[300px] bg-[#E5E6EB] ">
+            <MenuSection/>
           </NavigationMenuContent>
         </NavigationMenuItem>
         <NavigationMenuItem className=" ">
