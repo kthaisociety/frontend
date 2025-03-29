@@ -173,7 +173,8 @@ export const SideNavbar = ()=> {
                   </AccordionTrigger>
                   <AccordionContent>
                   <div className="flex pb-2 pt-1 ml-[15px]">
-                  <div className="border"></div>
+                  <div className="border "></div>
+                  {/* <hr ></hr> */}
                     <ul className="flex-col w-[400px] px-1 md:w-[400px] lg:w-[500px]">
                       {item.links.map((link, linkIndex) => (
                         <li key={linkIndex} className="h-5 rounded-md px-2 flex items-center text-sm group cursor-pointer">
