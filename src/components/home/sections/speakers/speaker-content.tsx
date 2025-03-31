@@ -1,5 +1,7 @@
 
 
+// all event data is made up! Needs to be changed to match reality 
+
 export const speakers = [
     {
       name: "Sundar Pichai",

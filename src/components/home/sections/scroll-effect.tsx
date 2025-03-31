@@ -2,14 +2,17 @@
 import { useScrollProgress } from "@/hooks/use-scroll";
 import { Timeline } from "./history/history-timeline";
 import { HistoryText } from "./history/history-text";
-import { useMobileLayout } from "@/hooks/use-mobile";
 import { Intro } from "./intro/introduction";
 import { SpeakerHof } from "./speakers/speaker-hof";
 import { SpeakerText } from "./speakers/speaker-text";
+import { useBreakpoint } from "@/hooks/use-breakpoint";
 
 export function ScrollEffect() {
   const scrollProgress = useScrollProgress();
-  const isMobile = useMobileLayout();
+  const breakpoint = useBreakpoint();
+  const isMobile = breakpoint === "mobile";
+  const isTablet = breakpoint === "tablet";
+  const isSmallScreen = isMobile || isTablet;
 
   return (
     <section
@@ -18,13 +21,14 @@ export function ScrollEffect() {
         transform: `translateY(${(1 - scrollProgress) * 100}%)`,
       }}
     >
+      {/* Intro Section */}
       <div>
         <Intro />
       </div>
-      
+
       {/* History Section */}
-      <div className="relative w-full ">
-        {isMobile ? (
+      <div className="relative w-full min-h-fit">
+      {isSmallScreen ? (
           <>
             <HistoryText />
             <Timeline />
@@ -39,18 +43,15 @@ export function ScrollEffect() {
         )}
       </div>
 
-      {/* Speakers Section with added spacing */}
+      {/* Speakers Section */}
       <div className="relative w-full h-full">
-        {isMobile ? (
-          // For mobile, add top padding to create space
+        {isSmallScreen ? (
           <div className="flex flex-col items-center pt-16">
             <SpeakerText />
             <SpeakerHof />
           </div>
         ) : (
-          // For desktop, shift the container down with a translation
-          // BUG: 
-          <div className="absolute inset-0 flex translate-y-16">
+          <div className="absolute inset-0 flex translate-y-8">
             <div className="w-1/2 flex items-center justify-center">
               <SpeakerHof />
             </div>

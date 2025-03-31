@@ -1,18 +1,24 @@
 "use client";
 import { useState } from "react";
 import Image from "next/image";
+import { useBreakpoint } from "@/hooks/use-breakpoint";
 import { speakers } from "./speaker-content";
-import { useMobileLayout } from "@/hooks/use-mobile";
 
 export function SpeakerHof() {
   const [hoveredSpeaker, setHoveredSpeaker] = useState<string | null>(null);
-  const isMobile = useMobileLayout();
+  const breakpoint = useBreakpoint();
 
   return (
     <section
       className="relative w-full h-screen flex items-center justify-center bg-white"
       style={{
-        transform: isMobile ? "scale(0.5)" : "none", // Scale down 90% on mobile
+        transform: `scale(${
+          breakpoint === "mobile"
+            ? 0.5
+            : breakpoint === "tablet"
+            ? 0.8
+            : 0.8
+        })`,
         transformOrigin: "center",
       }}
     >
