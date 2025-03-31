@@ -1,7 +1,7 @@
 
 export const years = [
     { year: "2025", 
-      position: { top: "35%", left: "70%" },
+      position: { top: "32%", left: "73%" },
       activities: [
         { logo: "/images/partherships/timeline/lovable.svg", description: "Lovable Hackathon" },
         { logo: "/images/partherships/timeline/emfas.png", description: "Emfas Afterwork" },
@@ -10,7 +10,7 @@ export const years = [
     },
 
     { year: "2024", 
-      position: { top: "15%", left: "48%" },
+      position: { top: "13%", left: "48%" },
       activities: [
         { logo: "/images/partherships/timeline/spotify.png", description: "Spotify Lecture" },
         { logo: "/images/partherships/timeline/quantumblack.png", description: "Quantumblack Workshop" },
@@ -21,7 +21,7 @@ export const years = [
     { year: "2023", 
       position: { top: "60%", left: "54%" },
       activities: [
-        { logo: "/images/partherships/timeline/ericsson.png", description: "Ericsson Lecture" },
+        /*{ logo: "/images/partherships/timeline/ericsson.png", description: "Ericsson Lecture" },*/
         { logo: "/images/partherships/timeline/kollin.png", description: "Kollin AI Model Development" },
         { logo: "/images/partherships/timeline/google.png", description: "Google Lecture" },
         { logo: "/images/partherships/timeline/tedx.png", description: "TEDx Lecture" },
