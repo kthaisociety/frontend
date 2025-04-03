@@ -11,8 +11,10 @@ import {
   NavigationMenuList,
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu"
-import { Label } from "@radix-ui/react-label"
 
+/**
+ * MOCK DATA
+ */
 const components: { title: string; href: string; description: string }[] = [
   {
     title: "Getting Started with AI",
@@ -39,21 +41,8 @@ const components: { title: string; href: string; description: string }[] = [
   },
 ]
 
-// const MiniSection = () =>{
-//   return(
-//     <div className=" flex flex-col hover:bg-gray-100 rounded-sm  w-[300px] px-2">
-//       <Label className=""> Events</Label>
-//       <ul className=" text-ellipsis text-gray-500 cursor-pointer  ">
-//         <li className="hover:underline"><a href="/">Latest Event</a></li>
-//         <li className="hover:underline"><a href="/">Upcomming Event</a></li>
-//         <li className="hover:underline"><a href="/">Previous Events</a></li>
-//       </ul>
-//     </div>
-//   )
-// }
 
-
-
+// TODO: Keep this for future iteration.
 const MenuSection = () =>{
   const [current_menu, setCurrentMenu] = React.useState("Job board")
 
@@ -104,7 +93,18 @@ export default function Navbar() {
         <NavigationMenuItem className=" ">
           <NavigationMenuTrigger className="text-xl  bg-transparent hover:bg-transparent focus:bg-transparent active:bg-transparent font-semibold">For Students</NavigationMenuTrigger>
           <NavigationMenuContent className="lg:w-[600px] xl:w-[800px] xl:h-[400px] lg:h-[300px] bg-[#E5E6EB] ">
-            <MenuSection/>
+            {/* <MenuSection/> */}
+            <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
+              {components.map((component) => (
+                <ListItem className="hover:underline"
+                key={component.title}
+                title={component.title}
+                  href={component.href}
+                  >
+                  {component.description}
+                </ListItem>
+              ))}
+            </ul>
           </NavigationMenuContent>
         </NavigationMenuItem>
         <NavigationMenuItem className=" ">
