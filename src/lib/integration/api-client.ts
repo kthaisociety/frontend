@@ -25,9 +25,7 @@ export type AuthResponse = {
     id: number;
     email: string;
     provider: string;
-    firstName: string;
-    lastName: string;
-    image?: string;
+    isAdmin: boolean;
   };
   message?: string;
 };
@@ -116,10 +114,27 @@ export const authApi = {
         method: "GET",
       });
 
-      return handleResponse<AuthResponse>(userResponse);
+      const userData = await handleResponse<AuthResponse>(userResponse);
+
+      // Set admin cookie based on user data
+      if (userData.user.isAdmin) {
+        document.cookie = "kthais_admin=true; path=/; samesite=strict";
+      } else {
+        document.cookie = "kthais_admin=false; path=/; samesite=strict";
+      }
+
+      return userData;
     } catch (error) {
       console.error("Session error:", error);
       throw error;
     }
+  },
+
+  isAdmin: () => {
+    const cookies = document.cookie.split(";");
+    const adminCookie = cookies.find((cookie) =>
+      cookie.trim().startsWith("kthais_admin=")
+    );
+    return adminCookie ? adminCookie.split("=")[1] === "true" : false;
   },
 };
