@@ -5,7 +5,6 @@ import {
   Sheet,
   SheetClose,
   SheetContent,
-  SheetDescription,
   SheetFooter,
   SheetHeader,
   SheetTitle,
@@ -17,12 +16,14 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { ChevronsUpDown } from "lucide-react";
 import React from "react";
-import { Collapsible } from "@/components/ui/collapsible";
 
 
 export const SideNavbar = ()=> {
+
+  /**
+   * MOCK DATA
+   */
   const sections = [
     {
       title: "For Students",
