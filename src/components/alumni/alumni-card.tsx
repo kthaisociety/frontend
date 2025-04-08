@@ -53,7 +53,7 @@ export function AlumniCard({
                 <p>{description}</p>
             </CardContent>
 
-            <CardFooter className="flex flex-row justify-between items-center gap-2">
+            <CardFooter className="flex flex-row justify-between items-center gap-2 text-md">
                 <div>{city}, {country} • {formerTeam}</div>
 
                 <div className="flex flex-row justify-end items-center gap-3">
