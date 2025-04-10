@@ -28,7 +28,7 @@ export function CardWrapper({
   showSocial: boolean;
 }) {
   return (
-    <Card className='w-full max-w-md'>
+    <Card className="w-full max-w-md">
       <CardHeader>
         <CardTitle>{title}</CardTitle>
         {description && <CardDescription>{description}</CardDescription>}
@@ -36,12 +36,12 @@ export function CardWrapper({
       {showSocial && (
         <>
           <Social />
-          <div className='relative px-6 py-4 mx-6'>
-            <div className='absolute inset-0 flex items-center'>
+          <div className="relative px-6 py-4 mx-6">
+            <div className="absolute inset-0 flex items-center">
               <Separator />
             </div>
-            <div className='relative flex justify-center text-xs uppercase'>
-              <span className='bg-background px-2 text-muted-foreground'>
+            <div className="relative flex justify-center text-xs uppercase">
+              <span className="bg-background px-2 text-muted-foreground">
                 Or
               </span>
             </div>
@@ -50,8 +50,8 @@ export function CardWrapper({
       )}
       <CardContent>{children}</CardContent>
 
-      <CardFooter className='mt-4 flex justify-center'>
-        <Button variant='link' asChild>
+      <CardFooter className="mt-4 flex justify-center">
+        <Button variant="link" asChild>
           <Link href={backButtonHref}>{backButtonLabel}</Link>
         </Button>
       </CardFooter>
