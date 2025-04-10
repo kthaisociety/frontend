@@ -15,6 +15,12 @@ export function useLogin() {
     mutationFn: (credentials: LoginCredentials) => authApi.login(credentials),
     onSuccess: (data) => {
       queryClient.setQueryData(["auth-session"], data);
+
+      // Set admin cookie if user is admin
+      if (data.user.isAdmin) {
+        document.cookie = "kthais_admin=true; path=/; samesite=strict";
+      }
+
       // Get the redirect URL from the query params, default to dashboard
       const redirectTo =
         new URLSearchParams(window.location.search).get("from") || "/dashboard";
@@ -45,6 +51,11 @@ export function useLogout() {
     mutationFn: () => authApi.logout(),
     onSuccess: () => {
       queryClient.setQueryData(["auth-session"], null);
+
+      // Clear admin cookie
+      document.cookie =
+        "kthais_admin=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+
       router.push("/auth/login");
     },
   });
