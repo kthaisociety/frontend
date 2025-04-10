@@ -32,14 +32,14 @@ export function Social() {
   };
 
   return (
-    <div className='mx-6 flex flex-col gap-4'>
+    <div className="mx-6 flex flex-col gap-4">
       <Button
-        variant='outline'
-        className='flex h-11 w-full items-center justify-center gap-2'
+        variant="outline"
+        className="flex h-11 w-full items-center justify-center gap-2"
         onClick={handleGoogleLogin}
         disabled={isLoading}
       >
-        <FaGoogle className='h-5 w-5' />
+        <FaGoogle className="h-5 w-5" />
         <span>{isLoading ? "Loading..." : "Continue with Google"}</span>
       </Button>
     </div>
