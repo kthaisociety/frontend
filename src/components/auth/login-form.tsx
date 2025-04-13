@@ -50,22 +50,22 @@ export function LoginForm() {
 
   return (
     <CardWrapper
-      title='Login'
-      description='Enter your email and password to login'
+      title="Login"
+      description="Enter your email and password to login"
       backButtonLabel="Don't have an account?"
-      backButtonHref='/auth/signup'
+      backButtonHref="/auth/signup"
       showSocial
     >
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-6'>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
           <FormField
             control={form.control}
-            name='email'
+            name="email"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Email</FormLabel>
                 <FormControl>
-                  <Input {...field} type='email' disabled={login.isPending} />
+                  <Input {...field} type="email" disabled={login.isPending} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -73,14 +73,14 @@ export function LoginForm() {
           />
           <FormField
             control={form.control}
-            name='password'
+            name="password"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Password</FormLabel>
                 <FormControl>
                   <Input
                     {...field}
-                    type='password'
+                    type="password"
                     disabled={login.isPending}
                   />
                 </FormControl>
@@ -89,9 +89,9 @@ export function LoginForm() {
             )}
           />
           {login.error && (
-            <div className='text-sm text-red-500'>{login.error.message}</div>
+            <div className="text-sm text-red-500">{login.error.message}</div>
           )}
-          <Button type='submit' className='w-full' disabled={login.isPending}>
+          <Button type="submit" className="w-full" disabled={login.isPending}>
             {login.isPending ? "Logging in..." : "Login"}
           </Button>
         </form>
