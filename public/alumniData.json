@@ -1,0 +1,52 @@
+[
+    {
+      "name": "Jesper Hesselgren",
+      "image": "https://github.com/shadcn.png",
+      "currentPosition": "Frontend Developer",
+      "formerPosition": "Frontend developer",
+      "description": "Jesper is a frontend developer with a passion for creating beautiful and user-friendly interfaces.",
+      "formerTeam": "IT Team",
+      "period": "2018/2020",
+      "linkedin": "https://linkedin.com/in/shadcn"
+    },
+    {
+      "name": "Sofia Lindström",
+      "image": "https://randomuser.me/api/portraits/women/44.jpg",
+      "currentPosition": "AI Researcher",
+      "formerPosition": "Data Scientist",
+      "description": "Sofia is passionate about advancing AI technologies and has contributed to several open-source ML projects.",
+      "formerTeam": "AI Team",
+      "period": "2019/2021",
+      "linkedin": "https://linkedin.com/in/sofialind"
+    },
+    {
+      "name": "Erik Johansson",
+      "image": "https://randomuser.me/api/portraits/men/32.jpg",
+      "currentPosition": "Full Stack Developer",
+      "formerPosition": "Backend Developer",
+      "description": "Erik enjoys building scalable web applications and exploring new backend technologies.",
+      "formerTeam": "IT Team",
+      "period": "2020/2022",
+      "linkedin": "https://linkedin.com/in/erikj"
+    },
+    {
+      "name": "Nora Ahmed",
+      "image": "https://randomuser.me/api/portraits/women/68.jpg",
+      "currentPosition": "Product Manager",
+      "formerPosition": "UX Designer",
+      "description": "Nora bridges the gap between design and development to ensure great user experiences.",
+      "formerTeam": "Business Team",
+      "period": "2019/2021",
+      "linkedin": "https://linkedin.com/in/norahmed"
+    },
+    {
+      "name": "Liam Pettersson",
+      "image": "https://randomuser.me/api/portraits/men/75.jpg",
+      "currentPosition": "DevOps Engineer",
+      "formerPosition": "System Administrator",
+      "description": "Liam is focused on automation and infrastructure as code, ensuring systems run smoothly.",
+      "formerTeam": "Infrastructure Team",
+      "period": "2018/2020",
+      "linkedin": "https://linkedin.com/in/liampettersson"
+    }
+  ]

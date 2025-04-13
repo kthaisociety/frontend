@@ -8,16 +8,8 @@ import {
   CardFooter,
 } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Alumni } from "./alumni-types";
 
-interface AlumniCardProps {
-  name: string;
-  image?: string;
-  currentPosition: string;
-  description: string;
-  formerTeam: string;
-  period: string;
-  linkedin: string;
-}
 
 export function AlumniCard({
   name,
@@ -27,7 +19,7 @@ export function AlumniCard({
   formerTeam,
   period,
   linkedin,
-}: AlumniCardProps) {
+}: Alumni) {
   return (
     <Card>
       <CardHeader className="flex flex-row justify-start items-center gap-3">

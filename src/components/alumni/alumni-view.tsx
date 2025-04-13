@@ -1,84 +1,57 @@
+"use client";
+
 import { AlumniCard } from "@/components/alumni/alumni-card";
 import { AlumniFilter } from "@/components/alumni/alumni-filter";
+import { Alumni } from "@/components/alumni/alumni-types";
+import { useState } from "react";
 
-export function AlumniView() {
-  //Fetch data from backend here
 
-  //Mockup data
-  const alumni = [
-    {
-      name: "Jesper Hesselgren",
-      image: "https://github.com/shadcn.png",
-      currentPosition: "Frontend Developer",
-      formerPosition: "Frontend developer",
-      description:
-        "Jesper is a frontend developer with a passion for creating beautiful and user-friendly interfaces.",
-      formerTeam: "IT Team",
-      period: "2018/2020",
-      linkedin: "https://linkedin.com/in/shadcn",
-    },
-    {
-      name: "Sofia Lindström",
-      image: "https://randomuser.me/api/portraits/women/44.jpg",
-      currentPosition: "AI Researcher",
-      formerPosition: "Data Scientist",
-      description:
-        "Sofia is passionate about advancing AI technologies and has contributed to several open-source ML projects.",
-      formerTeam: "AI Team",
-      period: "2019/2021",
-      linkedin: "https://linkedin.com/in/sofialind",
-    },
-    {
-      name: "Erik Johansson",
-      image: "https://randomuser.me/api/portraits/men/32.jpg",
-      currentPosition: "Full Stack Developer",
-      formerPosition: "Backend Developer",
-      description:
-        "Erik enjoys building scalable web applications and exploring new backend technologies.",
-      formerTeam: "IT Team",
-      period: "2020/2022",
-      linkedin: "https://linkedin.com/in/erikj",
-    },
-    {
-      name: "Nora Ahmed",
-      image: "https://randomuser.me/api/portraits/women/68.jpg",
-      currentPosition: "Product Manager",
-      formerPosition: "UX Designer",
-      description:
-        "Nora bridges the gap between design and development to ensure great user experiences.",
-      formerTeam: "Business Team",
-      period: "2019/2021",
-      linkedin: "https://linkedin.com/in/norahmed",
-    },
-    {
-      name: "Liam Pettersson",
-      image: "https://randomuser.me/api/portraits/men/75.jpg",
-      currentPosition: "DevOps Engineer",
-      formerPosition: "System Administrator",
-      description:
-        "Liam is focused on automation and infrastructure as code, ensuring systems run smoothly.",
-      formerTeam: "Infrastructure Team",
-      period: "2018/2020",
-      linkedin: "https://linkedin.com/in/liampettersson",
-    },
-  ];
+
+
+
+
+export function AlumniView({ alumnis }: { alumnis: Alumni[] }) {
+
+
+  const [selectedTeam, setSelectedTeam] = useState(alumnis);
+
+  //Filtering function
+  function handleTeamChange(team: string) {
+    switch (team) {
+      case "AI Team":
+        setSelectedTeam(alumnis.filter((alumni) => alumni.formerTeam === "AI Team"));
+        break;
+      case "Business Team":
+        setSelectedTeam(alumnis.filter((alumni) => alumni.formerTeam === "Business Team"));
+        break;
+      case "IT Team":
+        setSelectedTeam(alumnis.filter((alumni) => alumni.formerTeam === "IT Team"));
+        break;
+      default:
+        setSelectedTeam(alumnis);
+        break;
+    }
+  }
+
 
   return (
     <div>
-      <header className="bg-blue-600 text-white p-4 h-16">Fake header</header>
-      <main className="py-6 px-7 md:px-15 lg:px-20 xl:px-40">
+      <header className="bg-blue-600 text-white text-center p-4 h-16">Fake header</header>
+      <main className="py-6 px-7 md:px-15 lg:px-20 xl:px-40 mb-10">
         <h4 className="hidden md:block my-9 font-light text-lg">
           <a href="/">Home </a> / <a href="/alumni">Alumni</a>
         </h4>
-        <h1 className="text-4xl font-semibold">Notable Alumni</h1>
+       
 
         {/* TODO: ADD alumni filitering Component here */}
-        <div className="my-8">
-          <AlumniFilter />
+        <div className="flex flex-col gap-3 mb-6">
+          <h1 className="text-4xl font-semibold">Notable Alumni</h1>
+          <p className="inline-block lg:max-w-[62%] mb-6">Here you’ll find some of the amazing people who’ve been part of the KTH AI Society. From shaping our community to exploring new frontiers in tech — their journeys continue to inspire us.</p>
+          <AlumniFilter handleTeamChange={handleTeamChange} />
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-          {alumni.map((alumni) => {
+          {selectedTeam.map((alumni) => {
             return <AlumniCard {...alumni} key={alumni.name} />;
           })}
         </div>

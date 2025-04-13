@@ -11,43 +11,28 @@ import { MdKeyboardArrowDown } from "react-icons/md";
 /*Ide store the alumni array/data in the redux store and use that to filter on the location prop and team prop?*/
 /*Ide 2 send req to db and filter on Backend, seem like a little bit overkill? */
 
-export function AlumniFilter() {
+export function AlumniFilter( {handleTeamChange}: {handleTeamChange: (team: string) => void}) {
     return (
 
-        /*Filter component for smaller screens*/
-        /*TODO: Implement a filter component for smaller screens*/
-
         /*Filter component for larger screens*/
-        <div className="hidden flex-row justify-between items-center gap-2 md:flex ">
-            <Input placeholder="Search by name, title, description" />
-
-            {/*TODO: Filter by location dropdown*/}
-            <DropdownMenu>
-                <DropdownMenuTrigger className=" flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-base shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm items-center">
-                    <div className="flex flex-row w-full justify-between items-center">
-                        <span>All locations</span>
-                        <span><MdKeyboardArrowDown/></span>
-                    </div>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent className="w-[--radix-dropdown-menu-trigger-width]">
-                    <DropdownMenuItem>Stockholm</DropdownMenuItem>
-                    <DropdownMenuItem>Linköping</DropdownMenuItem>
-                    <DropdownMenuItem>Göteborg</DropdownMenuItem>
-                </DropdownMenuContent>
-            </DropdownMenu>
+        <div className="flex flex-row justify-end items-center gap-2">
 
             {/*TODO: Filter by team dropdown*/}
             <DropdownMenu>
-                <DropdownMenuTrigger className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-base shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm items-center">
-                    <div className="flex flex-row w-full justify-between items-center">
-                        <span>All Teams</span>
+                <DropdownMenuTrigger className="flex w-1/6  rounded-md border px-3 py-1 shadow-sm items-center text-sm md:text-l">
+                    <div className="flex flex-row w-full justify-center sm:justify-between items-center overflow-hidden">
+                        <div className="flex flex-row items-center gap-1 ">
+                            <span className="hidden sm:block">Select</span>
+                            <span className="hidden md:block">Teams</span>
+                        </div>
                         <span><MdKeyboardArrowDown/></span>
                     </div>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent className="w-[--radix-dropdown-menu-trigger-width]">
-                    <DropdownMenuItem>Business Team</DropdownMenuItem>
-                    <DropdownMenuItem>AI Team</DropdownMenuItem>
-                    <DropdownMenuItem>IT Team</DropdownMenuItem>
+                <DropdownMenuContent className="w-[--radix-dropdown-menu-trigger-width] text-xs">
+                    <DropdownMenuItem onClick={() => handleTeamChange("Business Team")}>Business Team</DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => handleTeamChange("AI Team")}>AI Team</DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => handleTeamChange("IT Team")}>IT Team</DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => handleTeamChange("All Team")}>All Team</DropdownMenuItem>
                 </DropdownMenuContent>
             </DropdownMenu>
         </div>
