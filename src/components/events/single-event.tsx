@@ -3,7 +3,13 @@
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
 import { Calendar, Clock, MapPin, Users, ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { formatDate } from "./utils";
@@ -12,15 +18,16 @@ import { formatDate } from "./utils";
 const testEvent = {
   id: "1",
   title: "AI Workshop: Introduction to Machine Learning",
-  description: "Join us for an introductory workshop on machine learning fundamentals. Perfect for beginners! This workshop will cover the basics of machine learning, including supervised and unsupervised learning, neural networks, and practical applications. No prior experience required.",
+  description:
+    "Join us for an introductory workshop on machine learning fundamentals. Perfect for beginners! This workshop will cover the basics of machine learning, including supervised and unsupervised learning, neural networks, and practical applications. No prior experience required.",
   date: "2025-05-15",
   time: "14:00 - 16:00",
   location: "KTH Campus, Room 123",
   capacity: 30,
   image: "/images/brand_assets/ais-logo-main-long-white-1.jpg",
   collaborators: [
-    { name: "KTH Computer Science", logo: "/images/collaborators/kth-cs.png" }
-  ]
+    { name: "KTH Computer Science", logo: "/images/collaborators/kth-cs.png" },
+  ],
 };
 
 interface Collaborator {
@@ -52,7 +59,7 @@ export function SingleEvent({ event = testEvent }: SingleEventProps) {
         <p className="text-muted-foreground mb-8">
           The event you're looking for doesn't exist or has been removed.
         </p>
-        <Link 
+        <Link
           href="/events"
           className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
         >
@@ -68,7 +75,7 @@ export function SingleEvent({ event = testEvent }: SingleEventProps) {
   return (
     <div className="container mx-auto px-6 py-12">
       {/* Back button */}
-      <Link 
+      <Link
         href="/events"
         className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground mb-8 transition-colors"
       >
@@ -89,7 +96,7 @@ export function SingleEvent({ event = testEvent }: SingleEventProps) {
               priority
             />
             <div className="absolute top-4 right-4">
-              <Badge 
+              <Badge
                 variant={status === "upcoming" ? "default" : "secondary"}
                 className="flex items-center gap-1 text-base px-4 py-1"
               >
@@ -118,7 +125,9 @@ export function SingleEvent({ event = testEvent }: SingleEventProps) {
                 <Calendar className="h-5 w-5 text-muted-foreground mt-0.5" />
                 <div>
                   <h3 className="font-medium mb-1">Date</h3>
-                  <p className="text-muted-foreground">{formatDate(event.date)}</p>
+                  <p className="text-muted-foreground">
+                    {formatDate(event.date)}
+                  </p>
                 </div>
               </div>
               <div className="flex items-start gap-3">
@@ -139,7 +148,9 @@ export function SingleEvent({ event = testEvent }: SingleEventProps) {
                 <Users className="h-5 w-5 text-muted-foreground mt-0.5" />
                 <div>
                   <h3 className="font-medium mb-1">Capacity</h3>
-                  <p className="text-muted-foreground">{event.capacity} participants</p>
+                  <p className="text-muted-foreground">
+                    {event.capacity} participants
+                  </p>
                 </div>
               </div>
             </div>
@@ -149,7 +160,7 @@ export function SingleEvent({ event = testEvent }: SingleEventProps) {
               <h2 className="text-xl font-semibold mb-4">Collaborators</h2>
               <div className="flex flex-wrap gap-4">
                 {event.collaborators.map((collaborator) => (
-                  <div 
+                  <div
                     key={collaborator.name}
                     className="flex items-center gap-3 bg-muted/50 px-4 py-2 rounded-lg"
                   >
@@ -175,18 +186,18 @@ export function SingleEvent({ event = testEvent }: SingleEventProps) {
             <CardHeader>
               <CardTitle>Register for this Event</CardTitle>
               <CardDescription>
-                {status === "upcoming" 
+                {status === "upcoming"
                   ? "Secure your spot at this upcoming event"
                   : "This event has already taken place"}
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
               {status === "upcoming" ? (
-                <Button 
-                  size="lg" 
+                <Button
+                  size="lg"
                   className="w-full"
                   onClick={() => {
-                    // TODO: Implement registration logic 
+                    // TODO: Implement registration logic
                     // right now the button has no functionality
                     console.log("Register for event:", event.id);
                   }}
@@ -194,9 +205,9 @@ export function SingleEvent({ event = testEvent }: SingleEventProps) {
                   Register Now
                 </Button>
               ) : (
-                <Button 
-                  size="lg" 
-                  variant="secondary" 
+                <Button
+                  size="lg"
+                  variant="secondary"
                   className="w-full"
                   disabled
                 >
@@ -220,10 +231,13 @@ export function SingleEvent({ event = testEvent }: SingleEventProps) {
   );
 }
 
-function getEventStatus(date: string, time: string): { status: "upcoming" | "past"; label: string } {
+function getEventStatus(
+  date: string,
+  time: string,
+): { status: "upcoming" | "past"; label: string } {
   const eventDateTime = new Date(`${date}T${time.split(" - ")[0]}`);
   const now = new Date();
-  
+
   if (eventDateTime < now) {
     return { status: "past", label: "Past Event" };
   }
