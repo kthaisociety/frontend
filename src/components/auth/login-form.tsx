@@ -44,9 +44,8 @@ export function LoginForm() {
     },
   });
 
-  const onSubmit = async (data: LoginFormFields) => {
+  const onSubmit = async (data: LoginFormFields) =>
     await login.mutateAsync(data);
-  };
 
   return (
     <CardWrapper
