@@ -2,8 +2,8 @@ import { twJoin } from "tailwind-merge";
 
 export function LoadingSpinner({
   label,
-  color = "text-white",
-  size = "5",
+  color = "text-black",
+  size = "10",
 }: {
   label?: string;
   color?: string;
