@@ -18,10 +18,11 @@ export interface Event {
 }
 
 // not sure how to call the db to get event info right now so this is just mock data
-// not even in use at the moment 
+// not even in use at the moment
 
 async function fetchEvents(): Promise<Event[]> {
-  const API_URL = (process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080") + "/api/v1";
+  const API_URL =
+    (process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080") + "/api/v1";
   const response = await fetch(`${API_URL}/events`, {
     credentials: "include",
   });
@@ -44,4 +45,4 @@ export function useEvents() {
         .slice(0, 10);
     },
   });
-} 
+}
