@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 
-// three widths are kept for responsiveness. Desktop is default. 
+// three widths are kept for responsiveness. Desktop is default.
 
 type Breakpoint = "mobile" | "tablet" | "desktop";
 

@@ -6,8 +6,7 @@ const publicPaths = ["/auth/login", "/auth/signup", "/"];
 
 // Function to check if the request is for a public asset
 const isPublicAsset = (pathname: string) =>
-
-  /// tmp set these to avoid auth when rendering on localhost during development 
+  /// tmp set these to avoid auth when rendering on localhost during development
 
   pathname.startsWith("/images/") || // ✅ Allow images
   pathname.startsWith("/favicon.ico") || // ✅ Allow favicon

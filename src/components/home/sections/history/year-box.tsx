@@ -21,7 +21,7 @@ export function YearBox({ year, index, totalYears }: YearBoxProps) {
 
   const mobileTop =
     isSmallScreen && totalYears
-      ? `${(100 / (totalYears + 0.2)) * (index + 0.2 )}%`
+      ? `${(100 / (totalYears + 0.2)) * (index + 0.2)}%`
       : year.position.top;
 
   return (

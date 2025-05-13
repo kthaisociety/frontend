@@ -28,7 +28,7 @@ export function ScrollEffect() {
 
       {/* History Section */}
       <div className="relative w-full min-h-fit">
-      {isSmallScreen ? (
+        {isSmallScreen ? (
           <>
             <HistoryText />
             <Timeline />

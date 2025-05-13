@@ -9,13 +9,9 @@ export function Hero() {
   const isTablet = breakpoint === "tablet";
   const isSmallScreen = isMobile || isTablet;
 
-  const logoWidthClass = isSmallScreen
-    ? "w-[200px]"
-    : "w-[450px]";
+  const logoWidthClass = isSmallScreen ? "w-[200px]" : "w-[450px]";
 
-  const typewriterTextSize = isSmallScreen
-    ? "text-lg"
-    : "text-2xl";
+  const typewriterTextSize = isSmallScreen ? "text-lg" : "text-2xl";
 
   return (
     <section className="w-full h-screen bg-background text-primary-foreground flex flex-col items-center justify-center text-center relative overflow-hidden">
@@ -23,7 +19,8 @@ export function Hero() {
       <div
         className="absolute inset-0 flex items-center justify-center bg-no-repeat bg-cover opacity-100"
         style={{
-          backgroundImage: "url('/images/brand_assets/ais-symbol-blurred-004.jpg')",
+          backgroundImage:
+            "url('/images/brand_assets/ais-symbol-blurred-004.jpg')",
           backgroundSize: "150%",
         }}
       />

@@ -11,8 +11,16 @@ export function Intro() {
     ? "max-w-2xl mx-auto text-center px-4"
     : "max-w-4xl mx-0 text-left pl-8";
 
-  const headingSize = isMobile ? "text-2xl" : isTablet ? "text-4xl" : "text-5xl";
-  const paragraphSize = isMobile ? "text-sm" : isTablet ? "text-base" : "text-lg";
+  const headingSize = isMobile
+    ? "text-2xl"
+    : isTablet
+      ? "text-4xl"
+      : "text-5xl";
+  const paragraphSize = isMobile
+    ? "text-sm"
+    : isTablet
+      ? "text-base"
+      : "text-lg";
 
   return (
     <section className="w-full py-12 bg-white">
@@ -21,7 +29,8 @@ export function Intro() {
           Welcome to KTH AI Society
         </h1>
         <p className={`mt-4 text-gray-700 ${paragraphSize}`}>
-          We are a participatory society for anyone into AI at KTH Royal Institute of Technology.
+          We are a participatory society for anyone into AI at KTH Royal
+          Institute of Technology.
         </p>
       </div>
     </section>

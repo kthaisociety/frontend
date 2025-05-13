@@ -13,11 +13,7 @@ export function SpeakerHof() {
       className="relative w-full h-screen flex items-center justify-center bg-white"
       style={{
         transform: `scale(${
-          breakpoint === "mobile"
-            ? 0.5
-            : breakpoint === "tablet"
-            ? 0.8
-            : 0.8
+          breakpoint === "mobile" ? 0.5 : breakpoint === "tablet" ? 0.8 : 0.8
         })`,
         transformOrigin: "center",
       }}
@@ -51,7 +47,9 @@ export function SpeakerHof() {
               onMouseEnter={() => setHoveredSpeaker(speaker.name)}
               onMouseLeave={() => setHoveredSpeaker(null)}
               className={`absolute bg-white shadow-lg rounded-lg p-4 flex flex-col items-center text-center transform transition-all duration-300 ${
-                hoveredSpeaker === speaker.name ? "scale-110 z-20 shadow-2xl" : "scale-100"
+                hoveredSpeaker === speaker.name
+                  ? "scale-110 z-20 shadow-2xl"
+                  : "scale-100"
               }`}
               style={{
                 transform: `translate(${x}px, ${y}px)`, // Now rounded to prevent mismatches
@@ -69,7 +67,9 @@ export function SpeakerHof() {
               />
 
               {/* Name & Title - Does NOT change size */}
-              <h3 className="mt-2 text-sm font-bold text-primary">{speaker.name}</h3>
+              <h3 className="mt-2 text-sm font-bold text-primary">
+                {speaker.name}
+              </h3>
               <p className="text-xs">{speaker.title}</p>
 
               {/* Event Info - Only visible on hover */}
