@@ -1,5 +1,5 @@
 "use client";
-import Typewriter from "typewriter-effect";
+// import Typewriter from "typewriter-effect";
 import Image from "next/image";
 import { useBreakpoint } from "@/hooks/use-breakpoint";
 
@@ -40,9 +40,9 @@ export function Hero() {
         />
       </div>
 
-      {/* Typing Text */}
+      {/* Typing Text - Temporarily replaced with static text */}
       <div className={`mt-4 font-mono relative z-10 ${typewriterTextSize}`}>
-        <Typewriter
+        {/* <Typewriter
           onInit={(typewriter) => {
             typewriter
               .typeString("<>Cultivating ")
@@ -60,7 +60,8 @@ export function Hero() {
             delay: 35,
             deleteSpeed: 30,
           }}
-        />
+        /> */}
+        <>Cultivating the next generation of AI leaders</>
       </div>
     </section>
   );
