@@ -1,44 +1,36 @@
 "use client";
-import { useParams } from "next/navigation";
+import React from 'react'
+import Markdown from 'react-markdown'
+import remarkGfm from 'remark-gfm'
+
+const markdown = `# Översikt`;
+
+// Needs to install something realted to tailwind CSS to solve this problem
+// You can google it 
 
 export function JobViewDetails() {
-
-  const params = useParams();
-  const jobId = params?.id; 
-
-  //some kind of api call to get data from db based on the id. fetch(jobId )....
-
-  //Potential data from db 
-  const mockaup_data =[{
-    id: 1,
-    title:  "Software Engineer",
-    company: "Google",
-    companyOverview: "short paragraph about company",
-    companyLogo: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/512px-Google_%22G%22_Logo.svg.png",
-    description: "Company description",
-    location: "Company location",
-    jobType: "Company job type",
-    jobResponsibilities: "Company job responsibilities",
-    requirements: "Company requirements",
-  }]
-
-  //View not done, since different companies may have different details / specfications of the design / etc.
-
   return (
-    <div>
-      <div className="bg-blue-700 text-white p-8 text-center">Fake header</div>
-      <div className="py-6 px-7 md:px-15 lg:px-20 xl:px-40 mb-8">
-        <h4 className="hidden md:block my-9 font-light text-lg">
-          <a href="/">Home</a> / <a href="/jobs">Job board</a> /{" "}
-          <a> {mockaup_data[0].company}</a>
-        </h4>
-        <h1 className="text-5xl font-semibold text-center md:text-left my-6">
-          {mockaup_data[0].company}
-        </h1>
-        <p className="text-md mb-4">
-          {mockaup_data[0].description}
-        </p>
-      </div>
-    </div>
+    <Markdown remarkPlugins={[remarkGfm]}>{markdown}</Markdown>
   );
+  // const params = useParams();
+  // const jobId = params?.id;
+
+  // const jobData = job.find((j) => j.id === jobId);
+
+  // // Om params inte laddats än eller ogiltigt ID
+  // if (!jobId || !jobData) return <p>Loading...</p>;
+
+  // return (
+  //   <>
+  //     <div className="bg-blue-700 text-white p-8 text-center">Fake header</div>
+  //     <div className="py-6 px-7 md:px-15 lg:px-20 xl:px-40 mb-8">
+  //       {/* <h4 className="hidden md:block my-9 font-light text-lg">
+  //         <a href="/">Home</a> / 
+  //         <a href="/jobs"> Job board</a> /  
+  //         <a href={`/jobs/${jobData.id}`}> {jobData.company}</a>
+  //       </h4> */}
+  //     <Markdown remarkPlugins={[remarkGfm]}>{jobData.markdown}</Markdown>
+  //     </div>
+  //   </>
+  // );
 }

@@ -1,6 +1,6 @@
 import { JobCard } from "./job-card";
 
-
+// Change this to a tanstack query call to the backend
 const mockJobData = [
   {
       title: "Backend Engineer",
@@ -29,7 +29,6 @@ const mockJobData = [
       location: "Stockholm, Sweden",
       jobType: "Full-time"
   },
-
 ];
 
 
