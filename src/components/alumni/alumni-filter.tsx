@@ -1,15 +1,7 @@
-import { Input } from "@/components/ui/input";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { MdKeyboardArrowDown } from "react-icons/md";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 
 
-//TODO: Implement filter functionality
-//Filter by location
-//Filter by Team
-//Filter by search?
-
-/*Ide store the alumni array/data in the redux store and use that to filter on the location prop and team prop?*/
-/*Ide 2 send req to db and filter on Backend, seem like a little bit overkill? */
 
 export function AlumniFilter( {handleTeamChange}: {handleTeamChange: (team: string) => void}) {
     return (

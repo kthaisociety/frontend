@@ -1,13 +1,9 @@
 "use client";
 
+import { useState } from "react";
 import { AlumniCard } from "@/components/alumni/alumni-card";
 import { AlumniFilter } from "@/components/alumni/alumni-filter";
-import { Alumni } from "@/components/alumni/alumni-types";
-import { useState } from "react";
-
-
-
-
+import type { Alumni } from "@/components/alumni/alumni-types";
 
 
 export function AlumniView({ alumnis }: { alumnis: Alumni[] }) {

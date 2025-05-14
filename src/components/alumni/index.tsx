@@ -1,8 +1,8 @@
 "use client";
 
+import { useAlumni } from "@/hooks/alumni";
 import { AlumniSkeleton } from "./alumni-skeleton";
 import { AlumniView } from "./alumni-view";
-import { useAlumni } from "@/hooks/alumni";
 
 
 
@@ -11,9 +11,6 @@ export function AlumniPage() {
 
     const { data: alumnis, isLoading, error } = useAlumni();
 
-    
-
-    //Return a skelton view instead built with shadcn
     if (isLoading) {
         return <AlumniSkeleton />;
     }
@@ -28,9 +25,7 @@ export function AlumniPage() {
     }
 
     return (
-        <>
-            <AlumniView alumnis={alumnis} />  
-        </>
+        <AlumniView alumnis={alumnis} />  
     );
 }
 

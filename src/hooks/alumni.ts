@@ -1,5 +1,5 @@
 import { useQuery} from "@tanstack/react-query";
-import { Alumni } from "@/components/alumni/alumni-types";
+import type { Alumni } from "@/components/alumni/alumni-types";
 
 
 

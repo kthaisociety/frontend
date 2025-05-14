@@ -8,7 +8,7 @@ import {
   CardFooter,
 } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Alumni } from "./alumni-types";
+import type { Alumni } from "./alumni-types";
 
 
 export function AlumniCard({
