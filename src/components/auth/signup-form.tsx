@@ -38,18 +38,18 @@ export function SignUpForm() {
 
   return (
     <CardWrapper
-      title='Create an account'
-      description='Enter your details to create an account'
-      backButtonLabel='Already have an account?'
-      backButtonHref='/auth/login'
+      title="Create an account"
+      description="Enter your details to create an account"
+      backButtonLabel="Already have an account?"
+      backButtonHref="/auth/login"
       showSocial
     >
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-6'>
-          <div className='grid grid-cols-2 gap-4'>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          <div className="grid grid-cols-2 gap-4">
             <FormField
               control={form.control}
-              name='firstName'
+              name="firstName"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>First Name</FormLabel>
@@ -62,7 +62,7 @@ export function SignUpForm() {
             />
             <FormField
               control={form.control}
-              name='lastName'
+              name="lastName"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Last Name</FormLabel>
@@ -76,14 +76,14 @@ export function SignUpForm() {
           </div>
           <FormField
             control={form.control}
-            name='email'
+            name="email"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Email</FormLabel>
                 <FormControl>
                   <Input
                     {...field}
-                    type='email'
+                    type="email"
                     disabled={register.isPending}
                   />
                 </FormControl>
@@ -93,14 +93,14 @@ export function SignUpForm() {
           />
           <FormField
             control={form.control}
-            name='password'
+            name="password"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Password</FormLabel>
                 <FormControl>
                   <Input
                     {...field}
-                    type='password'
+                    type="password"
                     disabled={register.isPending}
                   />
                 </FormControl>
@@ -110,14 +110,14 @@ export function SignUpForm() {
           />
           <FormField
             control={form.control}
-            name='confirmPassword'
+            name="confirmPassword"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Confirm Password</FormLabel>
                 <FormControl>
                   <Input
                     {...field}
-                    type='password'
+                    type="password"
                     disabled={register.isPending}
                   />
                 </FormControl>
@@ -126,11 +126,11 @@ export function SignUpForm() {
             )}
           />
           {register.error && (
-            <div className='text-sm text-red-500'>{register.error.message}</div>
+            <div className="text-sm text-red-500">{register.error.message}</div>
           )}
           <Button
-            type='submit'
-            className='w-full'
+            type="submit"
+            className="w-full"
             disabled={register.isPending}
           >
             {register.isPending ? "Creating account..." : "Create account"}

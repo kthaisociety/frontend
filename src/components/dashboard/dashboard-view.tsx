@@ -26,11 +26,11 @@ export function DashboardView({
   }
 
   return (
-    <div className='container mx-auto p-6'>
-      <div className='flex justify-between items-center mb-8'>
-        <h1 className='text-3xl font-bold'>Dashboard</h1>
+    <div className="container mx-auto p-6">
+      <div className="flex justify-between items-center mb-8">
+        <h1 className="text-3xl font-bold">Dashboard</h1>
         <Button
-          variant='destructive'
+          variant="destructive"
           onClick={() => logout.mutate()}
           disabled={logout.isPending}
         >
@@ -38,36 +38,36 @@ export function DashboardView({
         </Button>
       </div>
 
-      <div className='bg-card rounded-lg p-6 shadow-sm'>
-        <h2 className='text-2xl font-semibold mb-4'>Profile</h2>
-        <div className='space-y-4'>
+      <div className="bg-card rounded-lg p-6 shadow-sm">
+        <h2 className="text-2xl font-semibold mb-4">Profile</h2>
+        <div className="space-y-4">
           <div>
-            <label className='text-sm font-medium text-muted-foreground'>
+            <label className="text-sm font-medium text-muted-foreground">
               Email
             </label>
-            <p className='text-lg'>{session.user.email}</p>
+            <p className="text-lg">{session.user.email}</p>
           </div>
           {session.user && (
             <>
               <div>
-                <label className='text-sm font-medium text-muted-foreground'>
+                <label className="text-sm font-medium text-muted-foreground">
                   Name
                 </label>
-                <p className='text-lg'>
+                <p className="text-lg">
                   {session.user.firstName} {session.user.lastName}
                 </p>
               </div>
               {session.user.image && (
                 <div>
-                  <label className='text-sm font-medium text-muted-foreground'>
+                  <label className="text-sm font-medium text-muted-foreground">
                     Profile Image
                   </label>
                   <Image
                     src={session.user.image}
-                    alt='Profile'
+                    alt="Profile"
                     width={80}
                     height={80}
-                    className='w-20 h-20 rounded-full mt-2'
+                    className="w-20 h-20 rounded-full mt-2"
                   />
                 </div>
               )}

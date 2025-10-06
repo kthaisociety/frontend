@@ -63,6 +63,7 @@ export default Homepage;
 - Use React function components with explicit return types
 - Use path aliases (`@/components/...`) for imports
 - UI components from shadcn have special ESLint exceptions to accommodate their patterns
+- We use Prettier for code formatting to ensure consistent style across the codebase
 
 See [eslint.config.mjs](eslint.config.mjs) for more details.
 
