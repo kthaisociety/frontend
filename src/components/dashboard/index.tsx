@@ -20,7 +20,5 @@ export function DashboardPage() {
     }
   }, [isError, router]);
 
-  return (
-    <DashboardView session={session} isLoading={isLoading} logout={logout} />
-  );
+  return <DashboardView session={session} isLoading={isLoading} logout={logout} />;
 }

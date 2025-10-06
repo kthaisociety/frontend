@@ -1,16 +1,26 @@
+"use client";
 // Start of Selection
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
+import { useSession } from "@/hooks/auth";
 
 export function AuthLayout({ children }: { children: React.ReactNode }) {
+  const { data: session } = useSession();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (session) {
+      router.push("/");
+    }
+  }, [session, router]);
+
   return (
     <div className="flex h-screen">
       {/* Back button for mobile */}
       <div className="absolute left-8 top-8 z-20 lg:hidden">
-        <Link
-          href="/"
-          className="flex items-center text-foreground hover:text-muted-foreground"
-        >
+        <Link href="/" className="flex items-center text-foreground hover:text-muted-foreground">
           <ArrowLeft className="mr-2 h-5 w-5" />
           Back to home
         </Link>
@@ -18,14 +28,10 @@ export function AuthLayout({ children }: { children: React.ReactNode }) {
 
       {/* Left side - Image Background */}
       <div className='relative hidden w-2/5 lg:block bg-[url("/images/logo_blue.png")] bg-cover bg-center bg-no-repeat'>
-        <div className="absolute inset-0 bg-black/30" />{" "}
-        {/* Optional overlay */}
+        <div className="absolute inset-0 bg-black/30" /> {/* Optional overlay */}
         {/* Back button for desktop */}
         <div className="absolute left-8 top-8 z-20">
-          <Link
-            href="/"
-            className="flex items-center text-white hover:text-gray-200"
-          >
+          <Link href="/" className="flex items-center text-white hover:text-gray-200">
             <ArrowLeft className="mr-2 h-5 w-5" />
             Back to home
           </Link>
