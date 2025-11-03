@@ -91,9 +91,9 @@ export default function Navbar() {
     <NavigationMenu className=" text-white  font-sans  lg:block hidden">
       <NavigationMenuList className="flex w-[500px] h-[80px]  items-center justify-around ">
         <NavigationMenuItem className=" ">
-          <NavigationMenuTrigger className="text-xl  bg-transparent hover:bg-transparent focus:bg-transparent active:bg-transparent font-semibold">For Students</NavigationMenuTrigger>
-          <NavigationMenuContent className="lg:w-[600px] xl:w-[800px] xl:h-[400px] lg:h-[300px] bg-[#E5E6EB] ">
-            {/* <MenuSection/> */}
+          <NavigationMenuTrigger className="text-xl  bg-transparent hover:bg-transparent focus:bg-transparent active:bg-transparent font-semibold">Home</NavigationMenuTrigger>
+          {/* <NavigationMenuContent className="lg:w-[600px] xl:w-[800px] xl:h-[400px] lg:h-[300px] bg-[#E5E6EB] ">
+            <MenuSection/>
             <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
               {components.map((component) => (
                 <ListItem className="hover:underline"
@@ -105,39 +105,16 @@ export default function Navbar() {
                 </ListItem>
               ))}
             </ul>
-          </NavigationMenuContent>
+          </NavigationMenuContent> */}
         </NavigationMenuItem>
         <NavigationMenuItem className=" ">
-          <NavigationMenuTrigger className="text-xl   bg-transparent hover:bg-transparent focus:bg-transparent active:bg-transparent font-semibold">For Companies</NavigationMenuTrigger>
-          <NavigationMenuContent className="lg:w-[600px] xl:w-[800px] xl:h-[400px] lg:h-[300px] border bg-[#E5E6EB] ">
-            <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
-              {components.map((component) => (
-                <ListItem className="hover:underline"
-                key={component.title}
-                title={component.title}
-                  href={component.href}
-                  >
-                  {component.description}
-                </ListItem>
-              ))}
-            </ul>
-          </NavigationMenuContent>
+          <NavigationMenuTrigger className="text-xl   bg-transparent hover:bg-transparent focus:bg-transparent active:bg-transparent font-semibold">Events</NavigationMenuTrigger>
         </NavigationMenuItem>
         <NavigationMenuItem className=" ">
-        <NavigationMenuTrigger className="text-xl   bg-transparent hover:bg-transparent focus:bg-transparent active:bg-transparent font-semibold">About Us</NavigationMenuTrigger>
-          <NavigationMenuContent className="lg:w-[600px] xl:w-[800px] xl:h-[400px] lg:h-[300px]  bg-[#E5E6EB]">
-            <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
-              {components.map((component) => (
-                <ListItem className="hover:underline"
-                key={component.title}
-                title={component.title}
-                  href={component.href}
-                  >
-                  {component.description}
-                </ListItem>
-              ))}
-            </ul>
-          </NavigationMenuContent>
+        <NavigationMenuTrigger className="text-xl   bg-transparent hover:bg-transparent focus:bg-transparent active:bg-transparent font-semibold">Projects</NavigationMenuTrigger>
+        </NavigationMenuItem>
+                <NavigationMenuItem className=" ">
+        <NavigationMenuTrigger className="text-xl   bg-transparent hover:bg-transparent focus:bg-transparent active:bg-transparent font-semibold">Teams</NavigationMenuTrigger>
         </NavigationMenuItem>
       </NavigationMenuList>
     </NavigationMenu>
