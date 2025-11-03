@@ -32,7 +32,7 @@ export function AlumniView({ alumnis }: { alumnis: Alumni[] }) {
 
   return (
     <div>
-      <header className="bg-blue-600 text-white text-center p-4 h-16">Fake header</header>
+      {/* <header className="bg-blue-600 text-white text-center p-4 h-16">Fake header</header> */}
       <main className="py-6 px-7 md:px-15 lg:px-20 xl:px-40 mb-10">
         <h4 className="hidden md:block my-9 font-light text-lg">
           <a href="/">Home </a> / <a href="/alumni">Alumni</a>

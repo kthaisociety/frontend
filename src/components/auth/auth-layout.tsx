@@ -33,11 +33,11 @@ export function AuthLayout({ children }: { children: React.ReactNode }) {
       </div> */}
 
       {/* Left side - Image Background */}
-      <div className='relative hidden w-2/5 lg:block bg-[url("/images/logo_blue.png")] bg-cover bg-center bg-no-repeat'>
-        <div className="absolute inset-0 bg-black/30" /> {/* Optional overlay */}
+      <div className='relative hidden w-2/5 lg:block bg-[url("/images/brand_assets/ais-symbol-blue/white.jpg")] bg-cover bg-center bg-no-repeat'>
+        <div className="absolute inset-0 bg-black/5" /> {/* Optional overlay */}
         {/* Back button for desktop */}
         <div className="absolute left-8 top-8 z-20">
-          <Link href="/" className="flex items-center text-white hover:text-gray-200">
+          <Link href="/" className="flex items-center text-black hover:text-gray-200">
             <ArrowLeft className="mr-2 h-5 w-5" />
             Back to home
           </Link>
