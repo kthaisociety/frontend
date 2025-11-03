@@ -4,29 +4,29 @@ import { ArrowLeft } from "lucide-react";
 
 export function AuthLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="flex h-screen">
+    <div className="flex h-[calc(100vh-80px)]">
       {/* Back button for mobile */}
-      <div className="absolute left-8 top-8 z-20 lg:hidden">
+      {/* <div className="absolute left-8 top-8 z-20 lg:hidden">
         <Link
           href="/"
           className="flex items-center text-foreground hover:text-muted-foreground"
         >
-          <ArrowLeft className="mr-2 h-5 w-5" />
+          <ArrowLeft className="mr-2 h-5 w-5 text-black" />
           Back to home
         </Link>
-      </div>
+      </div> */}
 
       {/* Left side - Image Background */}
-      <div className='relative hidden w-2/5 lg:block bg-[url("/images/logo_blue.png")] bg-cover bg-center bg-no-repeat'>
-        <div className="absolute inset-0 bg-black/30" />{" "}
+      <div className='relative hidden w-2/5 lg:block bg-[url("/images/brand_assets/ais-symbol-blue/white.jpg")] bg-cover bg-center bg-no-repeat'>
+        <div className="absolute inset-0 bg-black/5" />{" "}
         {/* Optional overlay */}
         {/* Back button for desktop */}
         <div className="absolute left-8 top-8 z-20">
           <Link
             href="/"
-            className="flex items-center text-white hover:text-gray-200"
+            className="flex items-center text-black hover:text-gray-200"
           >
-            <ArrowLeft className="mr-2 h-5 w-5" />
+            <ArrowLeft className="mr-2 h-5 w-5 text-black" />
             Back to home
           </Link>
         </div>
