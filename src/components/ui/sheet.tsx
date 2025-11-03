@@ -5,6 +5,7 @@ import * as SheetPrimitive from "@radix-ui/react-dialog"
 import { cva, type VariantProps } from "class-variance-authority"
 import { X } from "lucide-react"
 
+
 import { cn } from "@/lib/utils"
 
 const Sheet = SheetPrimitive.Root
@@ -65,9 +66,7 @@ const SheetContent = React.forwardRef<
       {...props}
     >
       <SheetPrimitive.Close className="absolute right-4 top-7 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none  disabled:pointer-events-none data-[state=open]:bg-secondary">
-        {/* <X className="h-4 w-4" />
-        <span className="sr-only">Close</span> */}
-        <img src="/navbar_icons/Close_round_light.svg" className="h-[30px] w-[30px]"/>
+        <X className="h-6 w-6 text-white"/>
       </SheetPrimitive.Close>
       {children}
     </SheetPrimitive.Content>

@@ -17,14 +17,20 @@ export function AuthLayout({ children }: { children: React.ReactNode }) {
   }, [session, router]);
 
   return (
-    <div className="flex h-screen">
+    <div className="flex h-[calc(100vh-80px)]">
       {/* Back button for mobile */}
+      {/* <div className="absolute left-8 top-8 z-20 lg:hidden">
+        <Link
+          href="/"
+          className="flex items-center text-foreground hover:text-muted-foreground"
+        >
+          <ArrowLeft className="mr-2 h-5 w-5 text-black" />
       <div className="absolute left-8 top-8 z-20 lg:hidden">
         <Link href="/" className="flex items-center text-foreground hover:text-muted-foreground">
           <ArrowLeft className="mr-2 h-5 w-5" />
           Back to home
         </Link>
-      </div>
+      </div> */}
 
       {/* Left side - Image Background */}
       <div className='relative hidden w-2/5 lg:block bg-[url("/images/logo_blue.png")] bg-cover bg-center bg-no-repeat'>

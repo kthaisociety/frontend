@@ -1,6 +1,4 @@
 import React from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Menu, UserRound, Eye, Newspaper, CalendarDays, UserPlus, Megaphone, CalendarRange, Mail, Users, Speech } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import {
@@ -32,6 +30,7 @@ export const SideNavbar = () => {
     groupScan: Speech,
   };
 
+  /** MOCK DATA */
   const sections = [
     {
       title: "For Students",
@@ -78,8 +77,8 @@ export const SideNavbar = () => {
 
             {section.title === "For Students" && (
               <div className="flex flex-col mt-2">
-                <div className="flex items-center mb-2 ml-1 group cursor-pointer justify-start space-x-4 w-full">
-                  <UserRound className="h-[18px] text-white" />
+                <div className="flex items-center px-2 mb-2 group cursor-pointer justify-start space-x-4 w-full">
+                  <UserRound className="h-[16px] text-white" />
                   <Label className="text-sm font-sans cursor-pointer group-hover:underline transition-all duration-300">
                     Log in
                   </Label>
@@ -99,6 +98,7 @@ export const SideNavbar = () => {
                           {IconComponent && <IconComponent className={item.icon_tailwind} />}
                         </div>
                         <Label className="font-sans cursor-pointer text-sm">{item.label}</Label>
+                        
                       </div>
                     </AccordionTrigger>
                   </AccordionItem>

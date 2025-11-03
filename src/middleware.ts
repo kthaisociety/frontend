@@ -2,13 +2,18 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 // Paths that don't require authentication
-const publicPaths = ["/auth/login", "/auth/signup", "/navbar_icons/Group_scan.svg","/navbar_icons/Group.svg",
-  "/navbar_icons/Message.svg", "/navbar_icons/Date_range_fill.svg","/navbar_icons/Edit_alt.svg","/navbar_icons/User_add.svg",
-  "/navbar_icons/Date_range_fill.svg",
-  "/navbar_icons/Date_range_fill.svg","/navbar_icons/File_dock.svg", "/navbar_icons/file.svg", "/navbar_icons/External.svg" ,  "/", "/daniel-test-env" , "/navbar_icons/User.svg","/navbar_icons/View.svg", "/navbar_icons/logo.svg", "/navbar_icons/Menu.svg" , "/navbar_icons/Close_round_light.svg"];
+const publicPaths = ["/auth/login", "/auth/signup", "/public/navbar_icons/logo.svg"
+ ];
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
+
+    if (
+    pathname.startsWith("/navbar_icons") || // allow whole folder
+    pathname.match(/\.(ico|png|jpg|jpeg|svg|css|js|webp|woff2?)$/i)
+  ) {
+    return NextResponse.next();
+  }
 
   // Check if the path is public
   if (publicPaths.includes(pathname)) {
