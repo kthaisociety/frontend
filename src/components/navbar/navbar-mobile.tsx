@@ -71,8 +71,8 @@ export const SideNavbar = () => {
           </SheetTitle>
         </SheetHeader>
 
-        {sections.map((section, index) => (
-          <div key={index} className="mt-4">
+        {sections.map((section) => (
+          <div key={section.title} className="mt-4">
             <Label className="text-sm font-semibold text-[#C4C6CD]">{section.title}</Label>
 
             {section.title === "For Students" && (
@@ -88,7 +88,7 @@ export const SideNavbar = () => {
             )}
 
             <Accordion type="single" collapsible className="text-sm pt-1 pb-2">
-              {section.items.map((item, itemIndex) => {
+              {section.items.map((item, _itemIndex) => {
                 const IconComponent = icons[item.icon as keyof typeof icons];
                 return (
                   <AccordionItem key={`${section.title}-${item.label}`} value={`${section.title}-${item.label}`}>

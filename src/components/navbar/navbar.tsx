@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { UserRound } from "lucide-react";
 import { SideNavbar } from "@/components/navbar/navbar-mobile";
 import { cn } from "@/lib/utils";
 import {
@@ -11,8 +12,6 @@ import {
   NavigationMenuList,
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu";
-
-import { UserRound } from "lucide-react";
 
 /**
  * MOCK DATA
@@ -40,7 +39,34 @@ const components: { title: string; href: string; description: string }[] = [
   },
 ];
 
-export default function Navbar() {
+// ListItem used by the menu - define before Navbar so it's available when used
+const ListItem = React.forwardRef<
+  React.ElementRef<"a">,
+  React.ComponentPropsWithoutRef<"a">
+>(({ className, title, children, ...props }, ref) => {
+  return (
+    <li>
+      <NavigationMenuLink asChild>
+        <a
+          ref={ref}
+          className={cn(
+            "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
+            className
+          )}
+          {...props}
+        >
+          <div className="text-sm font-medium leading-none">{title}</div>
+          <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+            {children}
+          </p>
+        </a>
+      </NavigationMenuLink>
+    </li>
+  );
+});
+ListItem.displayName = "ListItem";
+
+export function Navbar() {
   return (
     <div className=" flex h-[80px] justify-between 2xl:justify-around items-center bg-[#1751A6]">
       <div className=" md:w-[250px] w-[120px]  flex items-center cursor-pointer justify-center ">
@@ -124,28 +150,4 @@ export default function Navbar() {
   );
 }
 
-const ListItem = React.forwardRef<
-  React.ElementRef<"a">,
-  React.ComponentPropsWithoutRef<"a">
->(({ className, title, children, ...props }, ref) => {
-  return (
-    <li>
-      <NavigationMenuLink asChild>
-        <a
-          ref={ref}
-          className={cn(
-            "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
-            className
-          )}
-          {...props}
-        >
-          <div className="text-sm font-medium leading-none">{title}</div>
-          <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-            {children}
-          </p>
-        </a>
-      </NavigationMenuLink>
-    </li>
-  );
-});
-ListItem.displayName = "ListItem";
+// ListItem is defined above and used in the menu
