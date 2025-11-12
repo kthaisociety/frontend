@@ -1,18 +1,16 @@
 import Link from "next/link";
-import { Card, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card"
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
+import { MapPin, Clock, ArrowRight } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 
 interface JobCardProps {
-  id: string
-  title: string
-  company: string
-  companyLogo: string
-  description: string
-  location?: string
-  jobType?: string
-  className?: string
+  id: string;
+  title: string;
+  company: string;
+  companyLogo: string;
+  description: string;
+  location?: string;
+  jobType?: string;
 }
 
 export function JobCard({
@@ -23,40 +21,55 @@ export function JobCard({
   description,
   location,
   jobType,
-  className,
 }: JobCardProps) {
+  return (
+    <Link href={`/jobs/${id}`} className="block group">
+      <Card className="h-full transition-all duration-300 hover:shadow-xl hover:border-gray-300 cursor-pointer">
+        <CardContent className="p-6">
+          {/* Company info */}
+          <div className="flex items-center gap-3 mb-6">
+            <Avatar className="h-12 w-12">
+              <AvatarImage src={companyLogo} alt={company} />
+              <AvatarFallback className="bg-blue-100 text-gray-700 text-sm font-semibold">
+                {company[0]}
+              </AvatarFallback>
+            </Avatar>
+            <div>
+              <p className="text-base font-semibold text-gray-700">{company}</p>
+            </div>
+          </div>
 
-  return(
-  <div>
-    <Card>
-      <CardHeader>
-        <div className="flex items-center gap-4 mb-4">
-          <Avatar>
-            <AvatarImage src={companyLogo} alt={company} />
-            <AvatarFallback>{company[0]}</AvatarFallback>
-          </Avatar>
-          <CardTitle >{company}</CardTitle>
-        </div>
-        <div className="flex flex-col  gap-4">
-          <CardTitle>{title}</CardTitle>
-          <CardDescription>{description}</CardDescription>
-        </div>
-      </CardHeader>
-      <div className="mb-6 h-px w-full bg-gradient-to-r from-transparent via-gray-200 to-transparent"></div>
-      <div className="flex flex-col gap-5">
-        <div className="flex justify-start items-start gap-2 px-4">
-         <span><Badge variant="outline">{location}</Badge></span> 
-         <span><Badge variant="outline">{jobType}</Badge></span>
-        </div>
-        <div className="flex justify-end mx-6 mb-4">
-          <Button size="sm" asChild>
-            <Link href={`/jobs/${id}`}>View Details</Link>
-          </Button>
-        </div>
-      </div>
-    </Card>
-  </div>
+          {/* Job title - the hero */}
+          <h3 className="text-2xl font-semibold text-gray-900 mb-3 group-hover:text-gray-700 transition-colors">
+            {title}
+          </h3>
+
+          {/* Description */}
+          <p className="text-sm text-gray-600 leading-relaxed line-clamp-2 mb-6">{description}</p>
+
+          {/* Meta information with icons */}
+          <div className="flex flex-wrap items-center gap-4 text-sm text-gray-500">
+            {location && (
+              <div className="flex items-center gap-1.5">
+                <MapPin className="h-4 w-4" />
+                <span>{location}</span>
+              </div>
+            )}
+            {jobType && (
+              <div className="flex items-center gap-1.5">
+                <Clock className="h-4 w-4" />
+                <span>{jobType}</span>
+              </div>
+            )}
+          </div>
+
+          {/* Subtle read more indicator on hover */}
+          <div className="mt-6 flex items-center gap-2 text-sm font-medium text-gray-400 group-hover:text-gray-700 transition-colors">
+            <span>Read more</span>
+            <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+          </div>
+        </CardContent>
+      </Card>
+    </Link>
   );
 }
-
- 
