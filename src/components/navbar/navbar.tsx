@@ -12,6 +12,7 @@ import {
   NavigationMenuList,
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu";
+import useGoogleSignIn from "@/lib/integration/google-signIn-hook";
 
 /**
  * MOCK DATA
@@ -67,8 +68,19 @@ const ListItem = React.forwardRef<
 ListItem.displayName = "ListItem";
 
 export function Navbar() {
+
+  const {googleSignIn} = useGoogleSignIn({
+    onSuccess: (idToken) => {
+      console.log("Google Sign-In successful, ID Token:", idToken);
+      // Handle successful sign-in, e.g., send token to backend
+    },
+    onError: (err) => {
+      console.error("Google Sign-In error:", err);
+    },
+  });
+
   return (
-    <div className=" flex h-[80px] justify-between 2xl:justify-around items-center bg-[#1751A6]">
+    <div className=" sticky top-0 z-50 flex h-[80px] justify-between 2xl:justify-around items-center bg-[#1751A6]">
       <div className=" md:w-[250px] w-[120px]  flex items-center cursor-pointer justify-center ">
         <img
           src="/navbar_icons/logo.svg"
@@ -141,6 +153,8 @@ export function Navbar() {
       </NavigationMenu>
 
       <div className=" lg:flex-col lg:items-end flex justify-between items-center cursor-pointer  mr-4 px-2">
+        {/* <h3 className="hidden lg:block text-white pb-2 " onClick={googleSignIn}>Log In</h3> */}
+        {/* <h3 className="hidden lg:block text-white "> Register</h3> */}
         <UserRound className="h-[45px]  w-[45px] hidden mr-12 lg:block text-white" />
         <div className="lg:hidden ">
           <SideNavbar />
