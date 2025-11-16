@@ -1,5 +1,10 @@
 import { useEffect } from "react";
 
+/**
+ * DEPRECATED - USE STANDARD GOOGLE SIGN IN HOOK
+ */
+
+
 interface GoogleSignInProps {
   onSuccess: (idToken: string) => void;
   onError?: (err: any) => void;

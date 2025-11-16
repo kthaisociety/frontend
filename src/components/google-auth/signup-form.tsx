@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -26,6 +26,7 @@ import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
 import useGoogleSignIn from "../../lib/integration/google-signIn-hook";
+import { on } from "events";
 
 export interface FormData {
   firstName: string;
@@ -55,18 +56,32 @@ const RegistrationForm = ({
     city: "",
     country: "",
   });
+  const formDataRef = useRef(formData);
+
+  useEffect(() => {
+    formDataRef.current = formData;
+  }, [formData]);
 
   const [isFormValid, setIsFormValid] = useState(false);
 
-  const { googleSignIn } = useGoogleSignIn({
-    onSuccess: (idToken) => {
-      console.log("Google Sign-In successful, ID Token:", idToken);
-      onClickSignUp(formData, idToken);
-    },
-    onError: (err) => {
-      console.error("Google Sign-In error:", err);
-    },
-  });
+  const handleCredentialResponse = (response: any) => {
+    onClickSignUp(formDataRef.current, response.credential);
+  };
+
+  useEffect(() => {
+    const g = (window as any).google;
+    if (!g?.accounts?.id) return;
+
+    g.accounts.id.initialize({
+      client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!,
+      callback: handleCredentialResponse,
+    });
+
+    g.accounts.id.renderButton(document.getElementById("googleSignInDiv")!, {
+      theme: "outline",
+      size: "large",
+    });
+  }, []);
 
   useEffect(() => {
     const mandatoryFieldsFilled =
@@ -320,11 +335,15 @@ const RegistrationForm = ({
             <div className="pt-4">
               <Button
                 type="button"
-                onClick={googleSignIn}
+                // onClick={googleSignIn}
                 disabled={!isFormValid}
                 className="relative w-full h-12 text-base font-semibold transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
                 size="lg"
               >
+                <div
+                  className="inset-0 absolute opacity-0"
+                  id="googleSignInDiv"
+                ></div>
                 {/* Visible Custom UI */}
                 <svg
                   className="mr-2 h-5 w-5 pointer-events-none"
