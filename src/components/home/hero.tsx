@@ -3,16 +3,17 @@
 import Link from "next/link"
 import { AsciiGrid } from "@/components/ui/ascii-grid"
 import { Button } from "@/components/ui/button"
+import { TextScramble } from "@/components/ui/text-scramble"
 
 export function Hero() {
   return (
-    <section className="relative h-[75vh] w-full overflow-hidden flex items-center justify-center">
+    <section className="relative min-h-screen pb-12 w-full overflow-hidden flex items-end justify-center">
       {/* Background Grid */}
-      <div className="absolute inset-0 z-0">
+      <div className="absolute inset-0 z-0 h-[70vh]">
         <AsciiGrid 
           className="w-full h-full opacity-100" 
           color="#1954A6" 
-          cellSize={12} 
+          cellSize={10} 
           logoSrc="/kthais-logo.svg"
         />
         {/* White gradient overlay at bottom */}
@@ -22,41 +23,41 @@ export function Hero() {
       </div>
 
       {/* Content */}
-      <div className="container relative z-20 px-4 md:px-6 text-center hidden flex-col items-center justify-center h-full pt-20">
-        
-        <div className="space-y-8 max-w-4xl mx-auto backdrop-blur-sm p-8 rounded-3xl border border-white/5 bg-black/20">
-          <div className="space-y-2">
-            <h1 className="text-6xl md:text-8xl font-bold tracking-tighter bg-clip-text text-transparent bg-gradient-to-b from-white to-white/50">
-              AI Society
-              <span className="block text-2xl md:text-4xl font-light tracking-widest text-[#1954A6] mt-2">
+      <div className="container relative z-20 px-4 md:px-6 text-center flex flex-col items-center justify-end h-full pt-20">
+
+          <div className="space-y-4">
+            <h2 className="text-4xl tracking-tighter bg-clip-text text-black">
+              <TextScramble className="font-sans" duration={1000} speed={40}>
+                AI Society
+              </TextScramble>
+              <span className=" text-[#1954A6] font-serif ml-2">
                 (KTH)
               </span>
-            </h1>
-          </div>
-          
-          <p className="text-xl md:text-2xl text-gray-300 max-w-2xl mx-auto font-light leading-relaxed">
-            Cultivating the next generation of AI leaders
-          </p>
+            </h2>
 
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-6 pt-8">
-            <Button 
-              size="lg" 
-              className="bg-[#1954A6] hover:bg-[#154589] text-white rounded-full px-10 h-14 text-lg shadow-[0_0_30px_-10px_rgba(25,84,166,0.5)] transition-all hover:scale-105" 
+          <h1  className="text-2xl md:text-6xl text-black tracking-tight max-w-2xl mx-auto leading-relaxed">
+              Cultivating the next generation of AI leaders
+          </h1>
+
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-6 pt-4">
+            <Button
+              size="lg"
+              className="bg-[#1954A6] hover:bg-[#154589] text-white rounded-full px-10 h-14 text-lg shadow-[0_0_30px_-10px_rgba(25,84,166,0.5)] transition-all hover:scale-105"
               asChild
             >
-              <Link href="/auth/signup">
-                Join the Society
+              <Link href="/auth/signup" className="flex items-center gap-1">
+                <span className="font-serif text-[120%] mb-1">2</span> Upcoming Events
               </Link>
             </Button>
-            
-            <Button 
-              variant="outline" 
-              size="lg" 
-              className="border-white/10 bg-white/5 hover:bg-white/10 text-white rounded-full px-10 h-14 text-lg backdrop-blur-md transition-all hover:scale-105" 
+
+            <Button
+              variant="outline"
+              size="lg"
+              className="border-gray-300 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-full px-10 h-14 text-lg backdrop-blur-md transition-all hover:scale-105"
               asChild
             >
               <Link href="#about">
-                Learn More
+                For Sponsors
               </Link>
             </Button>
           </div>
