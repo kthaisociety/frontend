@@ -338,42 +338,28 @@ function TooltipOverlay() {
                   open: rendered.open,
                 }}
               >
-                <Component
-                  data-slot="tooltip-content"
-                  data-side={resolvedSide}
-                  data-align={rendered.data.align}
-                  data-state={rendered.open ? 'open' : 'closed'}
-                  layoutId={`tooltip-content-${globalId}`}
-                  initial={{
-                    opacity: 0,
-                    scale: 0,
-                    ...initialFromSide(rendered.data.side),
-                  }}
-                  animate={
-                    rendered.open
-                      ? { opacity: 1, scale: 1, x: 0, y: 0 }
-                      : {
-                          opacity: 0,
-                          scale: 0,
-                          ...initialFromSide(rendered.data.side),
+                {rendered.data.contentAsChild ? (
+                  (() => {
+                    const { children, ...restContentProps } =
+                      rendered.data.contentProps;
+                    return (
+                      <Slot
+                        {...commonProps}
+                        {...restContentProps}
+                        children={
+                          React.isValidElement(children)
+                            ? children
+                            : undefined
                         }
-                  }
-                  exit={{
-                    opacity: 0,
-                    scale: 0,
-                    ...initialFromSide(rendered.data.side),
-                  }}
-                  onAnimationComplete={() => {
-                    if (!rendered.open)
-                      setRendered({ data: null, open: false });
-                  }}
-                  transition={transition}
-                  {...rendered.data.contentProps}
-                  style={{
-                    position: 'relative',
-                    ...(rendered.data.contentProps?.style || {}),
-                  }}
-                />
+                      />
+                    );
+                  })()
+                ) : (
+                  <motion.div
+                    {...commonProps}
+                    {...rendered.data.contentProps}
+                  />
+                )}
               </RenderedTooltipProvider>
             </FloatingProvider>
           </div>
@@ -566,22 +552,46 @@ function TooltipTrigger({
     [hideTooltip, onBlur],
   );
 
-  const Component = asChild ? Slot : motion.div;
-
   return (
-    <Component
-      ref={triggerRef}
-      onPointerDown={handlePointerDown}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-      onFocus={handleFocus}
-      onBlur={handleBlur}
-      data-slot="tooltip-trigger"
-      data-side={side}
-      data-align={align}
-      data-state={currentTooltip?.id === id ? 'open' : 'closed'}
-      {...props}
-    />
+    <>
+      {asChild ? (
+        (() => {
+          const { children, ...restProps } = props;
+          return (
+            <Slot
+              ref={triggerRef}
+              onPointerDown={handlePointerDown}
+              onMouseEnter={handleMouseEnter}
+              onMouseLeave={handleMouseLeave}
+              onFocus={handleFocus}
+              onBlur={handleBlur}
+              data-slot="tooltip-trigger"
+              data-side={side}
+              data-align={align}
+              data-state={currentTooltip?.id === id ? 'open' : 'closed'}
+              {...restProps}
+              children={
+                React.isValidElement(children) ? children : undefined
+              }
+            />
+          );
+        })()
+      ) : (
+        <motion.div
+          ref={triggerRef}
+          onPointerDown={handlePointerDown}
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
+          onFocus={handleFocus}
+          onBlur={handleBlur}
+          data-slot="tooltip-trigger"
+          data-side={side}
+          data-align={align}
+          data-state={currentTooltip?.id === id ? 'open' : 'closed'}
+          {...props}
+        />
+      )}
+    </>
   );
 }
 
