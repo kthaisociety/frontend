@@ -25,12 +25,42 @@ export function AsciiGrid({
     if (!ctx) return
 
     let animationFrameId: number
-    let time = 0
+    const startTime = Date.now()
     
     // Mask data
     let maskData: Uint8ClampedArray | null = null
     let maskWidth = 0
     let maskHeight = 0
+
+    // Initial reveal animation - track which cells have appeared
+    const revealMap = new Map<string, number>()
+    const revealDuration = 1000 // 1 second for initial reveal
+    
+    // Dripping animation - track drip columns
+    interface Drip {
+      col: number
+      startRow: number
+      currentRow: number
+      speed: number
+      intensity: number
+      lastUpdate: number
+    }
+    const drips: Drip[] = []
+    
+    // Initialize some drips
+    const initDrips = (cols: number) => {
+      const numDrips = Math.floor(cols / 16) // One drip every 16 columns (half as often)
+      for (let i = 0; i < numDrips; i += 1) {
+        drips.push({
+          col: Math.floor(Math.random() * cols),
+          startRow: -5,
+          currentRow: -5,
+          speed: 0.1 + Math.random() * 0.1, // Much slower: 0.1-0.2 rows per frame
+          intensity: 0.6 + Math.random() * 0.4,
+          lastUpdate: Date.now()
+        })
+      }
+    }
 
     // Load logo if provided
     if (logoSrc) {
@@ -38,14 +68,11 @@ export function AsciiGrid({
       img.src = logoSrc
       img.onload = () => {
         const maskCanvas = document.createElement("canvas")
-        // We want the mask to match the display size roughly, or be scaled
-        // Let's make the mask canvas the same size as the main canvas for simplicity
         maskCanvas.width = canvas.width
         maskCanvas.height = canvas.height
         const maskCtx = maskCanvas.getContext("2d")
         if (maskCtx) {
-          // Draw logo centered
-          const scale = Math.min(canvas.width / img.width, canvas.height / img.height) * 0.6 // 60% of screen
+          const scale = Math.min(canvas.width / img.width, canvas.height / img.height) * 0.6
           const w = img.width * scale
           const h = img.height * scale
           const x = (canvas.width - w) / 2
@@ -67,8 +94,12 @@ export function AsciiGrid({
         canvas.width = parent.clientWidth * dpr
         canvas.height = parent.clientHeight * dpr
         ctx.scale(dpr, dpr)
-        // Reload mask on resize if needed, but for now simple resize might clear it
-        // Ideally we'd re-render the mask here.
+        
+        // Reinitialize drips on resize
+        drips.length = 0
+        const cols = Math.ceil(canvas.clientWidth / cellSize)
+        initDrips(cols)
+        
         if (logoSrc) {
              const img = new Image()
              img.src = logoSrc
@@ -96,11 +127,14 @@ export function AsciiGrid({
     window.addEventListener("resize", resize)
     resize()
 
-    // Characters to use
-    const chars = "01" 
+    // Characters to use - full digits
+    const chars = "0123456789" 
 
     const render = () => {
-      time += 0.01
+      const now = Date.now()
+      const elapsed = now - startTime
+      const isRevealing = elapsed < revealDuration
+      
       const width = canvas.clientWidth
       const height = canvas.clientHeight
       ctx.clearRect(0, 0, width, height)
@@ -113,6 +147,19 @@ export function AsciiGrid({
       const cols = Math.ceil(width / cellSize)
       const rows = Math.ceil(height / cellSize)
 
+      // Update drips
+      drips.forEach(drip => {
+        drip.currentRow += drip.speed
+        
+        // Reset drip when it goes off screen
+        if (drip.currentRow > rows + 5) {
+          drip.col = Math.floor(Math.random() * cols)
+          drip.currentRow = -5
+          drip.speed = 0.1 + Math.random() * 0.1 // Match slower speed
+          drip.intensity = 0.6 + Math.random() * 0.4
+        }
+      })
+
       for (let i = 0; i < rows; i += 1) {
         for (let j = 0; j < cols; j += 1) {
           const x = j * cellSize + cellSize / 2
@@ -121,42 +168,59 @@ export function AsciiGrid({
           // Check mask
           let inLogo = false
           if (maskData) {
-             // Map grid coordinates to pixel coordinates
              const px = Math.floor(x * (canvas.width / canvas.clientWidth))
              const py = Math.floor(y * (canvas.height / canvas.clientHeight))
              if (px >= 0 && px < maskWidth && py >= 0 && py < maskHeight) {
                 const index = (py * maskWidth + px) * 4
-                // Check alpha or brightness. Since we draw on transparent, alpha is good.
                 if (maskData[index + 3] > 50) {
                    inLogo = true
                 }
              }
           }
 
-          // Create a wave/pulse effect
-          // Distance from center
-          const cx = cols / 2
-          const cy = rows / 2
-          const dist = Math.sqrt(Math.pow(j - cx, 2) + Math.pow(i - cy, 2))
+          // Base opacity
+          let opacity = inLogo ? 0.7 : 0.15
           
-          // Pulse calculation
-          const pulse = Math.sin(dist * 0.2 - time * 2) * 0.5 + 0.5
-          
-          // Opacity logic
-          let opacity = 0
-          
-          if (inLogo) {
-             // High opacity for logo, maybe pulsing slightly
-             opacity = 0.8 + pulse * 0.2
-          } else {
-             // Background opacity
-             opacity = pulse * 0.2
+          // Check if this cell is part of a drip
+          for (const drip of drips) {
+            if (drip.col === j) {
+              const distanceFromDrip = i - drip.currentRow
+              // Create a trail effect
+              if (distanceFromDrip >= -2 && distanceFromDrip <= 8) {
+                // Brightest at the drip head, fading behind
+                const dripOpacity = distanceFromDrip <= 0 
+                  ? drip.intensity 
+                  : drip.intensity * Math.max(0, 1 - distanceFromDrip / 8)
+                opacity = Math.max(opacity, dripOpacity)
+              }
+            }
           }
+          
+          // Initial reveal animation
+          let revealOpacity = 1
+          if (isRevealing) {
+            const cellKey = `${i}-${j}`
+            if (!revealMap.has(cellKey)) {
+              // Randomly assign a reveal time for this cell
+              const revealTime = Math.random() * revealDuration * 0.8 // Most appear in first 80%
+              revealMap.set(cellKey, revealTime)
+            }
+            const cellRevealTime = revealMap.get(cellKey)!
+            if (elapsed < cellRevealTime) {
+              revealOpacity = 0
+            } else {
+              // Quick fade in over 100ms
+              const fadeProgress = Math.min(1, (elapsed - cellRevealTime) / 100)
+              revealOpacity = fadeProgress
+            }
+          }
+          
+          opacity *= revealOpacity
           
           if (opacity > 0.05) {
             ctx.globalAlpha = opacity
             
-            // Actually, let's keep characters stable
+            // Stable random character selection
             const stableRandom = Math.sin(i * 12.9898 + j * 78.233) * 43758.5453
             const char = chars[Math.floor(Math.abs(stableRandom)) % chars.length]
             
