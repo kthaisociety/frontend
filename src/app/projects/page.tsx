@@ -16,6 +16,7 @@ import { ImageCard } from "@/components/ui/image-card"
 import {
   AvatarGroup,
   AvatarGroupTooltip,
+  AvatarGroupTooltipArrow,
 } from "@/components/ui/avatar-group"
 
 interface Contributor {
