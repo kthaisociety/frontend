@@ -117,12 +117,13 @@ function ProjectCard({ project }: { project: Project }) {
       <div className="flex items-center mb-4 flex-wrap gap-2">
         <AvatarGroup translate="-6%" sideOffset={10}>
           {project.contributors.map((contributor) => (
-            <Avatar key={`${contributor.name}-${contributor.role}`} className="h-8 w-8 border -ml-1 first:ml-0">
+            <Avatar key={`${contributor.name}-${contributor.role}`} className="h-8 w-8 border mr-0.5">
               <AvatarImage src={contributor.avatar} alt={contributor.name} />
               <AvatarFallback className="bg-primary text-white text-xs">
                 {getInitials(contributor.name)}
               </AvatarFallback>
-              <AvatarGroupTooltip className="bg-white text-black rounded-lg border px-3 py-2 shadow-lg">
+              <AvatarGroupTooltip className="bg-white text-black rounded-lg px-3 py-2 shadow-lg">
+                <AvatarGroupTooltipArrow className="fill-white stroke-black" />
                 <div className="text-center">
                   <div className="font-medium tracking-tight">{contributor.name}</div>
                   <div className="text-sm font-serif text-primary">{contributor.role}</div>

@@ -277,8 +277,40 @@ function TooltipOverlay() {
   }, [referenceElRef, refs, update, rendered.data]);
 
   const ready = x != null && y != null;
-  const Component = rendered.data?.contentAsChild ? Slot : motion.div;
   const resolvedSide = getResolvedSide(context.placement);
+
+  const commonProps = {
+    'data-slot': 'tooltip-content',
+    'data-side': resolvedSide,
+    'data-align': rendered.data?.align,
+    'data-state': rendered.open ? 'open' : 'closed',
+    layoutId: `tooltip-content-${globalId}`,
+    initial: {
+      opacity: 0,
+      scale: 0,
+      ...initialFromSide(rendered.data?.side ?? 'top'),
+    },
+    animate: rendered.open
+      ? { opacity: 1, scale: 1, x: 0, y: 0 }
+      : {
+          opacity: 0,
+          scale: 0,
+          ...initialFromSide(rendered.data?.side ?? 'top'),
+        },
+    exit: {
+      opacity: 0,
+      scale: 0,
+      ...initialFromSide(rendered.data?.side ?? 'top'),
+    },
+    onAnimationComplete: () => {
+      if (!rendered.open) setRendered({ data: null, open: false });
+    },
+    transition,
+    style: {
+      position: 'relative' as const,
+      ...(rendered.data?.contentProps?.style || {}),
+    },
+  };
 
   return (
     <AnimatePresence mode="wait">
