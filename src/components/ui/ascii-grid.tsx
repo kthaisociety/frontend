@@ -27,6 +27,10 @@ export function AsciiGrid({
     let animationFrameId: number
     const startTime = Date.now()
     
+    // Mouse tracking
+    const mouse = { x: -1000, y: -1000 } // Start off-screen
+    const mouseRadius = 40 // Smaller radius of mouse effect in pixels
+    
     // Mask data
     let maskData: Uint8ClampedArray | null = null
     let maskWidth = 0
@@ -126,6 +130,21 @@ export function AsciiGrid({
 
     window.addEventListener("resize", resize)
     resize()
+    
+    // Mouse event handlers
+    const handleMouseMove = (e: MouseEvent) => {
+      const rect = canvas.getBoundingClientRect()
+      mouse.x = e.clientX - rect.left
+      mouse.y = e.clientY - rect.top
+    }
+    
+    const handleMouseLeave = () => {
+      mouse.x = -1000
+      mouse.y = -1000
+    }
+    
+    canvas.addEventListener("mousemove", handleMouseMove)
+    canvas.addEventListener("mouseleave", handleMouseLeave)
 
     // Characters to use - full digits
     const chars = "0123456789" 
@@ -196,6 +215,27 @@ export function AsciiGrid({
             }
           }
           
+          // Mouse proximity effect - random scattered lighting, more centered
+          const dx = x - mouse.x
+          const dy = y - mouse.y
+          const distance = Math.sqrt(dx * dx + dy * dy)
+          
+          if (distance < mouseRadius) {
+            // Use cell position to generate a stable random value for this cell
+            const cellRandom = Math.abs(Math.sin(i * 7.919 + j * 13.371))
+            
+            // Higher chance to light up, more centered
+            const proximityFactor = 1 - (distance / mouseRadius)
+            const lightUpChance = 0.5 + proximityFactor * 0.4 // 50-90% chance based on distance
+            
+            if (cellRandom < lightUpChance) {
+              // Less random intensity variation
+              const intensityRandom = Math.abs(Math.sin(i * 3.141 + j * 2.718))
+              const mouseOpacity = 0.6 + intensityRandom * 0.4 // Range from 0.6 to 1.0
+              opacity = Math.max(opacity, mouseOpacity)
+            }
+          }
+          
           // Initial reveal animation
           let revealOpacity = 1
           if (isRevealing) {
@@ -236,6 +276,8 @@ export function AsciiGrid({
 
     return () => {
       window.removeEventListener("resize", resize)
+      canvas.removeEventListener("mousemove", handleMouseMove)
+      canvas.removeEventListener("mouseleave", handleMouseLeave)
       cancelAnimationFrame(animationFrameId)
     }
   }, [color, cellSize, logoSrc])
