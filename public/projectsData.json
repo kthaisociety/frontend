@@ -1,0 +1,81 @@
+[
+    {
+      "id": "p1",
+      "title": "Shuttle Tracker",
+      "subtitle": "Realtime buses on campus",
+      "description": "IoT devices stream GPS to a Next.js dashboard with live maps and alerts.",
+      "tags": ["react", "iot", "maps"],
+      "repo": "https://github.com/example/shuttle-tracker",
+      "members": [
+        {
+          "id": "u1",
+          "name": "Jesper Hesselgren",
+          "role": "Frontend Developer",
+          "avatarUrl": "https://github.com/shadcn.png",
+          "linkedin": "https://linkedin.com/in/shadcn"
+        },
+        {
+          "id": "u2",
+          "name": "Erik Johansson",
+          "role": "Backend Developer",
+          "avatarUrl": "https://randomuser.me/api/portraits/men/32.jpg",
+          "linkedin": "https://linkedin.com/in/erikj"
+        }
+      ]
+    },
+    {
+      "id": "p2",
+      "title": "SSE Ledger",
+      "subtitle": "Finance analytics & anomaly detection",
+      "description": "Ingests journal entries, runs ML-based anomaly detection, and surfaces insights in a web UI.",
+      "tags": ["finance", "ml", "analytics"],
+      "repo": "https://github.com/example/sse-ledger",
+      "members": [
+        {
+          "id": "u3",
+          "name": "Sofia Lindström",
+          "role": "AI Researcher",
+          "avatarUrl": "https://randomuser.me/api/portraits/women/44.jpg",
+          "linkedin": "https://linkedin.com/in/sofialind"
+        },
+        {
+          "id": "u4",
+          "name": "Nora Ahmed",
+          "role": "Product Manager",
+          "avatarUrl": "https://randomuser.me/api/portraits/women/68.jpg",
+          "linkedin": "https://linkedin.com/in/norahmed"
+        }
+      ]
+    },
+    {
+      "id": "p3",
+      "title": "Campus Events",
+      "subtitle": "SSR site with filters & ICS export",
+      "description": "Next.js App Router app that aggregates events, supports tags, and calendar exports.",
+      "tags": ["nextjs", "ssr", "ui"],
+      "repo": "https://github.com/example/campus-events",
+      "members": [
+        {
+          "id": "u5",
+          "name": "Liam Pettersson",
+          "role": "DevOps Engineer",
+          "avatarUrl": "https://randomuser.me/api/portraits/men/75.jpg",
+          "linkedin": "https://linkedin.com/in/liampettersson"
+        },
+        {
+          "id": "u1",
+          "name": "Jesper Hesselgren",
+          "role": "Frontend Developer",
+          "avatarUrl": "https://github.com/shadcn.png",
+          "linkedin": "https://linkedin.com/in/shadcn"
+        },
+        {
+          "id": "u4",
+          "name": "Nora Ahmed",
+          "role": "Product Manager",
+          "avatarUrl": "https://randomuser.me/api/portraits/women/68.jpg",
+          "linkedin": "https://linkedin.com/in/norahmed"
+        }
+      ]
+    }
+]
