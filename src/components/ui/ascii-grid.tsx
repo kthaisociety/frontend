@@ -249,8 +249,8 @@ export function AsciiGrid({
             if (elapsed < cellRevealTime) {
               revealOpacity = 0
             } else {
-              // Quick fade in over 100ms
-              const fadeProgress = Math.min(1, (elapsed - cellRevealTime) / 100)
+              // Quick fade in over 200ms
+              const fadeProgress = Math.min(1, (elapsed - cellRevealTime) / 200)
               revealOpacity = fadeProgress
             }
           }
