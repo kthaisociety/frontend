@@ -38,7 +38,7 @@ export function AsciiGrid({
 
     // Initial reveal animation - track which cells have appeared
     const revealMap = new Map<string, number>()
-    const revealDuration = 1000 // 1 second for initial reveal
+    const revealDuration = 2000 // 2 seconds for initial reveal
     
     // Dripping animation - track drip columns
     interface Drip {
