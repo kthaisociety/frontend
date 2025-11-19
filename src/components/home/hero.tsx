@@ -1,13 +1,56 @@
 "use client"
 
 import Link from "next/link"
+import { motion } from "framer-motion"
 import { AsciiGrid } from "@/components/ui/ascii-grid"
 import { Button } from "@/components/ui/button"
-import { TextScramble } from "@/components/ui/text-scramble"
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.2,
+      delayChildren: 0.1,
+    },
+  },
+}
+
+const childVariants = {
+  hidden: {
+    opacity: 0,
+    scale: 0.98,
+    filter: 'blur(8px)',
+    y: 40,
+  },
+  visible: {
+    opacity: 1,
+    scale: 1,
+    filter: 'blur(0)',
+    y: 0,
+    transition: { duration: 1, ease: [0.25, 0.1, 0.25, 1] as const },
+  },
+}
+
+const buttonVariants = {
+  hidden: {
+    opacity: 0,
+    scale: 0.95,
+    filter: 'blur(8px)',
+    y: 80,
+  },
+  visible: {
+    opacity: 1,
+    scale: 1,
+    filter: 'blur(0)',
+    y: 0,
+    transition: { duration: 1, ease: [0.25, 0.1, 0.25, 1] as const, delay: 0.4 },
+  },
+}
 
 export function Hero() {
   return (
-    <section className="relative min-h-screen pb-12 w-full overflow-hidden flex items-end justify-center">
+    <section className="relative min-h-screen pb-12 w-full flex items-end justify-center">
       {/* Background Grid */}
       <div className="absolute inset-0 z-0 h-[70vh]">
         <AsciiGrid 
@@ -24,25 +67,36 @@ export function Hero() {
 
       {/* Content */}
       <div className="container relative z-20 px-4 md:px-6 text-center flex flex-col items-center justify-end h-full pt-20">
+        <motion.div
+          className="space-y-4"
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
+        >
+          <motion.h2
+            className="text-4xl tracking-tighter bg-clip-text text-black"
+            variants={childVariants}
+          >
+            AI Society
+            <span className=" text-[#1954A6] font-serif ml-2">
+              (KTH)
+            </span>
+          </motion.h2>
 
-          <div className="space-y-4">
-            <h2 className="text-4xl tracking-tighter bg-clip-text text-black">
-              <TextScramble className="font-sans" duration={1000} speed={40}>
-                AI Society
-              </TextScramble>
-              <span className=" text-[#1954A6] font-serif ml-2">
-                (KTH)
-              </span>
-            </h2>
+          <motion.h1
+            className="text-2xl md:text-6xl text-black tracking-tight max-w-2xl mx-auto leading-relaxed"
+            variants={childVariants}
+          >
+            Cultivating the next generation of AI leaders
+          </motion.h1>
 
-          <h1  className="text-2xl md:text-6xl text-black tracking-tight max-w-2xl mx-auto leading-relaxed">
-              Cultivating the next generation of AI leaders
-          </h1>
-
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-6 pt-4">
+          <motion.div
+            className="flex flex-col sm:flex-row items-center justify-center gap-6 pt-4"
+            variants={buttonVariants}
+          >
             <Button
               size="lg"
-              className="bg-[#1954A6] hover:bg-[#154589] text-white rounded-full px-10 h-14 text-lg shadow-[0_0_30px_-10px_rgba(25,84,166,0.5)] transition-all hover:scale-105"
+              className="bg-[#1954A6] hover:bg-[#154589] text-white rounded-full px-10 h-14 text-lg shadow-[0_0_30px_-10px_rgba(25,84,166,0.5)]"
               asChild
             >
               <Link href="/auth/signup" className="flex items-center gap-1">
@@ -53,15 +107,15 @@ export function Hero() {
             <Button
               variant="outline"
               size="lg"
-              className="border-gray-300 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-full px-10 h-14 text-lg backdrop-blur-md transition-all hover:scale-105"
+              className="border-gray-300 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-full px-10 h-14 text-lg backdrop-blur-md"
               asChild
             >
               <Link href="#about">
                 For Sponsors
               </Link>
             </Button>
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
       </div>
     </section>
   )
