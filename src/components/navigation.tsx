@@ -1,9 +1,10 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import Image from 'next/image';
 import { TextMorph } from '@/components/ui/text-morph';
-import { cn } from '@/lib/utils';
-import Image from 'next/image'; 
+import { ProgressiveBlur } from '@/components/ui/progressive-blur';
+import { cn } from '@/lib/utils'; 
 
 export function Navigation() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -22,12 +23,14 @@ export function Navigation() {
     <nav
       className={cn(
         'fixed top-0 left-0 right-0 z-50 transition-all duration-300',
-        isScrolled
-          ? 'bg-background/80 backdrop-blur-md border-b border-border/40'
-          : 'bg-transparent'
       )}
     >
-      <div className="max-w-7xl mx-auto px-6 py-4">
+        <ProgressiveBlur
+          className="pointer-events-none absolute top-0 left-0 h-full w-full"
+          height="100%"
+          position="top"
+        />
+      <div className="max-w-7xl mx-auto px-6 py-4 relative z-10">
         <div className="flex items-center justify-between">
           {/* Left side: Logo + Text */}
           <div className="flex items-center gap-2">
