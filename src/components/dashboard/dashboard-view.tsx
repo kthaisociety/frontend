@@ -2,8 +2,8 @@
 
 import Image from "next/image";
 import type { UseMutationResult } from "@tanstack/react-query";
-import type { AuthResponse } from "@/lib/integration/api-client";
 import { Button } from "@/components/ui/button";
+import type { AuthResponse } from "@/lib/integration/api-client";
 import { DashboardSkeleton } from "./dashboard-skeleton";
 
 export interface DashboardPageProps {

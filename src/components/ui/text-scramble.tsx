@@ -19,18 +19,14 @@ export function TextScramble({
   characterSet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+-=[]{}|;:,.<>?",
 }: TextScrambleProps) {
   const [displayText, setDisplayText] = useState(children)
-  const [isScrambling, setIsScrambling] = useState(false)
 
   useEffect(() => {
-    // Start scrambling
-    setIsScrambling(true)
-    
     let iteration = 0
     const totalIterations = duration / speed
     const originalText = children
     
     const interval = setInterval(() => {
-      setDisplayText((current) => {
+      setDisplayText((_current) => {
         return originalText
           .split("")
           .map((char, index) => {
@@ -45,7 +41,6 @@ export function TextScramble({
       if (iteration >= totalIterations) {
         clearInterval(interval)
         setDisplayText(originalText)
-        setIsScrambling(false)
       }
       
       iteration += 1

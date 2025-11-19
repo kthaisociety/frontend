@@ -7,13 +7,19 @@ interface AsciiGridProps {
   color?: string
   cellSize?: number
   logoSrc?: string
+  logoPosition?: "center" | "top-left" | "top-right" | "bottom-left" | "bottom-right"
+  logoScale?: number
+  enableDripping?: boolean
 }
 
 export function AsciiGrid({ 
   className, 
   color = "#1954A6",
   cellSize = 16,
-  logoSrc
+  logoSrc,
+  logoPosition = "center",
+  logoScale = 0.6,
+  enableDripping = true
 }: AsciiGridProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
 
@@ -53,6 +59,7 @@ export function AsciiGrid({
     
     // Initialize some drips
     const initDrips = (cols: number) => {
+      if (!enableDripping) return
       const numDrips = Math.floor(cols / 16) // One drip every 16 columns (half as often)
       for (let i = 0; i < numDrips; i += 1) {
         drips.push({
@@ -76,11 +83,35 @@ export function AsciiGrid({
         maskCanvas.height = canvas.height
         const maskCtx = maskCanvas.getContext("2d")
         if (maskCtx) {
-          const scale = Math.min(canvas.width / img.width, canvas.height / img.height) * 0.6
+          const scale = Math.min(canvas.width / img.width, canvas.height / img.height) * logoScale
           const w = img.width * scale
           const h = img.height * scale
-          const x = (canvas.width - w) / 2
-          const y = (canvas.height - h) / 2
+          
+          // Calculate position based on logoPosition prop
+          let x: number, y: number
+          switch (logoPosition) {
+            case "top-left":
+              x = canvas.width * 0.05
+              y = canvas.height * 0.05
+              break
+            case "top-right":
+              x = canvas.width - w - canvas.width * 0.05
+              y = canvas.height * 0.05
+              break
+            case "bottom-left":
+              x = canvas.width * 0.05
+              y = canvas.height - h - canvas.height * 0.05
+              break
+            case "bottom-right":
+              x = canvas.width - w - canvas.width * 0.05
+              y = canvas.height - h - canvas.height * 0.05
+              break
+            case "center":
+            default:
+              x = (canvas.width - w) / 2
+              y = (canvas.height - h) / 2
+              break
+          }
           
           maskCtx.drawImage(img, x, y, w, h)
           maskData = maskCtx.getImageData(0, 0, canvas.width, canvas.height).data
@@ -113,11 +144,36 @@ export function AsciiGrid({
                 maskCanvas.height = canvas.height
                 const maskCtx = maskCanvas.getContext("2d")
                 if (maskCtx) {
-                  const scale = Math.min(canvas.width / img.width, canvas.height / img.height) * 0.6
+                  const scale = Math.min(canvas.width / img.width, canvas.height / img.height) * logoScale
                   const w = img.width * scale
                   const h = img.height * scale
-                  const x = (canvas.width - w) / 2
-                  const y = (canvas.height - h) / 2
+                  
+                  // Calculate position based on logoPosition prop
+                  let x: number, y: number
+                  switch (logoPosition) {
+                    case "top-left":
+                      x = canvas.width * 0.05
+                      y = canvas.height * 0.05
+                      break
+                    case "top-right":
+                      x = canvas.width - w - canvas.width * 0.05
+                      y = canvas.height * 0.05
+                      break
+                    case "bottom-left":
+                      x = canvas.width * 0.05
+                      y = canvas.height - h - canvas.height * 0.05
+                      break
+                    case "bottom-right":
+                      x = canvas.width - w - canvas.width * 0.05
+                      y = canvas.height - h - canvas.height * 0.05
+                      break
+                    case "center":
+                    default:
+                      x = (canvas.width - w) / 2
+                      y = (canvas.height - h) / 2
+                      break
+                  }
+                  
                   maskCtx.drawImage(img, x, y, w, h)
                   maskData = maskCtx.getImageData(0, 0, canvas.width, canvas.height).data
                   maskWidth = canvas.width
@@ -167,17 +223,19 @@ export function AsciiGrid({
       const rows = Math.ceil(height / cellSize)
 
       // Update drips
-      drips.forEach(drip => {
-        drip.currentRow += drip.speed
-        
-        // Reset drip when it goes off screen
-        if (drip.currentRow > rows + 5) {
-          drip.col = Math.floor(Math.random() * cols)
-          drip.currentRow = -5
-          drip.speed = 0.1 + Math.random() * 0.1 // Match slower speed
-          drip.intensity = 0.6 + Math.random() * 0.4
-        }
-      })
+      if (enableDripping) {
+        drips.forEach(drip => {
+          drip.currentRow += drip.speed
+          
+          // Reset drip when it goes off screen
+          if (drip.currentRow > rows + 5) {
+            drip.col = Math.floor(Math.random() * cols)
+            drip.currentRow = -5
+            drip.speed = 0.1 + Math.random() * 0.1 // Match slower speed
+            drip.intensity = 0.6 + Math.random() * 0.4
+          }
+        })
+      }
 
       for (let i = 0; i < rows; i += 1) {
         for (let j = 0; j < cols; j += 1) {
@@ -201,16 +259,18 @@ export function AsciiGrid({
           let opacity = inLogo ? 0.7 : 0.15
           
           // Check if this cell is part of a drip
-          for (const drip of drips) {
-            if (drip.col === j) {
-              const distanceFromDrip = i - drip.currentRow
-              // Create a trail effect
-              if (distanceFromDrip >= -2 && distanceFromDrip <= 8) {
-                // Brightest at the drip head, fading behind
-                const dripOpacity = distanceFromDrip <= 0 
-                  ? drip.intensity 
-                  : drip.intensity * Math.max(0, 1 - distanceFromDrip / 8)
-                opacity = Math.max(opacity, dripOpacity)
+          if (enableDripping) {
+            for (const drip of drips) {
+              if (drip.col === j) {
+                const distanceFromDrip = i - drip.currentRow
+                // Create a trail effect
+                if (distanceFromDrip >= -2 && distanceFromDrip <= 8) {
+                  // Brightest at the drip head, fading behind
+                  const dripOpacity = distanceFromDrip <= 0 
+                    ? drip.intensity 
+                    : drip.intensity * Math.max(0, 1 - distanceFromDrip / 8)
+                  opacity = Math.max(opacity, dripOpacity)
+                }
               }
             }
           }
@@ -280,7 +340,7 @@ export function AsciiGrid({
       canvas.removeEventListener("mouseleave", handleMouseLeave)
       cancelAnimationFrame(animationFrameId)
     }
-  }, [color, cellSize, logoSrc])
+  }, [color, cellSize, logoSrc, logoPosition, logoScale, enableDripping])
 
   return (
     <canvas 

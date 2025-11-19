@@ -1,9 +1,8 @@
 'use client';
-import { cn } from '@/lib/utils';
-import type { Transition, Variants } from 'framer-motion';
-// eslint-disable-next-line import/no-extraneous-dependencies
-import { AnimatePresence, motion } from 'framer-motion';
 import { useMemo, useId } from 'react';
+import type { Transition, Variants } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
+import { cn } from '@/lib/utils';
 
 export type TextMorphProps = {
   children: string;

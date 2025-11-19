@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
+
 import { TextMorph } from '@/components/ui/text-morph';
 import { ProgressiveBlur } from '@/components/ui/progressive-blur';
 import { cn } from '@/lib/utils'; 
@@ -30,9 +32,11 @@ export function Navigation() {
           height="100%"
           position="top"
         />
+        <div className="absolute top-0 left-0 h-full w-full bg-linear-to-b from-white/60 to-white/0 pointer-events-none"></div>
       <div className="max-w-7xl mx-auto px-6 py-4 relative z-10">
         <div className="flex items-center justify-between">
           {/* Left side: Logo + Text */}
+          <Link href="/">
           <div className="flex items-center gap-2">
             {/* AI Logo SVG */}
             <Image src="/kthais-logo.svg" alt="KTH AIS Logo" width={40} height={40} className="h-8 w-8"/>
@@ -51,30 +55,30 @@ export function Navigation() {
               {isScrolled ? 'AIS' : 'AI Society'}
             </TextMorph>
           </div>
-
+          </Link>
           {/* Right side: Navigation Links */}
-          <div className="flex items-center gap-8">
+          <div className="flex items-center gap-8 ">
             <a
-              href="#about"
-              className="text-sm font-medium text-foreground/80 hover:text-foreground transition-colors"
+              href="/projects"
+              className="text-md font-medium text-foreground/80 hover:text-foreground transition-colors"
             >
-              About
+              Projects
             </a>
             <a
               href="#events"
-              className="text-sm font-medium text-foreground/80 hover:text-foreground transition-colors"
+              className="text-md font-medium text-foreground/80 hover:text-foreground transition-colors"
             >
               Events
             </a>
             <a
               href="#team"
-              className="text-sm font-medium text-foreground/80 hover:text-foreground transition-colors"
+              className="text-md font-medium text-foreground/80 hover:text-foreground transition-colors"
             >
               Team
             </a>
             <a
               href="#contact"
-              className="text-sm font-medium text-foreground/80 hover:text-foreground transition-colors"
+              className="text-md font-medium text-foreground/80 hover:text-foreground transition-colors"
             >
               Contact
             </a>

@@ -60,7 +60,7 @@ export function Hero() {
           logoSrc="/kthais-logo.svg"
         />
         {/* White gradient overlay at bottom */}
-        <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-white via-white/50 to-transparent pointer-events-none" />
+        <div className="absolute bottom-0 left-0 right-0 h-32 bg-linear-to-t from-white via-white/50 to-transparent pointer-events-none" />
         {/* Radial gradient overlay around edges */}
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,transparent_40%,white_100%)] pointer-events-none" />
       </div>
@@ -84,7 +84,7 @@ export function Hero() {
           </motion.h2>
 
           <motion.h1
-            className="text-2xl md:text-6xl text-black tracking-tight max-w-2xl mx-auto leading-relaxed"
+            className="text-2xl md:text-6xl text-black tracking-tight max-w-2xl mx-auto leading-tight"
             variants={childVariants}
           >
             Cultivating the next generation of AI leaders

@@ -1,11 +1,9 @@
 "use client"
 
-import Image from "next/image"
 import Link from "next/link"
 import { ArrowRight } from "lucide-react"
-import { Card } from "@/components/ui/card"
-import { ProgressiveBlur } from "@/components/ui/progressive-blur"
 import { Button } from "@/components/ui/button"
+import { ImageCard } from "@/components/ui/image-card"
 
 interface Event {
   id: string
@@ -37,38 +35,22 @@ const mockEvents: Event[] = [
 
 function EventCard({ event }: { event: Event }) {
   return (
-    <Card className="group relative overflow-hidden h-[400px] cursor-pointer transition-transform">
-      {/* Background Image */}
-      <div className="absolute inset-0">
-        <Image
-          src={event.image}
-          alt={event.title}
-          fill
-          className="object-cover"
-          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-        />
-      </div>
-
-      {/* Progressive Blur Overlay */}
-      <ProgressiveBlur
-        position="bottom"
-        height="40%"
-        className="absolute left-0 right-0 bottom-0"
-      />
-
-      {/* Dark gradient overlay for better text readability */}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent pointer-events-none z-[15]" />
-
-      {/* Content Overlay */}
-      <div className="absolute inset-0 flex flex-col justify-end p-6 z-20">
-        <div className="relative">
-          <h3 className="text-xl font-bold text-white mb-2 drop-shadow-lg tracking-tight">
-            {event.title}
-          </h3>
-          <p className="text-md font-serif text-white/90 drop-shadow-md">{event.date}</p>
-        </div>
-      </div>
-    </Card>
+    <ImageCard
+      image={event.image}
+      alt={event.title}
+      height="h-[400px]"
+      blurHeight="40%"
+      gradientColors={{
+        from: "from-black/60",
+        via: "via-black/20",
+        to: "to-transparent",
+      }}
+    >
+      <h3 className="text-xl font-bold text-white mb-2 drop-shadow-lg tracking-tight">
+        {event.title}
+      </h3>
+      <p className="text-md  text-white/90 drop-shadow-md">{event.date}</p>
+    </ImageCard>
   )
 }
 
@@ -77,7 +59,7 @@ export function EventsPreview() {
     <section className="container mx-auto px-4 md:px-6 py-16">
       {/* Header */}
       <div className="flex items-center justify-between mb-8">
-        <h2 className="text-3xl md:text-4xl font-bold tracking-tight"><span className="text-[#1954A6] font-serif font-normal">(Upcoming)</span> Events</h2>
+        <h2 className="text-3xl md:text-4xl font-bold tracking-tight"><span className="text-primary font-serif font-normal">(Upcoming)</span> Events</h2>
         <Button
           asChild
         >

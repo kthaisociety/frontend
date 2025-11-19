@@ -1,12 +1,9 @@
 "use client";
+import { useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import type { z } from "zod";
-import { useSearchParams } from "next/navigation";
-import { useEffect } from "react";
-import { useLogin } from "@/hooks/auth";
-import { loginSchema } from "@/validators/auth";
-import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -17,6 +14,9 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { useLogin } from "@/hooks/auth";
+import { useToast } from "@/hooks/use-toast";
+import { loginSchema } from "@/validators/auth";
 import { CardWrapper } from "./card-wrapper";
 
 type LoginFormFields = z.infer<typeof loginSchema>;
