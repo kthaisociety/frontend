@@ -1,3 +1,15 @@
+
+import { Hero } from "./hero"
+import { EventsPreview } from "./events-preview"
+
 export function Homepage() {
-  return <div>Hej</div>;
+  return (
+    <main className="flex min-h-screen flex-col">
+      <Hero />
+      <EventsPreview />
+      <div className="h-[200vh]">
+        
+      </div>
+    </main>
+  )
 }

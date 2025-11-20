@@ -1,7 +1,7 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { useSession, useLogout } from "@/hooks/auth";
 import { DashboardView } from "./dashboard-view";
 

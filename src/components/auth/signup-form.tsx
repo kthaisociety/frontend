@@ -2,8 +2,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import type { z } from "zod";
-import { useRegister } from "@/hooks/auth";
-import { signUpSchema } from "@/validators/auth";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -14,6 +12,8 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { useRegister } from "@/hooks/auth";
+import { signUpSchema } from "@/validators/auth";
 import { CardWrapper } from "./card-wrapper";
 
 type SignUpFormFields = z.infer<typeof signUpSchema>;

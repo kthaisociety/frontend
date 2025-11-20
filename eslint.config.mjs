@@ -9,7 +9,6 @@ import eslintImport from "eslint-plugin-import";
 import eslintComments from "eslint-plugin-eslint-comments";
 import prettier from "eslint-config-prettier";
 import compat from "eslint-plugin-compat";
-import alias from "eslint-import-resolver-alias";
 
 const eslintConfig = [
   eslint.configs.recommended,
@@ -40,18 +39,17 @@ const eslintConfig = [
       import: eslintImport,
       "eslint-comments": eslintComments,
       compat: compat.configs["flat/recommended"],
-      alias,
     },
     settings: {
       react: {
         version: "detect",
       },
       "import/resolver": {
-        node: {
-          extensions: [".js", ".ts", ".tsx"],
+        typescript: {
+          alwaysTryTypes: true,
+          project: "./tsconfig.json",
         },
-        alias: {
-          map: [["@", "./src"]],
+        node: {
           extensions: [".js", ".ts", ".tsx"],
         },
       },

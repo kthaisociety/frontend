@@ -1,9 +1,8 @@
 "use client";
-// Start of Selection
-import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
-import { useRouter } from "next/navigation";
 import { useEffect } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { ArrowLeft } from "lucide-react";
 import { useSession } from "@/hooks/auth";
 
 export function AuthLayout({ children }: { children: React.ReactNode }) {

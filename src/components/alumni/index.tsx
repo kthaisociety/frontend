@@ -1,11 +1,7 @@
 "use client";
-
 import { useAlumni } from "@/hooks/alumni";
 import { AlumniSkeleton } from "./alumni-skeleton";
 import { AlumniView } from "./alumni-view";
-
-
-
 
 export function AlumniPage() {
 
