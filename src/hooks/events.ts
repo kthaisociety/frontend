@@ -40,9 +40,12 @@ export function useEvent(eventId: string | undefined) {
       return data.event;
     },
     enabled: !!eventId, // Only run query if eventId exists
-    staleTime: 5 * 60 * 1000, // 5 minutes
-    gcTime: 30 * 60 * 1000, // 30 minutes
-    refetchOnWindowFocus: false,
-    refetchOnMount: false,
+    staleTime: 5 * 60 * 1000, // 5 minutes - data is fresh for 5 minutes
+    gcTime: 30 * 60 * 1000, // 30 minutes - cache persists for 30 minutes
+    refetchOnWindowFocus: false, // Don't refetch when window regains focus
+    refetchOnMount: false, // Don't refetch on component mount if data exists
+    refetchOnReconnect: false, // Don't refetch on reconnect
+    retry: 2, // Retry failed requests up to 2 times
+    retryDelay: 1000, // Wait 1 second between retries
   });
 }

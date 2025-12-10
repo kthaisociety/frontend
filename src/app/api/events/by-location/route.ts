@@ -44,11 +44,11 @@ export async function GET(request: Request) {
     
     // Filter events by location name
     const events: LumaEvent[] = data.entries
-      .map((entry: { api_id: string; event: any }) => ({
+      .map((entry: { api_id: string; event: Record<string, unknown> }) => ({
         ...entry.event,
         api_id: entry.api_id,
       }))
-      .filter((event: any) => {
+      .filter((event: Record<string, unknown> & { location?: { venue_name?: string; name?: string } }) => {
         const eventLocation = event.location?.venue_name || event.location?.name || "";
         return eventLocation.toLowerCase().includes(locationName.toLowerCase());
       });

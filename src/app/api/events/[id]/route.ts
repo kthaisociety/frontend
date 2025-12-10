@@ -95,10 +95,10 @@ export async function GET(
     }
     
     // Handle hosts array if present
-    const hosts = apiResponse.hosts || [];
+    const { hosts = [] } = apiResponse;
 
     // Calculate end_at from duration if not provided
-    let end_at: string | undefined = eventData.end_at;
+    let { end_at } = eventData;
     if (!end_at && eventData.start_at && eventData.duration_minutes) {
       const startDate = new Date(eventData.start_at);
       startDate.setMinutes(startDate.getMinutes() + eventData.duration_minutes);
