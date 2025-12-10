@@ -65,7 +65,7 @@ export function Navigation() {
               Projects
             </a>
             <a
-              href="#events"
+              href="/events"
               className="text-md font-medium text-foreground/80 hover:text-foreground transition-colors"
             >
               Events

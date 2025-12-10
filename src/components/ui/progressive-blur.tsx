@@ -1,6 +1,6 @@
 "use client"
 
-import React from "react"
+import React, { useMemo } from "react"
 
 import { cn } from "@/lib/utils"
 
@@ -16,10 +16,34 @@ export function ProgressiveBlur({
   className,
   height = "30%",
   position = "bottom",
-  blurLevels = [0.5, 1, 2, 4, 8, 16, 32, 64],
+  blurLevels = [1, 3, 6, 8],
 }: ProgressiveBlurProps) {
-  // Create array with length equal to blurLevels.length - 2 (for before/after pseudo elements)
-  const divElements = Array(blurLevels.length - 2).fill(null)
+  // Optimized: Reduced from 8 layers to 4 layers for better performance
+  // Memoize gradient calculations to avoid recalculation
+  const gradients = useMemo(() => {
+    const layers = blurLevels.length
+    const step = 100 / layers
+
+    return blurLevels.map((blur, index) => {
+      const start = index * step
+      const end = (index + 1) * step
+
+      let maskGradient: string
+      if (position === "bottom") {
+        maskGradient = `linear-gradient(to bottom, rgba(0,0,0,0) ${start}%, rgba(0,0,0,1) ${end}%)`
+      } else if (position === "top") {
+        maskGradient = `linear-gradient(to top, rgba(0,0,0,0) ${start}%, rgba(0,0,0,1) ${end}%)`
+      } else {
+        maskGradient = `linear-gradient(rgba(0,0,0,0) 0%, rgba(0,0,0,1) 5%, rgba(0,0,0,1) 95%, rgba(0,0,0,0) 100%)`
+      }
+
+      return {
+        blur,
+        maskGradient,
+        zIndex: index + 1,
+      }
+    })
+  }, [blurLevels, position])
 
   return (
     <div
@@ -34,80 +58,30 @@ export function ProgressiveBlur({
       )}
       style={{
         height: position === "both" ? "100%" : height,
+        // GPU acceleration hints
+        transform: "translateZ(0)",
+        willChange: "transform",
+        contain: "layout style paint",
       }}
     >
-      {/* First blur layer (pseudo element) */}
-      <div
-        className="absolute inset-0"
-        style={{
-          zIndex: 1,
-          backdropFilter: `blur(${blurLevels[0]}px)`,
-          WebkitBackdropFilter: `blur(${blurLevels[0]}px)`,
-          maskImage:
-            position === "bottom"
-              ? `linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 12.5%, rgba(0,0,0,1) 25%, rgba(0,0,0,0) 37.5%)`
-              : position === "top"
-                ? `linear-gradient(to top, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 12.5%, rgba(0,0,0,1) 25%, rgba(0,0,0,0) 37.5%)`
-                : `linear-gradient(rgba(0,0,0,0) 0%, rgba(0,0,0,1) 5%, rgba(0,0,0,1) 95%, rgba(0,0,0,0) 100%)`,
-          WebkitMaskImage:
-            position === "bottom"
-              ? `linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 12.5%, rgba(0,0,0,1) 25%, rgba(0,0,0,0) 37.5%)`
-              : position === "top"
-                ? `linear-gradient(to top, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 12.5%, rgba(0,0,0,1) 25%, rgba(0,0,0,0) 37.5%)`
-                : `linear-gradient(rgba(0,0,0,0) 0%, rgba(0,0,0,1) 5%, rgba(0,0,0,1) 95%, rgba(0,0,0,0) 100%)`,
-        }}
-      />
-
-      {/* Middle blur layers */}
-      {divElements.map((_, index) => {
-        const blurIndex = index + 1
-        const startPercent = blurIndex * 12.5
-        const midPercent = (blurIndex + 1) * 12.5
-        const endPercent = (blurIndex + 2) * 12.5
-
-        const maskGradient =
-          position === "bottom"
-            ? `linear-gradient(to bottom, rgba(0,0,0,0) ${startPercent}%, rgba(0,0,0,1) ${midPercent}%, rgba(0,0,0,1) ${endPercent}%, rgba(0,0,0,0) ${endPercent + 12.5}%)`
-            : position === "top"
-              ? `linear-gradient(to top, rgba(0,0,0,0) ${startPercent}%, rgba(0,0,0,1) ${midPercent}%, rgba(0,0,0,1) ${endPercent}%, rgba(0,0,0,0) ${endPercent + 12.5}%)`
-              : `linear-gradient(rgba(0,0,0,0) 0%, rgba(0,0,0,1) 5%, rgba(0,0,0,1) 95%, rgba(0,0,0,0) 100%)`
-
-        return (
-          <div
-            key={`blur-${index}`}
-            className="absolute inset-0"
-            style={{
-              zIndex: index + 2,
-              backdropFilter: `blur(${blurLevels[blurIndex]}px)`,
-              WebkitBackdropFilter: `blur(${blurLevels[blurIndex]}px)`,
-              maskImage: maskGradient,
-              WebkitMaskImage: maskGradient,
-            }}
-          />
-        )
-      })}
-
-      {/* Last blur layer (pseudo element) */}
-      <div
-        className="absolute inset-0"
-        style={{
-          zIndex: blurLevels.length,
-          backdropFilter: `blur(${blurLevels[blurLevels.length - 1]}px)`,
-          WebkitBackdropFilter: `blur(${blurLevels[blurLevels.length - 1]}px)`,
-          maskImage:
-            position === "bottom"
-              ? `linear-gradient(to bottom, rgba(0,0,0,0) 87.5%, rgba(0,0,0,1) 100%)`
-              : position === "top"
-                ? `linear-gradient(to top, rgba(0,0,0,0) 87.5%, rgba(0,0,0,1) 100%)`
-                : `linear-gradient(rgba(0,0,0,0) 0%, rgba(0,0,0,1) 5%, rgba(0,0,0,1) 95%, rgba(0,0,0,0) 100%)`,
-          WebkitMaskImage:
-            position === "bottom"
-              ? `linear-gradient(to bottom, rgba(0,0,0,0) 87.5%, rgba(0,0,0,1) 100%)`
-              : position === "top"
-                ? `linear-gradient(to top, rgba(0,0,0,0) 87.5%, rgba(0,0,0,1) 100%)`
-                : `linear-gradient(rgba(0,0,0,0) 0%, rgba(0,0,0,1) 5%, rgba(0,0,0,1) 95%, rgba(0,0,0,0) 100%)`,
-        }}
-      />
+      {gradients.map(({ blur, maskGradient, zIndex }, index) => (
+        <div
+          key={`blur-${index}`}
+          className="absolute inset-0"
+          style={{
+            zIndex,
+            backdropFilter: `blur(${blur}px)`,
+            WebkitBackdropFilter: `blur(${blur}px)`,
+            maskImage: maskGradient,
+            WebkitMaskImage: maskGradient,
+            // GPU acceleration hints
+            transform: "translateZ(0)",
+            willChange: "backdrop-filter",
+            // Limit repaints
+            contain: "layout style paint",
+          }}
+        />
+      ))}
     </div>
   )
 }
