@@ -109,7 +109,7 @@ export default function EventDetailPage() {
       formattedEndTime: end && event.end_at ? timeFormatter.format(end) : null,
       hostName: event.host?.name || event.host?.display_name || event.host_profile?.name || null,
     }
-  }, [event?.start_at, event?.end_at, event?.host, event?.host_profile, dateFormatter, timeFormatter])
+  }, [event, dateFormatter, timeFormatter])
 
   if (loading) {
     return <EventDetailSkeleton />
