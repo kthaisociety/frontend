@@ -13,15 +13,15 @@ export default function EventDetailPage() {
   const params = useParams()
   const router = useRouter()
   const eventId = params.id as string
-  const [isPending, startTransition] = useTransition()
+  const [_isPending, startTransition] = useTransition()
   
   const [eventTextMask, setEventTextMask] = useState<string | undefined>(undefined)
   const { data: event, isLoading: loading, error: queryError } = useEvent(eventId)
 
   // Optimize text mask generation - use requestIdleCallback for non-critical operations
   useEffect(() => {
+    // Only generate mask when event name exists
     if (!event?.name) {
-      setEventTextMask(undefined)
       return
     }
 
