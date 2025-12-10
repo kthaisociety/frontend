@@ -95,8 +95,7 @@ export function Hero() {
             variants={buttonVariants}
           >
             <Button
-              size="lg"
-              className="bg-[#1954A6] hover:bg-[#154589] text-white rounded-full px-10 h-14 text-lg shadow-[0_0_30px_-10px_rgba(25,84,166,0.5)]"
+              size="xl"
               asChild
             >
               <Link href="/auth/signup" className="flex items-center gap-1">
@@ -106,8 +105,7 @@ export function Hero() {
 
             <Button
               variant="outline"
-              size="lg"
-              className="border-gray-300 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-full px-10 h-14 text-lg backdrop-blur-md"
+              size="xl"
               asChild
             >
               <Link href="#about">
