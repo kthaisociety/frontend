@@ -6,7 +6,7 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
+    "lint": "eslint .",
     "clean": "rm -rf .next"
   },
   "dependencies": {
@@ -27,9 +27,9 @@
     "lottie-react": "^2.4.1",
     "lucide-react": "^0.475.0",
     "motion": "^12.23.24",
-    "next": "15.1.7",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
+    "next": "16.0.8",
+    "react": "19.2.1",
+    "react-dom": "19.2.1",
     "react-hook-form": "^7.54.2",
     "react-icons": "^5.4.0",
     "react-redux": "^9.2.0",
@@ -38,13 +38,12 @@
     "zod": "^3.24.2"
   },
   "devDependencies": {
-    "@eslint/eslintrc": "^3",
     "@tailwindcss/postcss": "^4.1.17",
     "@types/node": "^20",
-    "@types/react": "^19",
-    "@types/react-dom": "^19",
+    "@types/react": "19.2.7",
+    "@types/react-dom": "19.2.3",
     "eslint": "^9",
-    "eslint-config-next": "15.1.7",
+    "eslint-config-next": "16.0.8",
     "eslint-config-prettier": "^10.0.2",
     "eslint-import-resolver-alias": "^1.1.2",
     "eslint-import-resolver-typescript": "^4.4.4",
@@ -53,5 +52,9 @@
     "postcss": "^8",
     "tailwindcss": "^4.0.0",
     "typescript": "^5"
+  },
+  "overrides": {
+    "@types/react": "19.2.7",
+    "@types/react-dom": "19.2.3"
   }
 }
