@@ -39,3 +39,4 @@ iconSizes.forEach(({ size, filename }) => {
 });
 
 console.log('\nAll icons generated successfully!');
+
