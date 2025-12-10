@@ -52,7 +52,7 @@ export function Navigation() {
                 mass: 0.3,
               }}
             >
-              {isScrolled ? 'AIS' : 'AI Society'}
+              {isScrolled ? 'KTH AIS' : 'KTH AI Society'}
             </TextMorph>
           </div>
           </Link>
