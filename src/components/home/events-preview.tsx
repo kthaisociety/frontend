@@ -106,7 +106,7 @@ export function EventsPreview() {
   const hasUpcomingEvents = upcomingEvents.length > 0
 
   return (
-    <section className="container mx-auto px-4 md:px-6 py-16 max-w-6xl w-full">
+       <section className="container mx-auto py-16 max-w-7xl w-full">
       {/* Header */}
       <div className="flex items-center justify-between mb-8">
         <h2 className="text-3xl md:text-4xl font-bold tracking-tight">

@@ -1,71 +1,118 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useMemo, useTransition } from "react"
 import { useParams, useRouter } from "next/navigation"
 import Link from "next/link"
 import { Calendar, ExternalLink, ArrowLeft, User } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { AsciiGrid } from "@/components/ui/ascii-grid"
 import { useEvent } from "@/hooks/events"
-import type { LumaEventDetail } from "@/app/api/events/[id]/route"
+import { EventDetailSkeleton } from "@/components/events/event-detail-skeleton"
 
 export default function EventDetailPage() {
   const params = useParams()
   const router = useRouter()
   const eventId = params.id as string
+  const [isPending, startTransition] = useTransition()
   
   const [eventTextMask, setEventTextMask] = useState<string | undefined>(undefined)
   const { data: event, isLoading: loading, error: queryError } = useEvent(eventId)
 
+  // Optimize text mask generation - use requestIdleCallback for non-critical operations
   useEffect(() => {
-    // Create a canvas-based text mask for event name
-    const canvas = document.createElement("canvas")
-    canvas.width = 1200
-    canvas.height = 400
-    const ctx = canvas.getContext("2d")
-    
-    if (!ctx) return
+    if (!event?.name) {
+      setEventTextMask(undefined)
+      return
+    }
 
-    ctx.clearRect(0, 0, canvas.width, canvas.height)
-    ctx.fillStyle = "white"
-    ctx.font = "bold 200px system-ui, -apple-system, sans-serif"
-    ctx.textAlign = "left"
-    ctx.textBaseline = "top"
-    
-    const text = event?.name || "EVENT"
-    ctx.fillText(text, 50, 50)
-    
-    const dataUrl = canvas.toDataURL("image/png")
-    setEventTextMask(dataUrl)
-  }, [event?.name])
+    // Use requestIdleCallback to defer non-critical canvas operations
+    const generateTextMask = () => {
+      const canvas = document.createElement("canvas")
+      canvas.width = 1200
+      canvas.height = 400
+      const ctx = canvas.getContext("2d")
+      
+      if (!ctx) return
+
+      ctx.clearRect(0, 0, canvas.width, canvas.height)
+      ctx.fillStyle = "white"
+      ctx.font = "bold 200px system-ui, -apple-system, sans-serif"
+      ctx.textAlign = "left"
+      ctx.textBaseline = "top"
+      
+      ctx.fillText(event.name, 50, 50)
+      
+      const dataUrl = canvas.toDataURL("image/png")
+      startTransition(() => {
+        setEventTextMask(dataUrl)
+      })
+    }
+
+    // Use requestIdleCallback if available, otherwise use requestAnimationFrame
+    if (typeof window !== "undefined" && "requestIdleCallback" in window) {
+      const callbackId = requestIdleCallback(generateTextMask, { timeout: 2000 })
+      return () => cancelIdleCallback(callbackId)
+    } else {
+      // Fallback: use requestAnimationFrame for better performance than immediate execution
+      const frameId = requestAnimationFrame(generateTextMask)
+      return () => cancelAnimationFrame(frameId)
+    }
+  }, [event?.name, startTransition])
 
   const error = queryError instanceof Error ? queryError.message : queryError ? String(queryError) : null
 
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString)
-    return new Intl.DateTimeFormat("en-US", {
-      month: "long",
-      day: "numeric",
-      year: "numeric",
-      hour: "numeric",
-      minute: "2-digit",
-    }).format(date)
-  }
+  // Memoize date formatters to avoid recreating on every render
+  const dateFormatter = useMemo(
+    () =>
+      new Intl.DateTimeFormat("en-US", {
+        month: "long",
+        day: "numeric",
+        year: "numeric",
+        hour: "numeric",
+        minute: "2-digit",
+      }),
+    []
+  )
 
-  const formatTime = (dateString: string) => {
-    const date = new Date(dateString)
-    return new Intl.DateTimeFormat("en-US", {
-      hour: "numeric",
-      minute: "2-digit",
-    }).format(date)
-  }
+  const timeFormatter = useMemo(
+    () =>
+      new Intl.DateTimeFormat("en-US", {
+        hour: "numeric",
+        minute: "2-digit",
+      }),
+    []
+  )
+
+  // Memoize computed dates to avoid recalculating on every render
+  // Must be called before any early returns to maintain hook order
+  const { startDate, endDate, isPast, formattedStartDate, formattedEndTime, hostName } = useMemo(() => {
+    if (!event) {
+      return {
+        startDate: null,
+        endDate: null,
+        isPast: false,
+        formattedStartDate: null,
+        formattedEndTime: null,
+        hostName: null,
+      }
+    }
+
+    const start = event.start_at ? new Date(event.start_at) : null
+    const end = event.end_at ? new Date(event.end_at) : null
+    const past = start ? start < new Date() : false
+    
+    return {
+      startDate: start,
+      endDate: end,
+      isPast: past,
+      formattedStartDate: start && event.start_at ? dateFormatter.format(start) : null,
+      formattedEndTime: end && event.end_at ? timeFormatter.format(end) : null,
+      hostName: event.host?.name || event.host?.display_name || event.host_profile?.name || null,
+    }
+  }, [event?.start_at, event?.end_at, event?.host, event?.host_profile, dateFormatter, timeFormatter])
 
   if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <p className="text-lg text-secondary-gray">Loading event...</p>
-      </div>
-    )
+    return <EventDetailSkeleton />
   }
 
   if (error) {
@@ -81,23 +128,18 @@ export default function EventDetailPage() {
 
   if (!event && !loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex flex-col items-center justify-center gap-4">
         <p className="text-lg text-secondary-gray">Event not found</p>
+        <Button asChild variant="outline">
+          <Link href="/events">Back to Events</Link>
+        </Button>
       </div>
     )
   }
 
   if (!event) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <p className="text-lg text-secondary-gray">Loading event...</p>
-      </div>
-    )
+    return <EventDetailSkeleton />
   }
-
-  const startDate = event.start_at ? new Date(event.start_at) : null
-  const endDate = event.end_at ? new Date(event.end_at) : null
-  const isPast = startDate ? startDate < new Date() : false
 
   return (
     <div className="min-h-screen">
@@ -142,15 +184,15 @@ export default function EventDetailPage() {
 
           {/* Event Details */}
           <div className="flex flex-col gap-4 mb-8">
-            {startDate && (
+            {startDate && formattedStartDate && (
               <div className="flex items-center gap-2 text-md text-black/90 font-mono">
                 <Calendar className="h-5 w-5" />
-                <span>{formatDate(event.start_at)}</span>
-                {endDate && event.end_at ? (
+                <span>{formattedStartDate}</span>
+                {formattedEndTime && (
                   <span>
-                    - {formatTime(event.end_at)}
+                    - {formattedEndTime}
                   </span>
-                ) : null}
+                )}
                 {event.duration_minutes && !endDate && (
                   <span>
                     ({Math.floor(event.duration_minutes / 60)}h {event.duration_minutes % 60}m)
@@ -159,10 +201,10 @@ export default function EventDetailPage() {
               </div>
             )}
 
-            {(event.host?.name || event.host?.display_name || event.host_profile?.name) && (
+            {hostName && (
               <div className="flex items-center gap-2 text-md text-black/90 font-mono">
                 <User className="h-5 w-5" />
-                <span>Hosted by {event.host?.name || event.host?.display_name || event.host_profile?.name}</span>
+                <span>Hosted by {hostName}</span>
               </div>
             )}
           </div>
