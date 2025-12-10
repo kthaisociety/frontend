@@ -31,7 +31,7 @@ export function HistoryTimeline({
   defaultYear,
   className,
 }: HistoryTimelineProps) {
-  const sortedEvents = [...events].sort((a, b) => a.year - b.year);
+  const sortedEvents = [...events].sort((a, b) => b.year - a.year);
   const initialYear = defaultYear ?? sortedEvents[0]?.year ?? 0;
   const [selectedYear, setSelectedYear] = useState(initialYear);
   
@@ -74,21 +74,13 @@ export function HistoryTimeline({
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3, delay: 0.2 }}
-            className="text-sm md:text-base text-foreground/80 leading-relaxed mb-6"
+            className="text-sm md:text-base text-foreground/80 leading-relaxed mb-6 flex flex-col justify-start items-start gap-2"
           >
             {selectedEvent.description}
-          </motion.p>
-
-          {/* About Button */}
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3, delay: 0.3 }}
-          >
             <Button asChild variant="default">
               <Link href="/about">Our full history</Link>
             </Button>
-          </motion.div>
+          </motion.p>
         </div>
 
         {/* Central Timeline */}
