@@ -1,7 +1,7 @@
 "use client"
 
 import Link from "next/link"
-import { ArrowRight, Github } from "lucide-react"
+import { ArrowRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { ImageCard } from "@/components/ui/image-card"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
@@ -135,7 +135,7 @@ export function ProjectsPreview() {
   const previewProjects = mockProjects.slice(0, 3)
 
   return (
-    <section className="container mx-auto px-4 md:px-6 py-16 w-full max-w-6xl">
+    <section className="container mx-auto py-16 w-full max-w-7xl">
       {/* Header */}
       <div className="flex items-center justify-between mb-8">
         <h2 className="text-3xl md:text-4xl font-bold tracking-tight">

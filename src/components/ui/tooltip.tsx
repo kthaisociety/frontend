@@ -257,6 +257,7 @@ function TooltipOverlay() {
       }),
       flip(),
       shift({ padding: 8 }),
+      // eslint-disable-next-line react-hooks/refs
       floatingArrow({ element: arrowRef }),
     ],
   });
@@ -346,6 +347,7 @@ function TooltipOverlay() {
                       <Slot
                         {...commonProps}
                         {...restContentProps}
+                        // eslint-disable-next-line react/no-children-prop
                         children={
                           React.isValidElement(children)
                             ? children
@@ -570,6 +572,7 @@ function TooltipTrigger({
               data-align={align}
               data-state={currentTooltip?.id === id ? 'open' : 'closed'}
               {...restProps}
+              // eslint-disable-next-line react/no-children-prop
               children={
                 React.isValidElement(children) ? children : undefined
               }

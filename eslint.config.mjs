@@ -3,12 +3,8 @@ import nextCoreWebVitals from "eslint-config-next/core-web-vitals";
 import nextTypescript from "eslint-config-next/typescript";
 import globals from "globals";
 import eslint from "@eslint/js";
-import tseslint from "@typescript-eslint/eslint-plugin";
 import tsParser from "@typescript-eslint/parser";
-import react from "eslint-plugin-react";
-import reactHooks from "eslint-plugin-react-hooks";
 import reactRefresh from "eslint-plugin-react-refresh";
-import eslintImport from "eslint-plugin-import";
 import eslintComments from "eslint-plugin-eslint-comments";
 import prettier from "eslint-config-prettier";
 import compat from "eslint-plugin-compat";
@@ -38,13 +34,9 @@ const eslintConfig = [
       },
     },
     plugins: {
-      "@typescript-eslint": tseslint,
-      react,
-      "react-hooks": reactHooks,
       "react-refresh": reactRefresh,
-      import: eslintImport,
       "eslint-comments": eslintComments,
-      compat: compat.configs["flat/recommended"],
+      compat,
     },
     settings: {
       react: {
@@ -220,6 +212,18 @@ const eslintConfig = [
       "import/no-default-export": "off",
       "import/prefer-default-export": "error",
       "react-refresh/only-export-components": "off",
+    },
+  },
+  {
+    files: ["next.config.ts", "next.config.js"],
+    rules: {
+      "import/no-default-export": "off",
+    },
+  },
+  {
+    files: ["scripts/**/*.js"],
+    rules: {
+      "@typescript-eslint/no-require-imports": "off",
     },
   },
   {

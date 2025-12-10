@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useMemo } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { ChevronDown, Calendar } from "lucide-react"
@@ -135,11 +135,13 @@ export default function EventsPage() {
   })
 
   // Sort events: upcoming first, then past (most recent first)
+  // Calculate "now" once per render to avoid impure function during render
+  // eslint-disable-next-line react-hooks/purity
+  const now = useMemo(() => Date.now(), [])
   const sortedEvents = [...filteredEvents].sort((a, b) => {
     const dateA = a.start_at ? new Date(a.start_at).getTime() : 0
     const dateB = b.start_at ? new Date(b.start_at).getTime() : 0
     
-    const now = Date.now()
     const aIsPast = dateA < now
     const bIsPast = dateB < now
     

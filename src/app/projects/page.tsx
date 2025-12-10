@@ -192,7 +192,10 @@ export default function ProjectsPage() {
     
     // Convert to data URL
     const dataUrl = canvas.toDataURL("image/png")
-    setProjectsTextMask(dataUrl)
+    // Use requestAnimationFrame to avoid synchronous setState in effect
+    requestAnimationFrame(() => {
+      setProjectsTextMask(dataUrl)
+    })
   }, [])
 
   const filteredProjects = mockProjects.filter((project) => {
