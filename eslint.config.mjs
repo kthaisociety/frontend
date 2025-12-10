@@ -1,3 +1,6 @@
+import next from "eslint-config-next";
+import nextCoreWebVitals from "eslint-config-next/core-web-vitals";
+import nextTypescript from "eslint-config-next/typescript";
 import globals from "globals";
 import eslint from "@eslint/js";
 import tseslint from "@typescript-eslint/eslint-plugin";
@@ -11,6 +14,9 @@ import prettier from "eslint-config-prettier";
 import compat from "eslint-plugin-compat";
 
 const eslintConfig = [
+  ...next,
+  ...nextCoreWebVitals,
+  ...nextTypescript,
   eslint.configs.recommended,
   {
     ...prettier,
@@ -216,6 +222,9 @@ const eslintConfig = [
       "react-refresh/only-export-components": "off",
     },
   },
+  {
+    ignores: ["node_modules/**", ".next/**", "out/**", "build/**", "next-env.d.ts"]
+  }
 ];
 
 export default eslintConfig;
