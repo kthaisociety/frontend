@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils"
 interface ImageCardProps {
   image: string
   alt: string
-  height?: string
+  aspectRatio?: string
   blurHeight?: string
   gradientColors?: {
     from: string
@@ -24,7 +24,7 @@ interface ImageCardProps {
 export function ImageCard({
   image,
   alt,
-  height = "h-[400px]",
+  aspectRatio = "aspect-[22/25]",
   blurHeight = "40%",
   gradientColors = {
     from: "from-black/60",
@@ -37,7 +37,7 @@ export function ImageCard({
   className,
 }: ImageCardProps) {
   return (
-    <Card className={cn("group relative overflow-hidden cursor-pointer transition-transform", height, className)}>
+    <Card className={cn("group relative overflow-hidden cursor-pointer transition-transform w-full", aspectRatio, className)}>
       {/* Background Image */}
       <div className="absolute inset-0 transition-transform duration-500 ease-out group-hover:scale-102">
         <Image
@@ -83,9 +83,7 @@ export function ImageCard({
 
       {/* Content Overlay */}
       <div className="absolute inset-0 flex flex-col justify-end p-6 z-20">
-        <div className="relative">
           {children}
-        </div>
       </div>
     </Card>
   )

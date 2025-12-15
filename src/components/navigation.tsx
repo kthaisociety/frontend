@@ -33,7 +33,7 @@ export function Navigation() {
           position="top"
         />
         <div className="absolute top-0 left-0 h-full w-full bg-linear-to-b from-white/60 to-white/0 pointer-events-none"></div>
-      <div className="max-w-7xl mx-auto px-6 py-4 relative z-10">
+      <div className="max-w-7xl mx-auto py-4 relative z-10">
         <div className="flex items-center justify-between">
           {/* Left side: Logo + Text */}
           <Link href="/">
@@ -52,24 +52,24 @@ export function Navigation() {
                 mass: 0.3,
               }}
             >
-              {isScrolled ? 'AIS' : 'AI Society'}
+              {isScrolled ? 'KTH AIS' : 'KTH AI Society'}
             </TextMorph>
           </div>
           </Link>
           {/* Right side: Navigation Links */}
           <div className="flex items-center gap-8 ">
-            <a
+            <Link
               href="/projects"
               className="text-md font-medium text-foreground/80 hover:text-foreground transition-colors"
             >
               Projects
-            </a>
-            <a
-              href="#events"
+            </Link>
+            <Link
+              href="/events"
               className="text-md font-medium text-foreground/80 hover:text-foreground transition-colors"
             >
               Events
-            </a>
+            </Link>
             <a
               href="#team"
               className="text-md font-medium text-foreground/80 hover:text-foreground transition-colors"

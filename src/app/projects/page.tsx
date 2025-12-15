@@ -94,7 +94,6 @@ function ProjectCard({ project }: { project: Project }) {
     <ImageCard
       image="/project-placeholder.webp"
       alt={project.title}
-      height="h-[500px]"
       blurHeight="70%"
       gradientColors={{
         from: "from-white/55",
@@ -114,7 +113,7 @@ function ProjectCard({ project }: { project: Project }) {
       </p>
 
       {/* Contributors */}
-      <div className="flex items-center mb-4 flex-wrap gap-2">
+      <div className="flex items-center flex-wrap gap-2">
         <AvatarGroup translate="-6%" sideOffset={10}>
           {project.contributors.map((contributor) => (
             <Avatar key={`${contributor.name}-${contributor.role}`} className="h-8 w-8 border mr-0.5">
@@ -193,7 +192,10 @@ export default function ProjectsPage() {
     
     // Convert to data URL
     const dataUrl = canvas.toDataURL("image/png")
-    setProjectsTextMask(dataUrl)
+    // Use requestAnimationFrame to avoid synchronous setState in effect
+    requestAnimationFrame(() => {
+      setProjectsTextMask(dataUrl)
+    })
   }, [])
 
   const filteredProjects = mockProjects.filter((project) => {

@@ -70,6 +70,7 @@ function Slot<T extends HTMLElement = HTMLElement>({
     children.type !== null &&
     isMotionComponent(children.type);
 
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   const Base = React.useMemo(
     () =>
       isAlreadyMotion
