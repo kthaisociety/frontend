@@ -10,7 +10,7 @@ interface ProfileCardProps {
   bio: string;
 }
 
-const ProfileCard = ({
+export const ProfileCard = ({
   profileImage,
   name,
   title,
@@ -84,5 +84,3 @@ const ProfileCard = ({
     </div>
   );
 };
-
-export default ProfileCard;

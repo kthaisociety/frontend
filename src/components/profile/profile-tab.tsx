@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { User, Link2, Shield, Bell, Palette } from "lucide-react";
+import { User, Link2, Shield, Bell } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@radix-ui/react-tabs";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -23,7 +23,7 @@ interface SocialLinks {
   website: string;
 }
 
-const ProfileTabs = () => {
+export const ProfileTabs = () => {
   const [personalInfo, setPersonalInfo] = useState<PersonalInfo>({
     firstName: "Alexandra",
     lastName: "Chen",
@@ -302,5 +302,3 @@ const ProfileTabs = () => {
     </div>
   );
 };
-
-export default ProfileTabs;

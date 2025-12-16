@@ -1,22 +1,11 @@
 "use client";
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 import { AsciiGrid } from "@/components/ui/ascii-grid";
-import {
-  useGoogleLoginMutation,
-  useLogoutMutation,
-} from "@/lib/model/apis/internal-apis";
-import { useAppDispatch, useAppSelector } from "@/lib/model/store";
-import { setUser } from "@/lib/model/slices/auth-slice/authSlice";
-import ProfileCard from "@/components/profile/profile-card";
-import ProfileTabs from "@/components/profile/profile-tab";
+import { ProfileCard } from "@/components/profile/profile-card";
+import { ProfileTabs } from "@/components/profile/profile-tab";
 
 function MemberLogin() {
   const [profileTextMask, setProfileTextMask] = useState<string | undefined>();
-  const dispatch = useAppDispatch();
-  const router = useRouter();
-  const isLoggedIn = useAppSelector((state) => state.auth.isLoggedIn);
-  const user = useAppSelector((state) => state.auth.user);
 
   useEffect(() => {
     const canvas = document.createElement("canvas");
