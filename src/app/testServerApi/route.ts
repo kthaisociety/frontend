@@ -1,5 +1,6 @@
 import jwt from "jsonwebtoken";
-import { NextRequest, NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
+import { NextResponse } from "next/server";
 
 const JWT_SECRET = process.env.JWT_SECRET || "test-secret-key";
 
@@ -11,11 +12,19 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const decoded = jwt.verify(token, JWT_SECRET) as any;
+    type Decoded = {
+      firstName?: string;
+      lastName?: string;
+      email?: string;
+      image?: string;
+      role?: string;
+    };
+
+    const decoded = jwt.verify(token, JWT_SECRET) as Decoded;
     const response = NextResponse.json(
       {
         user: {
-          name: `${decoded.firstName} ${decoded.lastName}`,
+          name: `${decoded.firstName ?? ""} ${decoded.lastName ?? ""}`.trim(),
           email: decoded.email,
           picture: decoded.image,
           role: decoded.role,

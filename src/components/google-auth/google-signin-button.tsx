@@ -1,10 +1,11 @@
 import { useGoogleLogin } from "@react-oauth/google";
+import type { JSX } from "react";
 
-const GoogleLoginButton = ({
+export function GoogleLoginButton({
   onGoogleLogin,
 }: {
   onGoogleLogin: (accessToken: string) => void;
-}) => {
+}): JSX.Element {
   const login = useGoogleLogin({
     flow: "auth-code",
     onSuccess: (codeResponse) => {
@@ -33,6 +34,4 @@ const GoogleLoginButton = ({
       Member Login
     </button>
   );
-};
-
-export default GoogleLoginButton;
+}

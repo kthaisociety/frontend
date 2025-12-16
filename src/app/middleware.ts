@@ -23,14 +23,17 @@ export function middleware(req: NextRequest) {
     }
 
     try {
-      const decoded: any = jwt.verify(token, JWT_SECRET);
+      type Decoded = { role?: string } | null;
+      const decoded = jwt.verify(token, JWT_SECRET) as Decoded;
 
-      if (url.pathname.startsWith("/dashboard") && decoded.role !== "admin") {
+      const role = decoded?.role;
+
+      if (url.pathname.startsWith("/dashboard") && role !== "admin") {
         url.pathname = "/";
         return NextResponse.redirect(url);
       }
 
-      if (url.pathname.startsWith("/dashboard") && decoded.role == "admin") {
+      if (url.pathname.startsWith("/dashboard") && role === "admin") {
         url.pathname = "/dashboard";
         return NextResponse.redirect(url);
       }
@@ -49,9 +52,11 @@ export function middleware(req: NextRequest) {
       return NextResponse.redirect(url);
     }
     try {
-      const decoded: any = jwt.verify(token, JWT_SECRET);
+      type Decoded = { role?: string } | null;
+      const decoded = jwt.verify(token, JWT_SECRET) as Decoded;
+      const role = decoded?.role;
 
-      if (["admin", "member"].includes(decoded.role)) {
+      if (["admin", "member"].includes(role ?? "")) {
         url.pathname = "/profile";
         return NextResponse.redirect(url);
       }

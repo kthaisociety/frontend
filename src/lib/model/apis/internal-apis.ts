@@ -1,5 +1,6 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { clearUser } from "../slices/auth-slice/authSlice";
+
 export const internalApi = createApi({
   reducerPath: "internalApi",
   baseQuery: fetchBaseQuery({ baseUrl: "/", credentials: "include" }),

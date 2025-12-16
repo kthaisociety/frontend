@@ -1,5 +1,6 @@
 import jwt from "jsonwebtoken";
-import { NextRequest, NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
+import { NextResponse } from "next/server";
 
 const JWT_SECRET = process.env.JWT_SECRET || "test-secret-key";
 
@@ -15,7 +16,7 @@ export async function POST(request: NextRequest) {
     }
 
     const userData = {
-      id: "google_" + Math.random().toString(36).substr(2, 9),
+      id: `google_${Math.random().toString(36).substr(2, 9)}`,
       email: "member@kthaisociety.se",
       name: "KTH Member",
       firstName: "KTH",

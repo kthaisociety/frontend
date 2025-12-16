@@ -1,23 +1,10 @@
 "use client";
 import { useEffect } from "react";
-import { skipToken } from "@reduxjs/toolkit/query";
-import {
-  useGetMeMockedQuery,
-  useGetMeQuery,
-} from "@/lib/model/apis/internal-apis";
+import { useGetMeMockedQuery } from "@/lib/model/apis/internal-apis";
 import { useAppDispatch } from "@/lib/model/store";
-import {
-  setUser,
-  clearUser,
-  setLoading,
-} from "@/lib/model/slices/auth-slice/authSlice";
+import { setUser, clearUser, setLoading } from "@/lib/model/slices/auth-slice/authSlice";
 
-export const AuthInitializer = ({
-  children,
-}: {
-  children: React.ReactNode;
-}) => {
-  // const { data, error, isLoading } = useGetMeQuery(skipToken);
+export function AuthInitializer({ children }: { children: React.ReactNode }) {
   const { data, error, isLoading } = useGetMeMockedQuery(undefined);
   const dispatch = useAppDispatch();
 
@@ -32,4 +19,4 @@ export const AuthInitializer = ({
   }, [data, error, isLoading, dispatch]);
 
   return <>{children}</>;
-};
+}

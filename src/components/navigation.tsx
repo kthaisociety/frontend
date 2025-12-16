@@ -7,7 +7,7 @@ import Link from "next/link";
 import { TextMorph } from "@/components/ui/text-morph";
 import { ProgressiveBlur } from "@/components/ui/progressive-blur";
 import { cn } from "@/lib/utils";
-import Navbar from "@/components/navbar/navbar";
+import { Navbar } from "@/components/navbar/navbar";
 
 export function Navigation() {
   const [isScrolled, setIsScrolled] = useState(false);

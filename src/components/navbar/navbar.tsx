@@ -12,12 +12,13 @@ import {
 import { useAppSelector } from "@/lib/model/store";
 import { Button } from "../ui/button";
 import { useLogoutMutation } from "@/lib/model/apis/internal-apis";
-import router from "next/router";
+import { useRouter } from "next/navigation";
 
-export default function Navbar() {
+export function Navbar() {
   const isLoggedIn = useAppSelector((state) => state.auth.isLoggedIn);
   const user = useAppSelector((state) => state.auth.user);
   const [logout] = useLogoutMutation();
+  const router = useRouter();
 
   return (
     <NavigationMenu className="relative">

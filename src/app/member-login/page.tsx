@@ -1,20 +1,18 @@
 "use client";
-import { AsciiGrid } from "@/components/ui/ascii-grid";
 import React, { useEffect, useState } from "react";
-import GoogleLoginButton from "@/components/google-auth/google-signin-button";
-import LoginProvider from "@/components/providers/google-oauth-provider";
+import { useRouter } from "next/navigation";
+import { AsciiGrid } from "@/components/ui/ascii-grid";
+import { GoogleLoginButton } from "@/components/google-auth/google-signin-button";
+import { LoginProvider } from "@/components/providers/google-oauth-provider";
 import {
   useGoogleLoginMutation,
   useLogoutMutation,
 } from "@/lib/model/apis/internal-apis";
 import { useAppDispatch, useAppSelector } from "@/lib/model/store";
 import { setUser } from "@/lib/model/slices/auth-slice/authSlice";
-import { useRouter } from "next/navigation";
 
-const MemberLogin = () => {
-  const [loginTextMask, setLoginTextMask] = useState<string | undefined>(
-    undefined
-  );
+function MemberLogin() {
+  const [loginTextMask, setLoginTextMask] = useState<string | undefined>();
   const [googleLoginMutation] = useGoogleLoginMutation();
   const dispatch = useAppDispatch();
   const router = useRouter();
@@ -39,7 +37,9 @@ const MemberLogin = () => {
     const text = "Login";
     ctx.fillText(text, canvas.width / 2, 0);
     const dataUrl = canvas.toDataURL("image/png");
-    setLoginTextMask(dataUrl);
+    // Avoid synchronous setState inside effect to prevent cascading renders
+    // schedule the state update in the next animation frame
+    requestAnimationFrame(() => setLoginTextMask(dataUrl));
   }, []);
 
   return (
@@ -129,7 +129,8 @@ const MemberLogin = () => {
         transition-all duration-300 ease-out
         hover:bg-primary/5
         hover:shadow-md hover:-translate-y-0.5"
-                onClick={async () => {
+                  type="button"
+                  onClick={async () => {
                   await logout(undefined).unwrap();
                   router.push("/");
                 }}
