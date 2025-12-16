@@ -34,7 +34,7 @@ export function Navbar() {
                     variant="ghost"
                     className="w-full justify-start"
                     onClick={async () => {
-                      router.push("/profile");
+                      router.push("/member/profile");
                     }}
                   >
                     Profile
@@ -46,6 +46,7 @@ export function Navbar() {
                     className="w-full justify-start"
                     onClick={async () => {
                       await logout(undefined).unwrap();
+                      router.push("/");
                     }}
                   >
                     Logout
