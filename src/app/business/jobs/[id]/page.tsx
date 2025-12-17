@@ -1,0 +1,279 @@
+"use client"
+
+import { useState, useEffect } from "react"
+import { useParams } from "next/navigation"
+import Link from "next/link"
+import Image from "next/image"
+import { ArrowLeft, Briefcase, MapPin, Calendar, DollarSign, ExternalLink, Mail } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { AsciiGrid } from "@/components/ui/ascii-grid"
+import { Skeleton } from "@/components/ui/skeleton"
+import { Markdown } from "@/components/ui/markdown"
+import { useJob } from "@/hooks/jobs"
+
+export default function JobDetailPage() {
+  const params = useParams()
+  const jobId = params?.id as string
+  const { data: job, isLoading: loading, error: queryError } = useJob(jobId)
+  const [jobsTextMask, setJobsTextMask] = useState<string | undefined>(undefined)
+
+  useEffect(() => {
+    // Create a canvas-based text mask
+    const canvas = document.createElement("canvas")
+    canvas.width = 1200
+    canvas.height = 400
+    const ctx = canvas.getContext("2d")
+    
+    if (!ctx) return
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height)
+    ctx.fillStyle = "white"
+    ctx.font = "bold 200px system-ui, -apple-system, sans-serif"
+    ctx.textAlign = "left"
+    ctx.textBaseline = "top"
+    
+    const text = "JOB"
+    ctx.fillText(text, 50, 50)
+    
+    const dataUrl = canvas.toDataURL("image/png")
+    requestAnimationFrame(() => {
+      setJobsTextMask(dataUrl)
+    })
+  }, [])
+
+  const error = queryError instanceof Error ? queryError.message : queryError ? String(queryError) : null
+
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString)
+    return new Intl.DateTimeFormat("en-US", {
+      month: "long",
+      day: "numeric",
+      year: "numeric",
+    }).format(date)
+  }
+
+  if (loading) {
+    return (
+      <div className="min-h-screen">
+        <section className="relative bg-white text-secondary-black pt-64 pb-24 overflow-hidden">
+          <div className="absolute inset-0 pointer-events-none">
+            <AsciiGrid 
+              color="rgba(0, 0, 0, 0.2)" 
+              cellSize={12} 
+              logoSrc={jobsTextMask}
+              logoPosition="center"
+              logoScale={0.6}
+              enableDripping={false}
+              className="w-full h-full"
+            />
+          </div>
+          <div className="container max-w-7xl relative z-10 mx-auto px-4 md:px-6">
+            <Skeleton className="h-12 w-3/4 mb-4" />
+            <Skeleton className="h-6 w-1/2" />
+          </div>
+        </section>
+        <section className="relative max-w-7xl mx-auto z-20 -mt-24 bg-neutral-50 rounded-3xl p-8 mb-24 shadow-lg border">
+          <Skeleton className="h-64 w-full" />
+        </section>
+      </div>
+    )
+  }
+
+  if (error || !job) {
+    return (
+      <div className="min-h-screen">
+        <section className="relative bg-white text-secondary-black pt-64 pb-24 overflow-hidden">
+          <div className="absolute inset-0 pointer-events-none">
+            <AsciiGrid 
+              color="rgba(0, 0, 0, 0.2)" 
+              cellSize={12} 
+              logoSrc={jobsTextMask}
+              logoPosition="center"
+              logoScale={0.6}
+              enableDripping={false}
+              className="w-full h-full"
+            />
+          </div>
+          <div className="container max-w-7xl relative z-10 mx-auto px-4 md:px-6">
+            <h1 className="text-5xl md:text-7xl font-bold mb-6 tracking-tighter">
+              Job Not Found
+            </h1>
+            <p className="text-lg md:text-xl mb-8 max-w-2xl opacity-95 leading-relaxed font-serif">
+              {error || "The job you're looking for doesn't exist."}
+            </p>
+            <Button asChild>
+              <Link href="/business/jobs">
+                <ArrowLeft className="mr-2 h-4 w-4" />
+                Back to Jobs
+              </Link>
+            </Button>
+          </div>
+        </section>
+      </div>
+    )
+  }
+
+  return (
+    <div className="min-h-screen">
+      {/* Header Section */}
+      <section className="relative bg-white text-secondary-black pt-64 pb-24 overflow-hidden">
+        {/* Company Logo Background */}
+        {job.companyLogo && (
+          <div className="absolute inset-0 opacity-5">
+            <Image 
+              src={job.companyLogo} 
+              alt={job.company}
+              fill
+              className="object-cover"
+              unoptimized
+            />
+          </div>
+        )}
+        <div className="absolute inset-0 pointer-events-none">
+          <AsciiGrid 
+            color="rgba(0, 0, 0, 0.2)" 
+            cellSize={12} 
+            logoSrc={jobsTextMask}
+            logoPosition="center"
+            logoScale={0.6}
+            enableDripping={false}
+            className="w-full h-full"
+          />
+        </div>
+        <div className="container max-w-7xl relative z-10 mx-auto px-4 md:px-6 pb-8">
+          {/* Back Button */}
+          <Button variant="ghost" asChild className="mb-6">
+            <Link href="/business/jobs">
+              <ArrowLeft className="mr-2 h-4 w-4" />
+              Back to Jobs
+            </Link>
+          </Button>
+
+          {/* Job Title */}
+          <h1 className="text-5xl md:text-7xl font-bold mb-6 tracking-tighter">
+            {job.title}
+          </h1>
+
+          {/* Company */}
+          <div className="flex items-center gap-4 text-xl mb-8">
+            {job.companyLogo && (
+              <div className="relative h-12 w-12 rounded-lg overflow-hidden border-2 border-white shadow-lg">
+                <Image 
+                  src={job.companyLogo} 
+                  alt={job.company}
+                  fill
+                  className="object-cover"
+                  unoptimized
+                />
+              </div>
+            )}
+            <div className="flex items-center gap-2">
+              
+              <span className="font-serif">{job.company}</span>
+            </div>
+          </div>
+
+          {/* Meta Information */}
+          <div className="flex flex-wrap gap-6 text-base">
+            {job.location && (
+              <div className="flex items-center gap-2">
+                <MapPin className="h-5 w-5" />
+                <span>{job.location}</span>
+              </div>
+            )}
+            {job.jobType && (
+              <div className="flex items-center gap-2">
+                <Briefcase className="h-5 w-5" />
+                <span className="capitalize">{job.jobType}</span>
+              </div>
+            )}
+            {job.salary && (
+              <div className="flex items-center gap-2">
+                <DollarSign className="h-5 w-5" />
+                <span>{job.salary}</span>
+              </div>
+            )}
+          </div>
+        </div>
+      </section>
+
+      {/* Content Area */}
+      <section className="relative max-w-7xl mx-auto z-20 -mt-24 bg-neutral-50 rounded-3xl p-8 mb-24 shadow-lg border">
+        <div className="container mx-auto">
+          {/* Breadcrumbs */}
+          <div className="mb-8">
+            <Link href="/" className="text-secondary-gray hover:text-primary transition-colors text-sm font-medium">
+              Home
+            </Link>
+            <span className="text-gray-300 mx-2">/</span>
+            <Link href="/business/jobs" className="text-secondary-gray hover:text-primary transition-colors text-sm font-medium">
+              Jobs
+            </Link>
+            <span className="text-gray-300 mx-2">/</span>
+            <span className="text-primary font-medium text-sm">{job.title}</span>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            {/* Main Content */}
+            <div className="lg:col-span-2">
+              <div className="bg-white rounded-xl p-6 shadow-sm mb-6">
+                <h2 className="text-2xl font-bold mb-4 tracking-tight text-secondary-black">About the Role</h2>
+                <Markdown content={job.description} />
+              </div>
+            </div>
+
+            {/* Sidebar */}
+            <div className="lg:col-span-1">
+              <div className="bg-white rounded-xl p-6 shadow-sm mb-6">
+                <h3 className="text-xl font-bold mb-4 tracking-tight text-secondary-black">Apply Now</h3>
+                
+                {/* Apply Button */}
+                {job.appurl && (
+                  <Button className="w-full mb-4" size="lg" asChild>
+                    <Link href={job.appurl} target="_blank" rel="noopener noreferrer">
+                      <ExternalLink className="mr-2 h-4 w-4" />
+                      Apply on Company Site
+                    </Link>
+                  </Button>
+                )}
+
+                {/* Contact Information */}
+                {job.contact && (
+                  <div className="border-t pt-4">
+                    <h4 className="font-semibold mb-2 text-sm text-secondary-black">Contact</h4>
+                    <div className="flex items-start gap-2 text-gray-700 text-sm">
+                      <Mail className="h-4 w-4 mt-0.5 shrink-0" />
+                      <span className="break-all">{job.contact}</span>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Application Period */}
+              {(job.startdate || job.enddate) && (
+                <div className="bg-white rounded-xl p-6 shadow-sm">
+                  <h3 className="text-xl font-bold mb-4 tracking-tight text-secondary-black">Application Period</h3>
+                  <div className="flex flex-col gap-3">
+                    {job.startdate && (
+                      <div className="flex items-center gap-2 text-gray-700">
+                        <Calendar className="h-5 w-5" />
+                        <span>Opens: {formatDate(job.startdate)}</span>
+                      </div>
+                    )}
+                    {job.enddate && (
+                      <div className="flex items-center gap-2 text-gray-700">
+                        <Calendar className="h-5 w-5" />
+                        <span>Closes: {formatDate(job.enddate)}</span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  )
+}
+
