@@ -1,0 +1,1 @@
+export { TeamsPage as default } from "@/components/teams";

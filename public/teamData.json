@@ -1,0 +1,24 @@
+[
+  {
+    "id": "t1",
+    "name": "AI Team",
+    "category": "AI",
+    "subtitle": "Research, ML, and technical workshops",
+    "description": "Runs study groups, research collaborations, and ML projects that push the society forward.",
+    "members": [
+      { "id": "u1", "name": "Sofia Lindström", "role": "Lead", "avatarUrl": "https://randomuser.me/api/portraits/women/44.jpg" },
+      { "id": "u2", "name": "Jesper Hesselgren", "role": "Engineer", "avatarUrl": "https://github.com/shadcn.png" }
+    ]
+  },
+  {
+    "id": "t2",
+    "name": "IT Team",
+    "category": "IT",
+    "subtitle": "Web platform, tooling, and infrastructure",
+    "description": "Maintains the website, internal tools, and deployment pipelines for events and projects.",
+    "members": [
+      { "id": "u3", "name": "Erik Johansson", "role": "Full Stack", "avatarUrl": "https://randomuser.me/api/portraits/men/32.jpg" },
+      { "id": "u4", "name": "Liam Pettersson", "role": "DevOps", "avatarUrl": "https://randomuser.me/api/portraits/men/75.jpg" }
+    ]
+  }
+]
