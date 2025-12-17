@@ -16,7 +16,8 @@ export function useLogin() {
     onSuccess: (data) => {
       queryClient.setQueryData(["auth-session"], data);
       // Get the redirect URL from the query params, default to dashboard
-      const redirectTo = new URLSearchParams(window.location.search).get("from") || "/dashboard";
+      const redirectTo =
+        new URLSearchParams(window.location.search).get("from") || "/dashboard";
       router.push(redirectTo);
     },
   });
@@ -27,7 +28,8 @@ export function useRegister() {
   const router = useRouter();
 
   return useMutation({
-    mutationFn: (credentials: RegisterCredentials) => authApi.register(credentials),
+    mutationFn: (credentials: RegisterCredentials) =>
+      authApi.register(credentials),
     onSuccess: (data) => {
       queryClient.setQueryData(["auth-session"], data);
       router.push("/dashboard");
