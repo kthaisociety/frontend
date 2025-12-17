@@ -7,6 +7,27 @@ import {
   type AuthResponse,
 } from "@/lib/integration/api-client";
 
+const shouldBypassAuth = process.env.NEXT_PUBLIC_DEV_BYPASS_AUTH === "true";
+const getAdminEmailList = () =>
+  (process.env.NEXT_PUBLIC_ADMIN_EMAILS || "")
+    .split(",")
+    .map((email) => email.trim())
+    .filter(Boolean);
+const devBypassEmail =
+  process.env.NEXT_PUBLIC_DEV_BYPASS_AUTH_EMAIL ||
+  getAdminEmailList()[0] ||
+  "dev@kthais.com";
+const devSession: AuthResponse = {
+  user: {
+    id: 0,
+    email: devBypassEmail,
+    provider: "dev",
+    firstName: "Dev",
+    lastName: "User",
+  },
+  message: "Bypassed auth for local development",
+};
+
 export function useLogin() {
   const queryClient = useQueryClient();
   const router = useRouter();
@@ -42,7 +63,8 @@ export function useLogout() {
   const router = useRouter();
 
   return useMutation({
-    mutationFn: () => authApi.logout(),
+    mutationFn: () =>
+      shouldBypassAuth ? Promise.resolve(null) : authApi.logout(),
     onSuccess: () => {
       queryClient.setQueryData(["auth-session"], null);
       router.push("/auth/login");
@@ -51,6 +73,17 @@ export function useLogout() {
 }
 
 export function useSession() {
+  if (shouldBypassAuth) {
+    return useQuery<AuthResponse>({
+      queryKey: ["auth-session"],
+      queryFn: async () => devSession,
+      initialData: devSession,
+      staleTime: Infinity,
+      retry: false,
+      refetchOnWindowFocus: false,
+    });
+  }
+
   return useQuery<AuthResponse>({
     queryKey: ["auth-session"],
     queryFn: () => authApi.getSession(),
