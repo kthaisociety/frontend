@@ -17,7 +17,6 @@ export function ProjectsFilter({
     <div className="flex flex-row justify-end items-center gap-2">
          <DropdownMenu>
         <DropdownMenuTrigger className="flex min-w-[170px] rounded-md border px-3 py-2 shadow-sm items-center justify-between text-sm">
-          {/* <<< this text is now ALWAYS visible */}
           <span>Filter by category</span>
           <MdKeyboardArrowDown className="text-slate-500" />
         </DropdownMenuTrigger>
