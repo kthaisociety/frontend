@@ -8,9 +8,26 @@ const API_URL = `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080"}/a
 export function Social() {
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleGoogleLogin = () => {
-    setIsLoading(true);
-    window.location.href = `${API_URL}/auth/google`;
+  const handleGoogleLogin = async () => {
+    try {
+      setIsLoading(true);
+      const response = await fetch(`${API_URL}/auth/google`, {
+        method: "GET",
+        credentials: "include",
+      });
+
+      const data = await response.json();
+
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        throw new Error("No auth URL received");
+      }
+    } catch (error) {
+      console.error("Failed to start Google auth:", error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
