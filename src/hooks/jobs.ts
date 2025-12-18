@@ -44,20 +44,11 @@ const persistJobs = (jobs: JobPost[]) => {
 };
 
 export function useJobPosts() {
-  const [jobs, setJobs] = useState<JobPost[]>([]);
-  const [isHydrated, setIsHydrated] = useState(false);
+  const [jobs, setJobs] = useState<JobPost[]>(() => getStoredJobs());
 
   useEffect(() => {
-    setJobs(getStoredJobs());
-    setIsHydrated(true);
-  }, []);
-
-  useEffect(() => {
-    if (!isHydrated) {
-      return;
-    }
     persistJobs(jobs);
-  }, [jobs, isHydrated]);
+  }, [jobs]);
 
   const createJob = (input: JobPostInput) => {
     const now = getNowIso();
@@ -93,7 +84,6 @@ export function useJobPosts() {
 
   return {
     jobs: sortedJobs,
-    isHydrated,
     createJob,
     updateJob,
     deleteJob,

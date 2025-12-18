@@ -41,20 +41,13 @@ const persistCompanies = (companies: Company[]) => {
 };
 
 export function useCompanies() {
-  const [companies, setCompanies] = useState<Company[]>([]);
-  const [isHydrated, setIsHydrated] = useState(false);
+  const [companies, setCompanies] = useState<Company[]>(() =>
+    getStoredCompanies(),
+  );
 
   useEffect(() => {
-    setCompanies(getStoredCompanies());
-    setIsHydrated(true);
-  }, []);
-
-  useEffect(() => {
-    if (!isHydrated) {
-      return;
-    }
     persistCompanies(companies);
-  }, [companies, isHydrated]);
+  }, [companies]);
 
   const createCompany = (input: CompanyInput) => {
     const now = getNowIso();
@@ -74,7 +67,6 @@ export function useCompanies() {
 
   return {
     companies,
-    isHydrated,
     createCompany,
   };
 }

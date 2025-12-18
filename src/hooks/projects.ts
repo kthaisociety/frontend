@@ -52,20 +52,13 @@ const persistProjects = (projects: ProjectPost[]) => {
 };
 
 export function useProjectPosts() {
-  const [projects, setProjects] = useState<ProjectPost[]>([]);
-  const [isHydrated, setIsHydrated] = useState(false);
+  const [projects, setProjects] = useState<ProjectPost[]>(() =>
+    getStoredProjects(),
+  );
 
   useEffect(() => {
-    setProjects(getStoredProjects());
-    setIsHydrated(true);
-  }, []);
-
-  useEffect(() => {
-    if (!isHydrated) {
-      return;
-    }
     persistProjects(projects);
-  }, [projects, isHydrated]);
+  }, [projects]);
 
   const createProject = (input: ProjectInput) => {
     const now = getNowIso();
@@ -84,7 +77,6 @@ export function useProjectPosts() {
 
   return {
     projects,
-    isHydrated,
     createProject,
   };
 }

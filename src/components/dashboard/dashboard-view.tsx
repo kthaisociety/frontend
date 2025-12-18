@@ -61,6 +61,9 @@ export function DashboardView({
   isLoading,
   logout,
 }: DashboardPageProps) {
+  const isAdmin = session?.user ? isAdminUser(session.user.email) : false;
+  const [activeTab, setActiveTab] = useState<DashboardTab>("profile");
+
   if (isLoading) {
     return <DashboardSkeleton />;
   }
@@ -69,8 +72,6 @@ export function DashboardView({
     return null;
   }
 
-  const isAdmin = isAdminUser(session.user.email);
-  const [activeTab, setActiveTab] = useState<DashboardTab>("profile");
   const tabs: { id: DashboardTab; label: string }[] = [
     { id: "profile", label: "Profile" },
     ...(isAdmin ? [{ id: "admin" as const, label: "Admin" }] : []),
