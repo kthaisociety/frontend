@@ -73,23 +73,15 @@ export function useLogout() {
 }
 
 export function useSession() {
-  if (shouldBypassAuth) {
-    return useQuery<AuthResponse>({
-      queryKey: ["auth-session"],
-      queryFn: async () => devSession,
-      initialData: devSession,
-      staleTime: Infinity,
-      retry: false,
-      refetchOnWindowFocus: false,
-    });
-  }
-
   return useQuery<AuthResponse>({
     queryKey: ["auth-session"],
-    queryFn: () => authApi.getSession(),
-    retry: 1,
-    staleTime: 5 * 60 * 1000, // 5 minutes
-    refetchOnWindowFocus: true,
+    queryFn: shouldBypassAuth
+      ? async () => devSession
+      : () => authApi.getSession(),
+    initialData: shouldBypassAuth ? devSession : undefined,
+    retry: shouldBypassAuth ? false : 1,
+    staleTime: shouldBypassAuth ? Infinity : 5 * 60 * 1000,
+    refetchOnWindowFocus: !shouldBypassAuth,
     throwOnError: false,
   });
 }
