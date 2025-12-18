@@ -1,79 +1,91 @@
-import { useQuery } from "@tanstack/react-query";
+import { useEffect, useMemo, useState } from "react";
 
-const baseURL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
-
-export interface JobListing {
-  id: string;
-  title: string;
-  company: string;
-  companyLogo: string;
-  salary: string;
-  jobType: string;
-  location: string;
-  startdate: string;
-  enddate: string;
-}
-
-export interface JobDetail {
-  id: string;
+export type JobPostInput = {
   title: string;
   description: string;
-  salary: string;
+  type: string;
   location: string;
-  jobType: string;
-  company: string;
-  companyLogo: string;
-  startdate: string;
-  enddate: string;
-  appurl: string;
-  contact: string;
+  salary: string;
+  companyId: string;
+};
+
+export type JobPost = JobPostInput & {
+  id: string;
+  createdAt: string;
+  updatedAt: string;
+};
+
+const STORAGE_KEY = "kthais-job-posts";
+
+const getNowIso = () => new Date().toISOString();
+
+const getStoredJobs = (): JobPost[] => {
+  if (typeof window === "undefined") {
+    return [];
+  }
+
+  try {
+    const raw = window.localStorage.getItem(STORAGE_KEY);
+    if (!raw) {
+      return [];
+    }
+    const parsed = JSON.parse(raw) as JobPost[];
+    return Array.isArray(parsed) ? parsed : [];
+  } catch {
+    return [];
+  }
+};
+
+const persistJobs = (jobs: JobPost[]) => {
+  if (typeof window === "undefined") {
+    return;
+  }
+  window.localStorage.setItem(STORAGE_KEY, JSON.stringify(jobs));
+};
+
+export function useJobPosts() {
+  const [jobs, setJobs] = useState<JobPost[]>(() => getStoredJobs());
+
+  useEffect(() => {
+    persistJobs(jobs);
+  }, [jobs]);
+
+  const createJob = (input: JobPostInput) => {
+    const now = getNowIso();
+    const id =
+      typeof crypto !== "undefined" && "randomUUID" in crypto
+        ? crypto.randomUUID()
+        : `${Date.now()}-${Math.random().toString(16).slice(2)}`;
+    const newJob: JobPost = {
+      ...input,
+      id,
+      createdAt: now,
+      updatedAt: now,
+    };
+    setJobs((prev) => [newJob, ...prev]);
+  };
+
+  const updateJob = (id: string, input: JobPostInput) => {
+    const now = getNowIso();
+    setJobs((prev) =>
+      prev.map((job) =>
+        job.id === id ? { ...job, ...input, updatedAt: now } : job,
+      ),
+    );
+  };
+
+  const deleteJob = (id: string) => {
+    setJobs((prev) => prev.filter((job) => job.id !== id));
+  };
+
+  const sortedJobs = useMemo(() => {
+    return [...jobs].sort((a, b) => b.updatedAt.localeCompare(a.updatedAt));
+  }, [jobs]);
+
+  return {
+    jobs: sortedJobs,
+    createJob,
+    updateJob,
+    deleteJob,
+  };
 }
-
-export function useJobs() {
-  return useQuery<JobListing[]>({
-    queryKey: ["jobs"],
-    queryFn: async () => {
-      const response = await fetch(`${baseURL}/api/v1/joblistings/all`);
-
-      if (!response.ok) {
-        throw new Error(`Failed to fetch jobs: ${response.status}`);
-      }
-
-      const data = await response.json();
-      return data;
-    },
-    staleTime: 5 * 60 * 1000, // 5 minutes - data is fresh for 5 minutes
-    gcTime: 30 * 60 * 1000, // 30 minutes - cache persists for 30 minutes
-    refetchOnWindowFocus: false, // Don't refetch when window regains focus
-    refetchOnMount: false, // Don't refetch on component mount if data exists
-  });
-}
-
-export function useJob(jobId: string | undefined) {
-  return useQuery<JobDetail>({
-    queryKey: ["job", jobId],
-    queryFn: async () => {
-      if (!jobId) {
-        throw new Error("Job ID is required");
-      }
-
-      const response = await fetch(`${baseURL}/api/v1/joblistings/job?id=${jobId}`);
-
-      if (!response.ok) {
-        throw new Error(`Failed to fetch job: ${response.status}`);
-      }
-
-      const data = await response.json();
-      return data;
-    },
-    enabled: !!jobId, // Only run query if jobId exists
-    staleTime: 5 * 60 * 1000, // 5 minutes - data is fresh for 5 minutes
-    gcTime: 30 * 60 * 1000, // 30 minutes - cache persists for 30 minutes
-    refetchOnWindowFocus: false, // Don't refetch when window regains focus
-    refetchOnMount: false, // Don't refetch on component mount if data exists
-    refetchOnReconnect: false, // Don't refetch on reconnect
-    retry: 2, // Retry failed requests up to 2 times
-    retryDelay: 1000, // Wait 1 second between retries
-  });
-}
-
