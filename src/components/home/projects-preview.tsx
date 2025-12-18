@@ -135,7 +135,7 @@ export function ProjectsPreview() {
   const previewProjects = mockProjects.slice(0, 3)
 
   return (
-    <section className="container mx-auto py-16 w-full max-w-7xl">
+    <section className="container mx-auto py-16 px-4 w-full max-w-7xl">
       {/* Header */}
       <div className="flex items-center justify-between mb-8">
         <h2 className="text-3xl md:text-4xl font-bold tracking-tight">
@@ -143,7 +143,7 @@ export function ProjectsPreview() {
         </h2>
         <Button asChild>
           <Link href="/projects">
-            See more projects
+            <span className="hidden md:block">See more </span>Projects
             <ArrowRight className="h-4 w-4" />
           </Link>
         </Button>

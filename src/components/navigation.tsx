@@ -7,7 +7,6 @@ import Link from "next/link";
 import { TextMorph } from "@/components/ui/text-morph";
 import { ProgressiveBlur } from "@/components/ui/progressive-blur";
 import { cn } from "@/lib/utils";
-import { Navbar } from "@/components/navbar/navbar";
 
 export function Navigation() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -33,8 +32,8 @@ export function Navigation() {
         height="100%"
         position="top"
       />
-      <div className="absolute top-0 left-0 h-full w-full bg-linear-to-b from-white/60 to-white/0 pointer-events-none"></div>
-      <div className="max-w-7xl mx-auto py-4 relative z-10">
+      <div className="absolute top-0 left-0 h-full w-full bg-linear-to-b from-white/60 via-white/50 to-white/0 pointer-events-none"></div>
+      <div className="max-w-7xl mx-auto py-4 px-4 relative z-10">
         <div className="flex items-center justify-between">
           {/* Left side: Logo + Text */}
           <Link href="/">
@@ -59,30 +58,35 @@ export function Navigation() {
                   mass: 0.3,
                 }}
               >
-                {isScrolled ? "AIS" : "AI Society"}
+                {isScrolled ? "KTH AIS" : "KTH AI Society"}
               </TextMorph>
             </div>
           </Link>
           {/* Right side: Navigation Links */}
-          <Navbar />
-          {/* <div className="flex items-center gap-8 ">
-            <a
+           <div className="items-center gap-8 hidden md:flex ">
+            <Link
               href="/projects"
               className="text-md font-medium text-foreground/80 hover:text-foreground transition-colors"
             >
-              Projects
+              Events
             </Link>
             <Link
               href="/events"
               className="text-md font-medium text-foreground/80 hover:text-foreground transition-colors"
             >
-              Events
+              Projects
             </Link>
             <a
               href="#team"
               className="text-md font-medium text-foreground/80 hover:text-foreground transition-colors"
             >
-              Team
+              Job Board
+            </a>
+            <a
+              href="#contact"
+              className="text-md font-medium text-foreground/80 hover:text-foreground transition-colors"
+            >
+              About
             </a>
             <a
               href="#contact"
@@ -90,7 +94,7 @@ export function Navigation() {
             >
               Contact
             </a>
-          </div> */}
+          </div> 
         </div>
       </div>
     </nav>
