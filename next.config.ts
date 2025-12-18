@@ -12,6 +12,14 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "images.lumacdn.com",
       },
+      {
+        protocol: "https",
+        hostname: "images.0xw.app",
+      },
+      {
+        protocol: "https",
+        hostname: "kthais.com",
+      },
     ],
   },
   output: "standalone",

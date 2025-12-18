@@ -101,7 +101,12 @@ export function Navbar() {
             <Link href="/team">Team</Link>
           </NavigationMenuLink>
         </NavigationMenuItem>
-
+        {/* Job board */}
+        <NavigationMenuItem>
+          <NavigationMenuLink asChild>
+            <Link href="/business/jobs">Job Board</Link>
+          </NavigationMenuLink>
+        </NavigationMenuItem>
         {/* Contact */}
         <NavigationMenuItem>
           <NavigationMenuLink asChild>
