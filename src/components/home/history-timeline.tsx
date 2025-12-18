@@ -77,9 +77,11 @@ export function HistoryTimeline({
             className="text-sm md:text-base text-foreground/80 leading-relaxed mb-6 flex flex-col justify-start items-start gap-2"
           >
             {selectedEvent.description}
+            {/*
             <Button asChild variant="default">
               <Link href="/about">Our full history</Link>
             </Button>
+            */}
           </motion.p>
         </div>
 
