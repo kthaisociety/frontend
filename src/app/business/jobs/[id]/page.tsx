@@ -236,22 +236,11 @@ export default function JobDetailPage() {
                     </Link>
                   </Button>
                 )}
-
-                {/* Contact Information */}
-                {job.contact && (
-                  <div className="border-t pt-4">
-                    <h4 className="font-semibold mb-2 text-sm text-secondary-black">Contact</h4>
-                    <div className="flex items-start gap-2 text-gray-700 text-sm">
-                      <Mail className="h-4 w-4 mt-0.5 shrink-0" />
-                      <span className="break-all">{job.contact}</span>
-                    </div>
-                  </div>
-                )}
               </div>
 
               {/* Application Period */}
               {(job.startdate || job.enddate) && (
-                <div className="bg-white rounded-xl p-6 shadow-sm">
+                <div>
                   <h3 className="text-xl font-bold mb-4 tracking-tight text-secondary-black">Application Period</h3>
                   <div className="flex flex-col gap-3">
                     {job.startdate && (

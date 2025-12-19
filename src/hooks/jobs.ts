@@ -1,4 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import type { JobListing as APIJobListing } from "@/app/api/jobs/route";
+import type { JobDetail } from "@/app/api/jobs/[id]/route";
 
 export type JobPostInput = {
   title: string;
