@@ -70,12 +70,12 @@ export const projects: Project[] = [
     ],
     repoUrl: "https://github.com/kthaisociety/gnosis/",
     contributors: [
-      { name: "Niklavs Visockis", role: "Tech Lead", avatar: "/profile-1.jpg" },
-      { name: "Georg Zsolnai", role: "Backend", avatar: "/profile-2.jpg" },
-      { name: "Michael Yu", role: "Backend", avatar: "/profile-3.jpg" },
-      { name: "Sebastian Schmülling", role: "Inference", avatar: "/profile-1.jpg" },
-      { name: "Elias Lindstenz", role: "Inference", avatar: "/profile-2.jpg" },
-      { name: "Giulio Altomari", role: "Fullstack", avatar: "/profile-3.jpg" }
+      { name: "Niklavs Visockis", role: "Tech Lead" },
+      { name: "Georg Zsolnai", role: "Backend" },
+      { name: "Michael Yu", role: "Backend" },
+      { name: "Sebastian Schmülling", role: "Inference" },
+      { name: "Elias Lindstenz", role: "Inference" },
+      { name: "Giulio Altomari", role: "Fullstack" }
     ],
     affiliations: "Wellvector",
     timeline: {
