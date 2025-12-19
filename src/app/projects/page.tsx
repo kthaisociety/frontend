@@ -49,71 +49,68 @@ function ProjectCard({ project }: { project: typeof projects[0] }) {
   const shadowClass = isLightBackground ? "drop-shadow-sm" : "drop-shadow-lg"
 
   return (
-    <Link href={`/projects/${project.id}`} className="block group">
-      <ImageCard
-        image={project.coverImage || "/project-placeholder.webp"}
-        alt={project.title}
-        blurHeight="70%"
-        gradientColors={gradientColors}
-        tags={project.tags}
-      >
-        {/* Title */}
-        <h3 className={`text-2xl font-bold mb-1 ${shadowClass} tracking-tight ${textColorClass} `}>
-          {project.title}
-        </h3>
+    <ImageCard
+      image={project.coverImage || "/project-placeholder.webp"}
+      alt={project.title}
+      blurHeight="70%"
+      gradientColors={gradientColors}
+      tags={project.tags}
+    >
+      {/* Title */}
+      <h3 className={`text-2xl font-bold mb-1 ${shadowClass} tracking-tight ${textColorClass} `}>
+        {project.title}
+      </h3>
 
-        {/* Short Description */}
-        <p className={`text-base ${shadowClass} mb-3 ${textColorClass}`}>
-          {project.shortDescription}
-        </p>
+      {/* Short Description */}
+      <p className={`text-base ${shadowClass} mb-3 ${textColorClass}`}>
+        {project.shortDescription}
+      </p>
 
-        {/* Contributors */}
-        <div className="flex items-center flex-wrap gap-2">
-          <AvatarGroup translate="-6%" sideOffset={10}>
-            {project.contributors.map((contributor) => (
-              <Avatar key={`${contributor.name}-${contributor.role}`} className="h-8 w-8 border mr-0.5">
-                <AvatarImage src={contributor.avatar} alt={contributor.name} />
-                <AvatarFallback className="bg-primary text-white text-xs">
-                  {getInitials(contributor.name)}
-                </AvatarFallback>
-              <AvatarGroupTooltip className="bg-white text-black rounded-lg px-3 py-2 shadow-lg">
-                <AvatarGroupTooltipArrow className="fill-white stroke-black" />
-                <div className="text-center">
-                  <div className="font-medium tracking-tight">{contributor.name}</div>
-                  <div className="text-sm font-serif text-primary">{contributor.role}</div>
-                </div>
-              </AvatarGroupTooltip>
-              </Avatar>
-            ))}
-          </AvatarGroup>
-          <span className="text-sm text-white/90 drop-shadow-md">
-          
-          </span>
-        </div>
+      {/* Contributors */}
+      <div className="flex items-center flex-wrap gap-2">
+        <AvatarGroup translate="-6%" sideOffset={10}>
+          {project.contributors.map((contributor) => (
+            <Avatar key={`${contributor.name}-${contributor.role}`} className="h-8 w-8 border mr-0.5">
+              <AvatarImage src={contributor.avatar} alt={contributor.name} />
+              <AvatarFallback className="bg-primary text-white text-xs">
+                {getInitials(contributor.name)}
+              </AvatarFallback>
+            <AvatarGroupTooltip className="bg-white text-black rounded-lg px-3 py-2 shadow-lg">
+              <AvatarGroupTooltipArrow className="fill-white stroke-black" />
+              <div className="text-center">
+                <div className="font-medium tracking-tight">{contributor.name}</div>
+                <div className="text-sm font-serif text-primary">{contributor.role}</div>
+              </div>
+            </AvatarGroupTooltip>
+            </Avatar>
+          ))}
+        </AvatarGroup>
+        <span className="text-sm text-white/90 drop-shadow-md">
+        
+        </span>
+      </div>
 
-        {/* Action Buttons */}
-        <div className="flex gap-3 mt-4">
+      {/* Action Buttons */}
+      <div className="flex gap-3 mt-4">
+        <Button
+          variant="default"
+          asChild
+        >
+          <Link href={`/projects/${project.id}`}>View project</Link>
+        </Button>
+        {project.repoUrl && project.repoUrl !== "#" && (
           <Button
-            variant="default"
+            variant="outline"
             asChild
           >
-            <Link href={`/projects/${project.id}`}>View project</Link>
+            <Link href={project.repoUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2">
+              <Github className="h-4 w-4" />
+              Repository
+            </Link>
           </Button>
-          {project.repoUrl && project.repoUrl !== "#" && (
-            <Button
-              variant="outline"
-              asChild
-              onClick={(e) => e.stopPropagation()}
-            >
-              <Link href={project.repoUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2">
-                <Github className="h-4 w-4" />
-                Repository
-              </Link>
-            </Button>
-          )}
-        </div>
-      </ImageCard>
-    </Link>
+        )}
+      </div>
+    </ImageCard>
   )
 }
 

@@ -13,75 +13,48 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { AsciiGrid } from "@/components/ui/ascii-grid"
 import { JobsSkeleton } from "@/components/jobs/job-card-skeleton"
+import { ImageCard } from "@/components/ui/image-card"
 import { useJobs } from "@/hooks/jobs"
 import type { JobListing } from "@/hooks/jobs"
-import { Badge } from '@/components/ui/badge'
 
 type JobFilter = "all" | "internship" | "summer-internship" | "part-time" | "full-time" | "volunteering" | "master-thesis" | "other"
 
 function JobCard({ job }: { job: JobListing }) {
+  // Determine gradient colors - using a consistent dark gradient for jobs
+  const gradientColors = {
+    from: "from-white/60",
+    via: "via-white/20",
+    to: "to-transparent",
+  }
+
+  // Create tags array from job properties
+  const tags = []
+  if (job.jobType) tags.push(job.jobType)
+  if (job.location) tags.push(job.location)
+
+  // Generate cover image path from company name
+  const companySlug = job.company.toLowerCase().replace(/\s+/g, "-")
+  const coverImage = `/cover-${companySlug}.jpg`
+
   return (
     <Link href={`/business/jobs/${job.id}`}>
-      <div className="bg-white rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow border border-gray-100 flex gap-6 items-start">
-        {/* Company Logo */}
-        <div className="flex-shrink-0">
-          <div className="relative w-20 h-20 rounded-lg overflow-hidden bg-gray-100 flex items-center justify-center border border-gray-200">
-            {job.companyLogo ? (
-              <Image
-                src={job.companyLogo}
-                alt={job.company}
-                width={80}
-                height={80}
-                className="object-cover"
-                unoptimized
-              />
-            ) : (
-              <Briefcase className="h-10 w-10 text-gray-400" />
-            )}
-          </div>
-        </div>
+      <ImageCard
+        image={coverImage}
+        alt={job.company}
+        blurHeight="70%"
+        gradientColors={gradientColors}
+        tags={tags}
+      >
+        {/* Title */}
+        <h3 className="text-2xl font-base mb-1 drop-shadow-lg tracking-tight text-black">
+          {job.title}
+        </h3>
 
-        {/* Job Information */}
-        <div className="flex-1 min-w-0">
-          {/* Title and Company */}
-          <div className="flex items-start justify-between gap-4 mb-2">
-            <div className="flex-1 min-w-0">
-              <h3 className="text-xl font-bold text-secondary-black mb-1 tracking-tight">
-                {job.title}
-              </h3>
-              <p className="text-base text-gray-700 font-medium">{job.company}</p>
-            </div>
-            
-            {/* Badge */}
-            {job.jobType && (
-              <Badge variant="outline" className='py-1 px-2'>{job.jobType}</Badge>
-            )}
-          </div>
-
-          {/* Meta Information */}
-          <div className="flex flex-wrap gap-x-6 gap-y-2 text-sm text-gray-600 mt-3">
-            {job.jobType && (
-              <div className="flex items-center gap-1.5">
-                <Briefcase className="h-4 w-4 text-gray-500" />
-                <span className="capitalize">{job.jobType}</span>
-              </div>
-            )}
-            {job.location && (
-              <div className="flex items-center gap-1.5">
-                <MapPin className="h-4 w-4 text-gray-500" />
-                <span>{job.location}</span>
-              </div>
-            )}
-            {job.salary && (
-              <div className="flex items-center gap-1.5">
-                <DollarSign className="h-4 w-4 text-gray-500" />
-                <span className="font-medium text-gray-700">{job.salary}</span>
-              </div>
-            )}
-           
-          </div>
-        </div>
-      </div>
+        {/* Company Name */}
+        <p className="text-base drop-shadow-lg mb-3 font-mono text-black">
+          {job.company}
+        </p>
+      </ImageCard>
     </Link>
   )
 }
@@ -174,10 +147,8 @@ export default function JobListingPage() {
 
           {/* Description */}
           <p className="text-lg md:text-xl mb-8 max-w-3xl opacity-95 leading-relaxed font-serif">
-          We at KTH AI Society strive to bridge the gap between our members and the industry. It’s quite simple, companies working for the solutions of tomorrow need the talent of today. So below we listed all relevant work opportunities for you to take on new challenges.
-          </p>
-          <p>
-          If you want to make a job posting contact us at <a href="mailto:contact@kthais.com" className="text-primary">contact@kthais.com</a>.
+          Connecting our members with industry opportunities. Browse current openings below.
+          If you want to make a job posting contact us at <a href="mailto:jobs@kthais.com" className="text-primary">jobs@kthais.com</a>.
           </p>
         </div>
       </section>
@@ -232,15 +203,17 @@ export default function JobListingPage() {
             </DropdownMenu>
           </div>
 
-          {/* Jobs List */}
+          {/* Jobs Grid */}
           {loading ? (
-            <JobsSkeleton />
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <JobsSkeleton />
+            </div>
           ) : error ? (
             <div className="text-center py-12 text-red-500">
               <p className="text-lg">Error: {error}</p>
             </div>
           ) : filteredJobs.length > 0 ? (
-            <div className="flex flex-col gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {filteredJobs.map((job) => (
                 <JobCard key={job.id} job={job} />
               ))}

@@ -1,7 +1,7 @@
 "use client"
 
 import Link from "next/link"
-import { ArrowRight } from "lucide-react"
+import { ArrowRight, Github } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { ImageCard } from "@/components/ui/image-card"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
@@ -10,67 +10,8 @@ import {
   AvatarGroupTooltip,
   AvatarGroupTooltipArrow,
 } from "@/components/ui/avatar-group"
-
-interface Contributor {
-  name: string
-  role: string
-  avatar?: string
-  linkedinUrl?: string
-}
-
-interface Project {
-  id: string
-  tags: string[]
-  title: string
-  shortDescription: string
-  longDescription: string
-  contributors: Contributor[]
-  projectUrl?: string
-  repoUrl?: string
-}
-
-const mockProjects: Project[] = [
-  {
-    id: "1",
-    tags: ["react", "iot", "maps"],
-    title: "Shuttle Tracker",
-    shortDescription: "Realtime buses on campus",
-    longDescription: "IoT devices stream GPS to a Next.js dashboard with live maps and alerts.",
-    contributors: [
-      { name: "Jesper Hesselgren", role: "Frontend Developer", avatar: "/profile-1.jpg", linkedinUrl: "https://linkedin.com/in/jesper-hesselgren" },
-      { name: "Erik Johansson", role: "Backend Developer", avatar: "/profile-2.jpg", linkedinUrl: "https://linkedin.com/in/erik-johansson" },
-    ],
-    projectUrl: "#",
-    repoUrl: "#",
-  },
-  {
-    id: "2",
-    tags: ["finance", "ml", "analytics"],
-    title: "SSE Ledger",
-    shortDescription: "Finance analytics & anomaly detection",
-    longDescription: "Ingests journal entries, runs ML-based anomaly detection, and surfaces insights in a web UI.",
-    contributors: [
-      { name: "Sofia Lindström", role: "AI Researcher", avatar: "/profile-3.jpg", linkedinUrl: "https://linkedin.com/in/sofia-lindstrom" },
-      { name: "Nora Ahmed", role: "Product Manager", avatar: "/profile-1.jpg", linkedinUrl: "https://linkedin.com/in/nora-ahmed" },
-    ],
-    projectUrl: "#",
-    repoUrl: "#",
-  },
-  {
-    id: "3",
-    tags: ["nextjs", "ssr", "ui"],
-    title: "Campus Events",
-    shortDescription: "SSR site with filters & ICS export",
-    longDescription: "Next.js App Router app that aggregates events, supports tags, and calendar exports.",
-    contributors: [
-      { name: "Liam Pettersson", role: "DevOps Engineer", avatar: "/profile-2.jpg", linkedinUrl: "https://linkedin.com/in/liam-pettersson" },
-      { name: "Jesper Hesselgren", role: "Frontend Developer", avatar: "/profile-3.jpg", linkedinUrl: "https://linkedin.com/in/jesper-hesselgren" },
-      { name: "Erik Johansson", role: "Backend Developer", avatar: "/profile-1.jpg", linkedinUrl: "https://linkedin.com/in/erik-johansson" },
-    ],
-    projectUrl: "#",
-    repoUrl: "#",
-  },
-]
+import { projects } from "@/lib/data/projects"
+import type { Project } from "@/lib/data/projects"
 
 function ProjectCard({ project }: { project: Project }) {
   const getInitials = (name: string) => {
@@ -82,25 +23,39 @@ function ProjectCard({ project }: { project: Project }) {
       .slice(0, 2)
   }
 
+  // Determine gradient and text colors based on cover image theme
+  const isLightBackground = project.coverImageTheme === "light"
+  
+  const gradientColors = isLightBackground
+    ? {
+        from: "from-white/55",
+        via: "via-white/50",
+        to: "to-transparent",
+      }
+    : {
+        from: "from-black/60",
+        via: "via-black/20",
+        to: "to-transparent",
+      }
+
+  const textColorClass = isLightBackground ? "text-secondary-black" : "text-white"
+  const shadowClass = isLightBackground ? "drop-shadow-sm" : "drop-shadow-lg"
+
   return (
     <ImageCard
-      image="/project-placeholder.webp"
+      image={project.coverImage || "/project-placeholder.webp"}
       alt={project.title}
       blurHeight="70%"
-      gradientColors={{
-        from: "from-white/60",
-        via: "via-white/55",
-        to: "to-transparent",
-      }}
+      gradientColors={gradientColors}
       tags={project.tags}
     >
       {/* Title */}
-      <h3 className="text-2xl font-base text-secondary-black mb-1 drop-shadow-lg tracking-tight">
+      <h3 className={`text-2xl font-bold mb-1 ${shadowClass} tracking-tight ${textColorClass}`}>
         {project.title}
       </h3>
 
       {/* Short Description */}
-      <p className="text-base drop-shadow-md mb-3">
+      <p className={`text-base ${shadowClass} mb-3 ${textColorClass}`}>
         {project.shortDescription}
       </p>
 
@@ -123,16 +78,38 @@ function ProjectCard({ project }: { project: Project }) {
             </Avatar>
           ))}
         </AvatarGroup>
+        <span className="text-sm text-white/90 drop-shadow-md">
+        
+        </span>
       </div>
 
-      
+      {/* Action Buttons */}
+      <div className="flex gap-3 mt-4">
+        <Button
+          variant="default"
+          asChild
+        >
+          <Link href={`/projects/${project.id}`}>View project</Link>
+        </Button>
+        {project.repoUrl && project.repoUrl !== "#" && (
+          <Button
+            variant="outline"
+            asChild
+          >
+            <Link href={project.repoUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2">
+              <Github className="h-4 w-4" />
+              Repository
+            </Link>
+          </Button>
+        )}
+      </div>
     </ImageCard>
   )
 }
 
 export function ProjectsPreview() {
   // Show first 3 projects for preview
-  const previewProjects = mockProjects.slice(0, 3)
+  const previewProjects = projects.slice(0, 3)
 
   return (
     <section className="container mx-auto py-16 px-4 w-full max-w-7xl">
