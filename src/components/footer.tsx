@@ -25,17 +25,19 @@ const FOOTER_SECTIONS: FooterSection[] = [
   {
     title: "Socials",
     links: [
-      { label: "LinkedIn", href: "https://linkedin.com/company/kth-ai-society", external: true },
+      { label: "LinkedIn", href: "https://www.linkedin.com/company/kth-ai-society/", external: true },
       { label: "Instagram", href: "https://instagram.com/kthaisociety", external: true },
-      { label: "TikTok", href: "https://tiktok.com/@kthaisociety", external: true },
+      { label: "Github", href: "https://github.com/kthaisociety", external: true },
       { label: "Medium", href: "https://medium.com/@kthaisociety", external: true },
     ],
   },
   {
     title: "Legal",
     links: [
-      { label: "Imprint", href: "/imprint" },
-      { label: "Privacy Policy", href: "/privacy" },
+      { label: "Legal Documents", href: "/legal" },
+      { label: "Terms & Conditions", href: "/legal/terms-and-conditions" },
+      { label: "Privacy & Cookies", href: "/legal/privacy-and-cookies" },
+      { label: "Legal Notice", href: "/legal/legal-notice" },
     ],
   },
 ];
