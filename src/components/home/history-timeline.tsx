@@ -3,10 +3,8 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
-import Link from 'next/link';
 import NumberFlow from '@number-flow/react';
 import { cn } from '@/lib/utils';
-import { Button } from '@/components/ui/button';
 
 export interface TimelineEvent {
   year: number;
@@ -19,15 +17,74 @@ export interface TimelineEvent {
 export interface HistoryTimelineProps {
   title?: string;
   introText?: string;
-  events: TimelineEvent[];
+  events?: TimelineEvent[];
   defaultYear?: number;
   className?: string;
 }
 
+const defaultTimelineEvents: TimelineEvent[] = [
+  {
+    year: 2018,
+    heading: "FOUNDATION YEAR",
+    description: "Foundation year.",
+    image: "/images/history/placeholder-03.jpg",
+    imageAlt: "KTH AI Society founding",
+  },
+  {
+    year: 2019,
+    heading: "FIRST AI DAY",
+    description: "We had our first AI Day in 2019, marking the beginning of our flagship event series.",
+    image: "/images/history/mckinsey-2023.jpg",
+    imageAlt: "First AI Day 2019",
+  },
+  {
+    year: 2020,
+    heading: "MCKINSEY PARTNERSHIP",
+    description: "Landed McKinsey sponsor in 2020, establishing a long-term partnership that would support our growth and initiatives.",
+    image: "/images/history/mckinsey-2024.jpg",
+    imageAlt: "McKinsey partnership 2020",
+  },
+  {
+    year: 2021,
+    heading: "AI DAY ON TOUR",
+    description: "AI Day Fall 2021: KTH AI Society's AI Day on Tour gave 25 KTH students the opportunity to visit Sana Labs, QuantumBlack, and Modulai.",
+    image: "/images/history/placeholder-02.jpg",
+    imageAlt: "AI Day on Tour 2021",
+  },
+  {
+    year: 2022,
+    heading: "NORDIC AI & OPEN DATA HACKATHON",
+    description: "A Nordic hackathon (Stockholm, Copenhagen, and online) focused on AI, open data, and responsible digitalization aligned with the UN SDGs.",
+    image: "/images/history/hackathon.jpg",
+    imageAlt: "Nordic AI & Open Data Hackathon 2022",
+  },
+  {
+    year: 2023,
+    heading: "AI INNOVATION IN SWEDEN, EUROPE, AND BEYOND",
+    description: "We helped and participated with organizers KTH Innovation and Google, featuring Sundar Pichai alongside Sweden's Prime Minister.",
+    image: "/images/history/placeholder-04.jpg",
+    imageAlt: "Event with Sundar Pichai and Sweden's Prime Minister 2023",
+  },
+  {
+    year: 2024,
+    heading: "REBRAND AND SCALING",
+    description: "Rebrand and scaled marketing efforts, resulting in successful events with Ericsson, McKinsey QuantumBlack, multiple workshops, and two TEDxKTH Library events.",
+    image: "/images/history/ericsson.jpg",
+    imageAlt: "Rebranded KTH AI Society 2024",
+  },
+  {
+    year: 2025,
+    heading: "Microsoft Hackathon",
+    description: "We hosted a Microsoft Hackathon in collaboration with SSE Business Lab.",
+    image: "/images/history/placeholder-01.jpg",
+    imageAlt: "Microsoft Hackathon 2025",
+  },
+];
+
 export function HistoryTimeline({
   title: _title = 'OUR HISTORY',
   introText: _introText = 'ZCMC, and the Kajaran deposit, has a long standing history...',
-  events,
+  events = defaultTimelineEvents,
   defaultYear,
   className,
 }: HistoryTimelineProps) {
@@ -49,7 +106,7 @@ export function HistoryTimeline({
         <div className="lg:col-span-4 flex flex-col">
        
           {/* Large Year Number with NumberFlow Animation */}
-          <div className="relative mb-6 h-32 flex items-start">
+          <div className="relative mb-6 flex items-start">
             <NumberFlow
               value={selectedEvent.year}
               format={{ minimumFractionDigits: 0, maximumFractionDigits: 0, useGrouping: false }}
@@ -63,7 +120,7 @@ export function HistoryTimeline({
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3, delay: 0.1 }}
-            className="text-xl md:text-2xl  text-foreground  mb-4 tracking-tight"
+            className="text-xl md:text-2xl  text-foreground mb-4 tracking-tight"
           >
             {selectedEvent.heading}
           </motion.h2>

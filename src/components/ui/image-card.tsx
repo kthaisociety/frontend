@@ -72,7 +72,7 @@ export function ImageCard({
           {tags?.map((tag) => (
             <span
               key={tag}
-              className="px-3 py-1 text-xs font-medium rounded-full bg-primary backdrop-blur-sm text-white font-mono capitalize"
+              className="px-3 py-1 text-xs font-medium rounded-full bg-primary backdrop-blur-sm text-white font-mono uppercase"
             >
               {tag}
             </span>

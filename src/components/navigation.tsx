@@ -65,13 +65,13 @@ export function Navigation() {
           {/* Right side: Navigation Links */}
            <div className="items-center gap-8 hidden md:flex ">
             <Link
-              href="/projects"
+              href="/events"
               className="text-md font-medium text-foreground/80 hover:text-foreground transition-colors"
             >
               Events
             </Link>
             <Link
-              href="/events"
+              href="/projects"
               className="text-md font-medium text-foreground/80 hover:text-foreground transition-colors"
             >
               Projects
