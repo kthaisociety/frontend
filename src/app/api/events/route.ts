@@ -24,6 +24,7 @@ export async function GET() {
     const apiKey = process.env.LUMA_API_KEY;
 
     if (!apiKey) {
+      console.error("LUMA_API_KEY is not configured in environment variables");
       return NextResponse.json(
         { error: "LUMA_API_KEY is not configured" },
         { status: 500 }

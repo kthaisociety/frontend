@@ -185,7 +185,7 @@ export default function EventDetailPage() {
           {/* Event Details */}
           <div className="flex flex-col gap-4 mb-8">
             {startDate && formattedStartDate && (
-              <div className="flex items-center gap-2 text-md text-black/90 font-mono">
+              <div className="flex items-center gap-2 md:text-md text-sm text-black/90 font-mono">
                 <Calendar className="h-5 w-5" />
                 <span>{formattedStartDate}</span>
                 {formattedEndTime && (
@@ -202,7 +202,7 @@ export default function EventDetailPage() {
             )}
 
             {hostName && (
-              <div className="flex items-center gap-2 text-md text-black/90 font-mono">
+              <div className="flex items-center gap-2 md:text-md text-sm text-black/90 font-mono">
                 <User className="h-5 w-5" />
                 <span>Hosted by {hostName}</span>
               </div>
@@ -212,7 +212,7 @@ export default function EventDetailPage() {
       </section>
 
       {/* White Content Area */}
-      <section className="relative max-w-7xl mx-auto z-20 -mt-24 bg-neutral-50 rounded-3xl p-8 mb-24 shadow-lg border">
+      <section className="relative max-w-7xl mx-4 sm:mx-auto z-20 -mt-24 bg-neutral-50 rounded-3xl p-4 md:p-8 mb-24 shadow-lg border">
         <div className="container mx-auto">
           {/* Breadcrumbs */}
           <div className="mb-8 flex items-center">

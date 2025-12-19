@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { Menu, X } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 
 import { TextMorph } from "@/components/ui/text-morph";
 import { ProgressiveBlur } from "@/components/ui/progressive-blur";
@@ -10,6 +12,7 @@ import { cn } from "@/lib/utils";
 
 export function Navigation() {
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -21,19 +24,57 @@ export function Navigation() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  useEffect(() => {
+    // Prevent body scroll when mobile menu is open
+    if (isMobileMenuOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "unset";
+    }
+    return () => {
+      document.body.style.overflow = "unset";
+    };
+  }, [isMobileMenuOpen]);
+
   return (
-    <nav
-      className={cn(
-        "fixed top-0 left-0 right-0 z-50 transition-all duration-300"
-      )}
-    >
-      <ProgressiveBlur
-        className="pointer-events-none absolute top-0 left-0 h-full w-full"
-        height="100%"
-        position="top"
-      />
-      <div className="absolute top-0 left-0 h-full w-full bg-linear-to-b from-white/60 via-white/50 to-white/0 pointer-events-none"></div>
-      <div className="max-w-7xl mx-auto py-4 px-4 relative z-10">
+    <>
+      {/* Dimmed overlay when mobile menu is open */}
+      <AnimatePresence>
+        {isMobileMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3, ease: [0.25, 0.1, 0.25, 1] }}
+            className="fixed inset-0 bg-black/50 z-40 md:hidden"
+            onClick={() => setIsMobileMenuOpen(false)}
+            aria-hidden="true"
+          />
+        )}
+      </AnimatePresence>
+
+      <nav
+        className="fixed top-0 left-0 right-0 z-50"
+      >
+        {/* Always present progressive blur background */}
+        <ProgressiveBlur
+          className="pointer-events-none absolute top-0 left-0 h-full w-full"
+          height="100%"
+          position="top"
+        />
+        <div className="absolute top-0 left-0 h-full w-full bg-linear-to-b from-white/60 via-white/50 to-white/0 pointer-events-none"></div>
+        
+        {/* Solid white overlay that fades in when menu opens */}
+        <motion.div
+          initial={false}
+          animate={{ 
+            opacity: isMobileMenuOpen ? 1 : 0,
+          }}
+          transition={{ duration: 0.3, ease: [0.25, 0.1, 0.25, 1] }}
+          className="absolute top-0 left-0 h-full w-full bg-white pointer-events-none"
+        />
+        
+        <div className="max-w-7xl mx-auto py-4 px-4 relative z-10">
         <div className="flex items-center justify-between">
           {/* Left side: Logo + Text */}
           <Link href="/">
@@ -62,8 +103,8 @@ export function Navigation() {
               </TextMorph>
             </div>
           </Link>
-          {/* Right side: Navigation Links */}
-           <div className="items-center gap-8 hidden md:flex ">
+          {/* Right side: Navigation Links - Desktop */}
+          <div className="items-center gap-8 hidden md:flex">
             <Link
               href="/events"
               className="text-md font-medium text-foreground/80 hover:text-foreground transition-colors"
@@ -94,9 +135,97 @@ export function Navigation() {
             >
               Contact
             </Link>
-          </div> 
+          </div>
+
+          {/* Mobile Menu Button */}
+          <button
+            className="md:hidden p-2 text-foreground hover:text-foreground/80 transition-colors"
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            aria-label="Toggle menu"
+          >
+            {isMobileMenuOpen ? (
+              <X className="h-6 w-6" />
+            ) : (
+              <Menu className="h-6 w-6" />
+            )}
+          </button>
         </div>
       </div>
-    </nav>
+
+        {/* Mobile Menu - Slides down from top */}
+        <AnimatePresence>
+          {isMobileMenuOpen && (
+            <motion.div
+              initial={{ opacity: 0, y: -20, height: 0 }}
+              animate={{ 
+                opacity: 1, 
+                y: 0, 
+                height: "auto",
+                transition: { 
+                  duration: 0.4, 
+                  ease: [0.25, 0.1, 0.25, 1],
+                }
+              }}
+              exit={{ 
+                opacity: 0, 
+                y: -20, 
+                height: 0,
+                transition: { 
+                  duration: 0.3, 
+                  ease: [0.25, 0.1, 0.25, 1],
+                }
+              }}
+              className="md:hidden fixed top-[72px] left-0 right-0 bg-white shadow-md z-50 overflow-hidden"
+            >
+              <motion.div 
+                className="max-w-7xl mx-auto px-6 py-2"
+                initial={{ opacity: 0 }}
+                animate={{ 
+                  opacity: 1,
+                  transition: { delay: 0.1, duration: 0.3 }
+                }}
+                exit={{ opacity: 0, transition: { duration: 0.2 } }}
+              >
+                <Link
+                  href="/events"
+                  className="block py-3 text-base font-normal text-foreground/70 hover:text-foreground transition-colors"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  Events
+                </Link>
+                <Link
+                  href="/projects"
+                  className="block py-3 text-base font-normal text-foreground/70 hover:text-foreground transition-colors"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  Projects
+                </Link>
+                <Link
+                  href="/business/jobs"
+                  className="block py-3 text-base font-normal text-foreground/70 hover:text-foreground transition-colors"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  Job Board
+                </Link>
+                <Link
+                  href="/#about"
+                  className="block py-3 text-base font-normal text-foreground/70 hover:text-foreground transition-colors"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  About
+                </Link>
+                <Link
+                  href="mailto:contact@kthais.com"
+                  className="block py-3 text-base font-normal text-foreground/70 hover:text-foreground transition-colors"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  Contact
+                </Link>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </nav>
+    </>
   );
 }
