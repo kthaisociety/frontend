@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Separator } from "@/components/ui/separator"
 import { AsciiGrid } from "@/components/ui/ascii-grid"
+import { Markdown } from "@/components/ui/markdown"
 import { getProjectById } from "@/lib/data/projects"
 
 export default function ProjectDetailPage({ params }: { params: Promise<{ id: string }> }) {
@@ -132,9 +133,7 @@ export default function ProjectDetailPage({ params }: { params: Promise<{ id: st
                 <h2 className="text-xl font-base mb-4 text-secondary-black flex items-center gap-2">
                   Problem & Impact
                 </h2>
-                <p className="prose prose-lg text-secondary-black leading-relaxed">
-                  {project.problemImpact}
-                </p>
+                <Markdown content={project.problemImpact} className="text-secondary-black" />
               </div>
 
               <Separator />
