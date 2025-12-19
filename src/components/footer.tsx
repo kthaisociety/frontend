@@ -72,7 +72,7 @@ export function Footer() {
 
           <div className="space-y-4">
             
-            <div className="absolute left-1/2 -bottom-20 md:top-20 -translate-x-1/2 max-h-[1500px] w-full md:w-auto aspect-square rounded-lg overflow-hidden opacity-30 bg-muted">
+            <div className="absolute left-1/2 -bottom-20 md:top-20 -translate-x-1/2 max-h-[1500px] w-full md:w-auto aspect-square rounded-lg overflow-hidden opacity-30 bg-muted pointer-events-none -z-1 ">
               <video
                 autoPlay
                 loop

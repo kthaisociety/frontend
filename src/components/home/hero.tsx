@@ -98,8 +98,8 @@ export function Hero() {
               size="xl"
               asChild
             >
-              <Link href="/auth/signup" className="flex items-center gap-1">
-                <span className="font-serif text-[120%] mb-1">2</span> Upcoming Events
+              <Link href="/events" className="flex items-center gap-1">
+               Upcoming Events
               </Link>
             </Button>
 
@@ -108,7 +108,7 @@ export function Hero() {
               size="xl"
               asChild
             >
-              <Link href="#about">
+              <Link href="mailto:business@kthais.com.">
                 For Sponsors
               </Link>
             </Button>

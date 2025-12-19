@@ -76,24 +76,24 @@ export function Navigation() {
             >
               Projects
             </Link>
-            <a
-              href="#team"
+            <Link
+              href="/business/jobs"
               className="text-md font-medium text-foreground/80 hover:text-foreground transition-colors"
             >
               Job Board
-            </a>
-            <a
-              href="#contact"
+            </Link>
+            <Link
+              href="/#about"
               className="text-md font-medium text-foreground/80 hover:text-foreground transition-colors"
             >
               About
-            </a>
-            <a
-              href="#contact"
+            </Link>
+            <Link
+              href="mailto:contact@kthais.com"
               className="text-md font-medium text-foreground/80 hover:text-foreground transition-colors"
             >
               Contact
-            </a>
+            </Link>
           </div> 
         </div>
       </div>
