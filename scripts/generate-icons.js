@@ -42,3 +42,4 @@ console.log('\nAll icons generated successfully!');
 
 
 
+
