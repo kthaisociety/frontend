@@ -26,26 +26,25 @@ function JobCard({ job }: { job: JobListing }) {
   const coverImage = `/cover-${companySlug}.jpg`
 
   return (
-    <ImageCard
-      image={coverImage}
-      alt={job.company}
-      blurHeight="70%"
-      gradientColors={gradientColors}
-      tags={tags}
-    >
-      {/* Title */}
-      <h3 className="text-2xl font-base mb-1 drop-shadow-lg tracking-tight text-black">
-        {job.title}
-      </h3>
+    <Link href={`/business/jobs/${job.id}`}>
+      <ImageCard
+        image={coverImage}
+        alt={job.company}
+        blurHeight="70%"
+        gradientColors={gradientColors}
+        tags={tags}
+      >
+        {/* Title */}
+        <h3 className="text-2xl font-base mb-1 drop-shadow-lg tracking-tight text-black">
+          {job.title}
+        </h3>
 
-      {/* Company Name */}
-      <p className="text-base drop-shadow-lg mb-3 font-mono text-black">
-        {job.company}
-      </p>
-
-
-    
-    </ImageCard>
+        {/* Company Name */}
+        <p className="text-base drop-shadow-lg mb-3 font-mono text-black">
+          {job.company}
+        </p>
+      </ImageCard>
+    </Link>
   )
 }
 

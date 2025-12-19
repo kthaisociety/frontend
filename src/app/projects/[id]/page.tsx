@@ -108,7 +108,7 @@ export default function ProjectDetailPage({ params }: { params: Promise<{ id: st
       </section>
 
       {/* White Content Area */}
-      <section className="relative max-w-7xl mx-auto z-20 -mt-24 bg-neutral-50 rounded-3xl p-8 mb-24 shadow-lg border">
+      <section className="relative max-w-7xl mx-4 sm:mx-auto z-20 -mt-24 bg-neutral-50 rounded-3xl p-4 md:p-8 mb-24 shadow-lg border">
         {/* Breadcrumbs */}
         <div className="mb-8 flex items-center">
             <Link href="/" className="text-secondary-gray hover:text-primary transition-colors text-sm font-medium">

@@ -153,7 +153,7 @@ export default function JobListingPage() {
       </section>
 
       {/* White Content Area */}
-      <section className="relative max-w-7xl mx-auto z-20 -mt-24 bg-neutral-50 rounded-3xl p-8 mb-24 shadow-lg border">
+      <section className="relative max-w-7xl mx-4 sm:mx-auto z-20 -mt-24 bg-neutral-50 rounded-3xl p-4 md:p-8 mb-24 shadow-lg border ">
         <div className="container mx-auto">
           <div className="flex justify-between items-center mb-8">
             {/* Breadcrumbs */}
