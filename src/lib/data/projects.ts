@@ -150,7 +150,7 @@ export const projects: Project[] = [
     category: "AI Agent",
     tags: ["python", "fastapi", "langchain", "docker"],
     techStack: ["Python", "FastAPI", "LangChain", "Docker", "Next.js"],
-    problemImpact: "Problem: How do you fast-track land development by ensuring consistency with the surrounding legal frameworks throughout the planning process? Impact: Plug and play legal agent to be used by land developers. Future part of the VillageOS™ at ReGen Villages.",
+    problemImpact: "**Problem:** How do you fast-track land development by ensuring consistency with the surrounding legal frameworks throughout the planning process?\n\n**Solution:** Plug and play legal agent to be used by land developers. Future part of the VillageOS™ at ReGen Villages.",
     keyFeatures: [
       "Legal Agent: An autonomous agent capable of interpreting legal language regarding land use.",
       "Regulatory Lookup: Instant access to surrounding legal frameworks and zoning laws.",
@@ -180,7 +180,6 @@ export const projects: Project[] = [
       currentPhase: "Unify resource ingestion across document types, Building first agentic features",
       upcomingMilestones: [
         "Preliminary resource ingestion",
-        "Implementation of RAG (Retrieval-Augmented Generation) architecture",
         "Unified resource ingestion across document types",
         "First agentic features"
       ]
@@ -220,7 +219,7 @@ export const projects: Project[] = [
     ],
     affiliations: "ReGen Villages",
     timeline: {
-      startDate: "2024-11-24",
+      startDate: "2025-11-24",
       currentPhase: "Development and research phase",
       upcomingMilestones: [
         "Complete synthetic training pipeline",
