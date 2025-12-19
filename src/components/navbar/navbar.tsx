@@ -1,6 +1,7 @@
 "use client";
 import * as React from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -9,10 +10,9 @@ import {
   NavigationMenuList,
   NavigationMenuTrigger,
 } from "@radix-ui/react-navigation-menu";
+import { useLogoutMutation } from "@/lib/model/apis/internal-apis";
 import { useAppSelector } from "@/lib/model/store";
 import { Button } from "../ui/button";
-import { useLogoutMutation } from "@/lib/model/apis/internal-apis";
-import { useRouter } from "next/navigation";
 
 export function Navbar() {
   const isLoggedIn = useAppSelector((state) => state.auth.isLoggedIn);

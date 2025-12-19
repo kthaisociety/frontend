@@ -8,7 +8,6 @@ import { motion, AnimatePresence } from "framer-motion";
 
 import { TextMorph } from "@/components/ui/text-morph";
 import { ProgressiveBlur } from "@/components/ui/progressive-blur";
-import { cn } from "@/lib/utils";
 
 export function Navigation() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -139,6 +138,7 @@ export function Navigation() {
 
           {/* Mobile Menu Button */}
           <button
+            type="button"
             className="md:hidden p-2 text-foreground hover:text-foreground/80 transition-colors"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             aria-label="Toggle menu"

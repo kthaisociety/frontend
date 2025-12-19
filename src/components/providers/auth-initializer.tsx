@@ -28,5 +28,5 @@ export function AuthInitializer({ children }: { children: React.ReactNode }) {
     }
   }, [data, error, isLoading, dispatch, isDevelopment]);
 
-  return <>{children}</>;
+  return children;
 }
