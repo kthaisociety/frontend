@@ -2,8 +2,7 @@
 
 import { useState, useEffect } from "react"
 import Link from "next/link"
-import Image from "next/image"
-import { ChevronDown, Briefcase, DollarSign, MapPin } from "lucide-react"
+import { ChevronDown } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,

@@ -34,7 +34,6 @@ const FOOTER_SECTIONS: FooterSection[] = [
   {
     title: "Legal",
     links: [
-      { label: "Legal Documents", href: "/legal" },
       { label: "Terms & Conditions", href: "/legal/terms-and-conditions" },
       { label: "Privacy & Cookies", href: "/legal/privacy-and-cookies" },
       { label: "Legal Notice", href: "/legal/legal-notice" },
