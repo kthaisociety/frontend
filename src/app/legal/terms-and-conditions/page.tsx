@@ -2,9 +2,9 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import { Mail } from 'lucide-react'
 import { Markdown } from '@/components/ui/markdown'
 import { AsciiGrid } from '@/components/ui/ascii-grid'
-import { FileText, Mail } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
 
