@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, type ChangeEvent, type FormEvent } from "react";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -113,9 +114,11 @@ export function CompanyAdminPanel({ className }: { className?: string }) {
                 {form.logoUrl ? (
                   <div className="flex items-center gap-3">
                     <div className="relative">
-                      <img
+                      <Image
                         src={form.logoUrl}
                         alt={`${form.name || "Company"} logo preview`}
+                        width={64}
+                        height={64}
                         className="h-16 w-16 rounded-md border border-input object-contain"
                       />
                       <Button

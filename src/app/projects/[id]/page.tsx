@@ -144,8 +144,8 @@ export default function ProjectDetailPage({ params }: { params: Promise<{ id: st
                   Tech Stack
                 </h2>
                 <div className="flex flex-wrap gap-2">
-                  {project.techStack.map((tech, index) => (
-                    <Badge key={index} variant="secondary" className="text-sm">
+                  {project.techStack.map((tech) => (
+                    <Badge key={tech} variant="secondary" className="text-sm">
                       {tech}
                     </Badge>
                   ))}
@@ -160,8 +160,8 @@ export default function ProjectDetailPage({ params }: { params: Promise<{ id: st
                   Key Features
                 </h2>
                 <ul className="space-y-3">
-                  {project.keyFeatures.map((feature, index) => (
-                    <li key={index} className="flex gap-3">
+                  {project.keyFeatures.map((feature) => (
+                    <li key={feature} className="flex gap-3">
                       <ChevronRight className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
                       <span className="text-secondary-black  leading-relaxed">{feature}</span>
                     </li>
@@ -180,8 +180,8 @@ export default function ProjectDetailPage({ params }: { params: Promise<{ id: st
                       Screenshots
                     </h2>
                     <div className="grid grid-cols-1 gap-6">
-                      {project.screenshots.map((screenshot, index) => (
-                        <div key={index} className="space-y-2">
+                      {project.screenshots.map((screenshot) => (
+                        <div key={screenshot.image} className="space-y-2">
                           <div className="relative w-full">
                             <Image
                               src={screenshot.image}
@@ -221,8 +221,8 @@ export default function ProjectDetailPage({ params }: { params: Promise<{ id: st
                   <div>
                     <p className="text-sm font-medium mb-2">Upcoming Milestones</p>
                     <ul className="space-y-2">
-                      {project.timeline.upcomingMilestones.map((milestone, index) => (
-                        <li key={index} className="flex items-center gap-2 text-secondary-black">
+                      {project.timeline.upcomingMilestones.map((milestone) => (
+                        <li key={milestone} className="flex items-center gap-2 text-secondary-black">
                           <div className="w-1.5 h-1.5 bg-primary rounded-full" />
                           {milestone}
                         </li>
@@ -290,8 +290,8 @@ export default function ProjectDetailPage({ params }: { params: Promise<{ id: st
                     Contributors
                   </h3>
                   <div className="space-y-3">
-                    {project.contributors.map((contributor, index) => (
-                      <div key={index} className="flex items-center gap-3 p-2 rounded-lg hover:bg-neutral-50 transition-colors">
+                    {project.contributors.map((contributor) => (
+                      <div key={contributor.name} className="flex items-center gap-3 p-2 rounded-lg hover:bg-neutral-50 transition-colors">
                         <Avatar className="h-10 w-10 border-2 border-primary/10">
                           <AvatarImage src={contributor.avatar} alt={contributor.name} />
                           <AvatarFallback className="bg-primary text-white text-xs">

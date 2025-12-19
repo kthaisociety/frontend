@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { MapPin, Calendar, Briefcase, Mail } from "lucide-react";
 
 interface ProfileCardProps {
@@ -10,7 +11,7 @@ interface ProfileCardProps {
   bio: string;
 }
 
-export const ProfileCard = ({
+export function ProfileCard({
   profileImage,
   name,
   title,
@@ -18,7 +19,7 @@ export const ProfileCard = ({
   email,
   joinDate,
   bio,
-}: ProfileCardProps) => {
+}: ProfileCardProps) {
   return (
     <div className="relative mt-20">
       {/* Profile Image - Water Drop Effect */}
@@ -27,9 +28,11 @@ export const ProfileCard = ({
           <div className="absolute inset-0 rounded-full profile-border-gradient blur-sm scale-110" />
           <div className="relative w-32 h-32 rounded-full p-1 profile-border-gradient">
             <div className="w-full h-full rounded-full overflow-hidden bg-card p-0.5">
-              <img
+              <Image
                 src={profileImage}
                 alt={name}
+                width={128}
+                height={128}
                 className="w-full h-full rounded-full object-cover"
               />
             </div>
@@ -83,4 +86,4 @@ export const ProfileCard = ({
       </div>
     </div>
   );
-};
+}

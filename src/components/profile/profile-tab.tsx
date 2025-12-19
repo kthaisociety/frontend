@@ -23,7 +23,7 @@ interface SocialLinks {
   website: string;
 }
 
-export const ProfileTabs = () => {
+export function ProfileTabs() {
   const [personalInfo, setPersonalInfo] = useState<PersonalInfo>({
     firstName: "Alexandra",
     lastName: "Chen",
@@ -301,4 +301,4 @@ export const ProfileTabs = () => {
       </Tabs>
     </div>
   );
-};
+}
