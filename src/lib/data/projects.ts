@@ -207,8 +207,8 @@ export const projects: Project[] = [
     screenshots: [
       {
         image: "/topovision-screenshot.jpg",
-        caption: "TopoVision synthetic map generation and 3D reconstruction",
-        alt: "TopoVision topographical map processing"
+        caption: "TopoVision synthetic map generation and 3D reconstruction - integrated into ReGen VillageOS for landscape rendering",
+        alt: "TopoVision topographical map processing for ReGen VillageOS"
       }
     ],
     repoUrl: "https://github.com/mattiaskvist/topovision",
