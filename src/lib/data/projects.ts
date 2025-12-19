@@ -45,9 +45,9 @@ export const projects: Project[] = [
     oneLineDescription: "Exploring OCR and Visual Language Models in the context of complex graph comprehension. Building a modular architecture that can swap out models as well as evaluate their performance on graphs of oil and gas wells.",
     shortDescription: "OCR and Visual Language Models for graph comprehension",
     category: "AI application",
-    tags: ["inference", "docker", "protobuf"],
+    tags: ["inference", "systems", "python"],
     techStack: ["Python", "Docker", "Protobuf"],
-    problemImpact: "Solves the problem of Multimodal and OCR models not comprehending graph and tabular content. OCR models are good at reading text, even when its blurry or grainy, but reading grainy and at times even hand-drawn graphs is even more tricky. Google's Gemini has become the defacto model for graph comprehension, but as many have noticed, it easily gets pricey. With this said, we believe a potential combination of OCR-models, Visual Language Models and sophisticated scaling, resizing and skewing would be even more efficient.",
+    problemImpact: "Solves the problem of Multimodal and OCR models not comprehending graph and tabular content. OCR models are good at reading text, even when its blurry or grainy, but reading grainy and at times even hand-drawn graphs is even more tricky.\n\n Google's Gemini has become the defacto model for graph comprehension, but as many have noticed, it easily gets pricey. With this said, we believe a potential combination of OCR-models, Visual Language Models and sophisticated scaling, resizing and skewing would be even more efficient.",
     keyFeatures: [
       "Run inference on graphs and plots via API, pick from any of the best benchmarking open source models.",
       "Get insights into the model performance on your particular media, to see which one would be optimal.",
