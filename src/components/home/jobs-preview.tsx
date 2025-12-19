@@ -11,8 +11,8 @@ import { JobsSkeleton } from "@/components/jobs/job-card-skeleton"
 function JobCard({ job }: { job: JobListing }) {
   // Determine gradient colors - using a consistent dark gradient for jobs
   const gradientColors = {
-    from: "from-black/60",
-    via: "via-black/20",
+    from: "from-white/60",
+    via: "via-white/20",
     to: "to-transparent",
   }
 
@@ -34,12 +34,12 @@ function JobCard({ job }: { job: JobListing }) {
       tags={tags}
     >
       {/* Title */}
-      <h3 className="text-2xl font-bold mb-1 drop-shadow-lg tracking-tight text-white">
+      <h3 className="text-2xl font-base mb-1 drop-shadow-lg tracking-tight text-black">
         {job.title}
       </h3>
 
       {/* Company Name */}
-      <p className="text-base drop-shadow-lg mb-3 text-white">
+      <p className="text-base drop-shadow-lg mb-3 font-mono text-black">
         {job.company}
       </p>
 
