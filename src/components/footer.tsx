@@ -15,11 +15,11 @@ const FOOTER_SECTIONS: FooterSection[] = [
   {
     title: "Navigation",
     links: [
-      { label: "Projects", href: "/projects" },
       { label: "Events", href: "/events" },
-      { label: "Alumni", href: "/alumni" },
+      { label: "Projects", href: "/projects" },
       { label: "Job Board", href: "/business/jobs" },
-      { label: "Contact", href: "/contact" },
+      { label: "About", href: "/#about" },
+      { label: "Contact", href: "mailto:contact@kthais.com" },
     ],
   },
   {
