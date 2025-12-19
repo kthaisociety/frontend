@@ -4,7 +4,7 @@ import { useState, useEffect } from "react"
 import { useParams } from "next/navigation"
 import Link from "next/link"
 import Image from "next/image"
-import { ArrowLeft, Briefcase, MapPin, Calendar, DollarSign, ExternalLink, Mail } from "lucide-react"
+import { ArrowLeft, Briefcase, MapPin, DollarSign, ExternalLink } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { AsciiGrid } from "@/components/ui/ascii-grid"
 import { Skeleton } from "@/components/ui/skeleton"
@@ -43,14 +43,7 @@ export default function JobDetailPage() {
 
   const error = queryError instanceof Error ? queryError.message : queryError ? String(queryError) : null
 
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString)
-    return new Intl.DateTimeFormat("en-US", {
-      month: "long",
-      day: "numeric",
-      year: "numeric",
-    }).format(date)
-  }
+
 
   if (loading) {
     return (
@@ -204,36 +197,18 @@ export default function JobDetailPage() {
                 <h3 className="text-xl font-bold mb-4 tracking-tight text-secondary-black">Apply Now</h3>
                 
                 {/* Apply Button */}
-                {job.appurl && (
+                {job.applicationUrl && (
                   <Button className="w-full mb-4" size="lg" asChild>
-                    <Link href={job.appurl} target="_blank" rel="noopener noreferrer">
+                    <Link href={job.applicationUrl} target="_blank" rel="noopener noreferrer">
                       <ExternalLink className="mr-2 h-4 w-4" />
-                      Apply on Company Site
+                      Apply or Explore
                     </Link>
                   </Button>
                 )}
               </div>
 
               {/* Application Period */}
-              {(job.startdate || job.enddate) && (
-                <div>
-                  <h3 className="text-xl font-bold mb-4 tracking-tight text-secondary-black">Application Period</h3>
-                  <div className="flex flex-col gap-3">
-                    {job.startdate && (
-                      <div className="flex items-center gap-2 text-gray-700">
-                        <Calendar className="h-5 w-5" />
-                        <span>Opens: {formatDate(job.startdate)}</span>
-                      </div>
-                    )}
-                    {job.enddate && (
-                      <div className="flex items-center gap-2 text-gray-700">
-                        <Calendar className="h-5 w-5" />
-                        <span>Closes: {formatDate(job.enddate)}</span>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              )}
+              {/* Note: startdate and enddate properties are not yet available in the JobDetail type */}
             </div>
           </div>
         </div>
