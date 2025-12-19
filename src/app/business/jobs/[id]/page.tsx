@@ -141,38 +141,14 @@ export default function JobDetailPage() {
           />
         </div>
         <div className="container max-w-7xl relative z-10 mx-auto px-4 md:px-6 pb-8">
-          {/* Back Button */}
-          <Button variant="ghost" asChild className="mb-6">
-            <Link href="/business/jobs">
-              <ArrowLeft className="mr-2 h-4 w-4" />
-              Back to Jobs
-            </Link>
-          </Button>
+         
 
           {/* Job Title */}
-          <h1 className="text-5xl md:text-7xl font-bold mb-6 tracking-tighter">
+          <h1 className="text-5xl md:text-7xl font-base mb-6 tracking-tighter">
             {job.title}
           </h1>
 
-          {/* Company */}
-          <div className="flex items-center gap-4 text-xl mb-8">
-            {job.companyLogo && (
-              <div className="relative h-12 w-12 rounded-lg overflow-hidden border-2 border-white shadow-lg">
-                <Image 
-                  src={job.companyLogo} 
-                  alt={job.company}
-                  fill
-                  className="object-cover"
-                  unoptimized
-                />
-              </div>
-            )}
-            <div className="flex items-center gap-2">
-              
-              <span className="font-serif">{job.company}</span>
-            </div>
-          </div>
-
+         
           {/* Meta Information */}
           <div className="flex flex-wrap gap-6 text-base">
             {job.location && (
@@ -216,7 +192,7 @@ export default function JobDetailPage() {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* Main Content */}
             <div className="lg:col-span-2">
-              <div className="bg-white rounded-xl p-6 shadow-sm mb-6">
+              <div className="mb-6">
                 <h2 className="text-2xl font-bold mb-4 tracking-tight text-secondary-black">About the Role</h2>
                 <Markdown content={job.description} />
               </div>
@@ -224,7 +200,7 @@ export default function JobDetailPage() {
 
             {/* Sidebar */}
             <div className="lg:col-span-1">
-              <div className="bg-white rounded-xl p-6 shadow-sm mb-6">
+              <div className="mb-6">
                 <h3 className="text-xl font-bold mb-4 tracking-tight text-secondary-black">Apply Now</h3>
                 
                 {/* Apply Button */}
