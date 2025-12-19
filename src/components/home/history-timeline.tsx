@@ -100,7 +100,7 @@ export function HistoryTimeline({
   };
 
   return (
-    <div className={cn('w-full py-16 px-4 md:px-8 lg:px-16', className)}>
+    <div id="about" className={cn('w-full py-16 px-4 md:px-8 lg:px-16', className)}>
       <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
         {/* Left Content Panel */}
         <div className="lg:col-span-4 flex flex-col">
