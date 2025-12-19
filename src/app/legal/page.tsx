@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { FileText, Shield, Cookie, Scale, Mail, ArrowRight } from 'lucide-react'
+import { FileText, Shield, Scale, Mail, ArrowRight } from 'lucide-react'
 import { AsciiGrid } from '@/components/ui/ascii-grid'
 import { Button } from '@/components/ui/button'
 
