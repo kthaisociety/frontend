@@ -53,15 +53,15 @@ export function Navigation() {
       </AnimatePresence>
 
       <nav
-        className="fixed top-0 left-0 right-0 z-50"
+        className="fixed top-0 left-0 right-0 z-50 select-none"
       >
         {/* Always present progressive blur background */}
         <ProgressiveBlur
-          className="pointer-events-none absolute top-0 left-0 h-full w-full"
-          height="100%"
+          className="pointer-events-none absolute top-0 left-0 w-full z-10"
+          height="150%"
           position="top"
         />
-        <div className="absolute top-0 left-0 h-full w-full bg-linear-to-b from-white/60 via-white/50 to-white/0 pointer-events-none"></div>
+        <div className="absolute top-0 left-0 h-[120%] w-full bg-linear-to-b from-white/60 via-white/50 to-white/0 pointer-events-none"></div>
         
         {/* Solid white overlay that fades in when menu opens */}
         <motion.div
@@ -73,7 +73,7 @@ export function Navigation() {
           className="absolute top-0 left-0 h-full w-full bg-white pointer-events-none"
         />
         
-        <div className="max-w-7xl mx-auto py-4 px-4 relative z-10">
+        <div className="max-w-7xl mx-auto py-6 px-6 relative z-50">
         <div className="flex items-center justify-between">
           {/* Left side: Logo + Text */}
           <Link href="/">
@@ -103,7 +103,13 @@ export function Navigation() {
             </div>
           </Link>
           {/* Right side: Navigation Links - Desktop */}
-          <div className="items-center gap-8 hidden md:flex">
+          <div className="items-center gap-6 hidden md:flex">
+            <Link
+              href="/"
+              className="text-md font-medium text-foreground/80 hover:text-foreground transition-colors"
+            >
+              About
+            </Link>
             <Link
               href="/events"
               className="text-md font-medium text-foreground/80 hover:text-foreground transition-colors"
@@ -121,12 +127,6 @@ export function Navigation() {
               className="text-md font-medium text-foreground/80 hover:text-foreground transition-colors"
             >
               Job Board
-            </Link>
-            <Link
-              href="/#about"
-              className="text-md font-medium text-foreground/80 hover:text-foreground transition-colors"
-            >
-              About
             </Link>
             <Link
               href="mailto:contact@kthais.com"
@@ -152,14 +152,12 @@ export function Navigation() {
         </div>
       </div>
 
-        {/* Mobile Menu - Slides down from top */}
+        {/* Mobile Menu - Expands from top */}
         <AnimatePresence>
           {isMobileMenuOpen && (
             <motion.div
-              initial={{ opacity: 0, y: -20, height: 0 }}
+              initial={{ height: 0 }}
               animate={{ 
-                opacity: 1, 
-                y: 0, 
                 height: "auto",
                 transition: { 
                   duration: 0.4, 
@@ -167,25 +165,22 @@ export function Navigation() {
                 }
               }}
               exit={{ 
-                opacity: 0, 
-                y: -20, 
                 height: 0,
                 transition: { 
                   duration: 0.3, 
                   ease: [0.25, 0.1, 0.25, 1],
                 }
               }}
-              className="md:hidden fixed top-[72px] left-0 right-0 bg-white shadow-md z-50 overflow-hidden"
+              className="md:hidden fixed top-0 left-0 right-0 bg-white shadow-md z-40 overflow-hidden"
             >
-              <motion.div 
-                className="max-w-7xl mx-auto px-6 py-2"
-                initial={{ opacity: 0 }}
-                animate={{ 
-                  opacity: 1,
-                  transition: { delay: 0.1, duration: 0.3 }
-                }}
-                exit={{ opacity: 0, transition: { duration: 0.2 } }}
-              >
+              <div className="max-w-7xl mx-auto px-6 pt-18 pb-2">
+                <Link
+                  href="/"
+                  className="block py-3 text-base font-normal text-foreground/70 hover:text-foreground transition-colors"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  About
+                </Link>
                 <Link
                   href="/events"
                   className="block py-3 text-base font-normal text-foreground/70 hover:text-foreground transition-colors"
@@ -208,20 +203,13 @@ export function Navigation() {
                   Job Board
                 </Link>
                 <Link
-                  href="/#about"
-                  className="block py-3 text-base font-normal text-foreground/70 hover:text-foreground transition-colors"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  About
-                </Link>
-                <Link
                   href="mailto:contact@kthais.com"
                   className="block py-3 text-base font-normal text-foreground/70 hover:text-foreground transition-colors"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   Contact
                 </Link>
-              </motion.div>
+              </div>
             </motion.div>
           )}
         </AnimatePresence>

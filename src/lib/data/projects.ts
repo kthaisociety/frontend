@@ -191,7 +191,7 @@ export const projects: Project[] = [
     id: "topovision",
     title: "TopoVision",
     oneLineDescription: "Extracting topographical data from maps using computer vision",
-    shortDescription: "Automated conversion of 2D topographical maps into 3D digital assets using deep learning",
+    shortDescription: "Automated conversion of 2D topographical maps into 3D digital assets",
     category: "Research",
     tags: ["research", "machine learning", "pytorch"],
     techStack: ["Python", "PyTorch"],
@@ -203,19 +203,13 @@ export const projects: Project[] = [
     ],
     status: "In development",
     coverImage: "/cover-topovision.jpg",
-    coverImageTheme: "dark",
-    screenshots: [
-      {
-        image: "/topovision-screenshot.jpg",
-        caption: "TopoVision synthetic map generation and 3D reconstruction - integrated into ReGen VillageOS for landscape rendering",
-        alt: "TopoVision topographical map processing for ReGen VillageOS"
-      }
-    ],
+    coverImageTheme: "light",
     repoUrl: "https://github.com/mattiaskvist/topovision",
     contributors: [
       { name: "Mattias Kvist", role: "Research Lead", email: "mattias@kthais.com" },
       { name: "Erik Lidman Hillbom", role: "Researcher" },
-      { name: "Edoardo de Cal", role: "Researcher" }
+      { name: "Edoardo de Cal", role: "Researcher" },
+      { name: "Annysia Dupaya", role: "Researcher" }
     ],
     affiliations: "ReGen Villages",
     timeline: {
@@ -229,6 +223,73 @@ export const projects: Project[] = [
     },
     maintenancePlan: "Research project with active development by KTH AI Society team in collaboration with ReGen Villages",
     contact: "mattias@kthais.com"
+  },
+  {
+    id: "flow-matching",
+    title: "Flow Matching",
+    oneLineDescription: "Researching novel flow matching techniques for scientific data in collaboration with SciLifeLab",
+    shortDescription: "Researching novel flow matching techniques in collaboration with SciLifeLab",
+    category: "Research",
+    tags: ["research", "generative models", "python"],
+    techStack: ["Python", "PyTorch"],
+    problemImpact: "Researching novel flow matching techniques to improve generative modeling for scientific applications.",
+    keyFeatures: [
+      "Development of novel continuous normalizing flow architectures for scientific data",
+      "Strategic research partnership with SciLifeLab leveraging their infrastructure and datasets"
+    ],
+    status: "In development",
+    coverImage: "/cover-flow-matching.jpg",
+    coverImageTheme: "light",
+    contributors: [
+      { name: "Felix Nannesson Meli", role: "Research Lead", email: "felix@kthais.com" },
+      { name: "Divyayan Dey", role: "Researcher", email: "divyayan@kthais.com" }
+    ],
+    affiliations: "SciLifeLab",
+    timeline: {
+      startDate: "2025-09-01",
+      currentPhase: "Testing and benchmarking phase",
+      upcomingMilestones: [
+        "Complete flow matching architecture implementation",
+        "Validate flow matching models on diverse datasets (images, S&P data, and air quality data)",
+        "Benchmark performance against established scientific evaluation metrics"
+      ]
+    },
+    maintenancePlan: "Research project with active development by KTH AI Society team in collaboration with SciLifeLab",
+    contact: "felix@kthais.com"
+  },
+  {
+    id: "robotics",
+    title: "Robotics",
+    oneLineDescription: "Developing software for autonomous indoor traversal with quadrupedal robotic systems",
+    shortDescription: "Quadrupedal robots for autonomous room traversal with tracking",
+    category: "Research",
+    tags: ["research", "robotics", "computer vision", "python", "C++"],
+    techStack: ["Python", "ROS", "PyTorch", "C++"],
+    problemImpact: "Developing software systems for autonomous traversal with quadrupedal robots in complex indoor environments. The project focuses on advanced perception algorithms for object tracking and scene understanding, enabling these legged robots to navigate dynamically through challenging indoor spaces with sophisticated perception.",
+    keyFeatures: [
+      "Autonomous room traversal software for quadrupedal robotic systems",
+      "Advanced perception algorithms for object tracking and scene understanding"
+    ],
+    status: "Work in progress",
+    coverImage: "/cover-robotics.jpg",
+    coverImageTheme: "light",
+    contributors: [
+      { name: "Niklas Lindkvist", role: "Researcher" },
+      { name: "Harshit Poddar", role: "Researcher" },
+      { name: "Mattie Ball", role: "Researcher" }
+    ],
+    affiliations: "KTH AI Society",
+    timeline: {
+      startDate: "2026-01-01",
+      currentPhase: "Project planning and setup",
+      upcomingMilestones: [
+        "Quadrupedal robotic platform setup and integration",
+        "Development of perception algorithms for object tracking and scene understanding",
+        "Testing and validation in indoor environments"
+      ]
+    },
+    maintenancePlan: "Active development and maintenance by KTH AI Society robotics team",
+    contact: "max.decman@kthais.com"
   }
 ]
 

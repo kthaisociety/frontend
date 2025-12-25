@@ -37,9 +37,9 @@ export function ImageCard({
   className,
 }: ImageCardProps) {
   return (
-    <Card className={cn("group relative overflow-hidden cursor-pointer transition-transform w-full", aspectRatio, className)}>
+    <Card className={cn("group relative overflow-hidden cursor-pointer w-full", aspectRatio, className)}>
       {/* Background Image */}
-      <div className="absolute inset-0 transition-transform duration-500 ease-out group-hover:scale-102">
+      <div className="absolute inset-0 transition-transform duration-300 ease-out group-hover:scale-[1.02] will-change-transform">
         <Image
           src={image}
           alt={alt}
@@ -58,12 +58,14 @@ export function ImageCard({
 
       {/* Gradient overlay for better text readability */}
       <div
-        className={cn(
-          "absolute inset-0 bg-linear-to-t pointer-events-none z-15",
-          gradientColors.from,
-          gradientColors.via,
-          gradientColors.to
-        )}
+        className="absolute inset-0 pointer-events-none z-15"
+        style={{
+          background: `linear-gradient(to bottom, 
+            ${gradientColors.from.includes('black') ? 'rgba(0, 0, 0, 0)' : 'rgba(255, 255, 255, 0)'} 0%, 
+            ${gradientColors.from.includes('black') ? 'rgba(0, 0, 0, 0.1)' : 'rgba(255, 255, 255, 0.1)'} 50%, 
+            ${gradientColors.from.includes('black') ? 'rgba(0, 0, 0, 0.6)' : 'rgba(255, 255, 255, 0.6)'} 80%, 
+            ${gradientColors.from.includes('black') ? 'rgba(0, 0, 0, 0.8)' : 'rgba(255, 255, 255, 0.8)'} 100%)`
+        }}
       />
 
       {/* Tags or Top Content */}
@@ -72,7 +74,7 @@ export function ImageCard({
           {tags?.map((tag) => (
             <span
               key={tag}
-              className="px-3 py-1 text-xs font-medium rounded-full bg-primary backdrop-blur-sm text-white font-mono uppercase"
+              className="px-3 py-1 text-xs font-medium rounded-full bg-primary backdrop-blur-sm text-white font-mono uppercase border"
             >
               {tag}
             </span>
