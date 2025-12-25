@@ -100,8 +100,7 @@ export function HistoryTimeline({
   };
 
   return (
-    <div id="about" className={cn('w-full py-16 px-4 md:px-8 lg:px-16', className)}>
-      <div className="max-w-7xl mx-auto">
+    <section id="about" className={cn('container mx-auto py-16 px-4 w-full max-w-7xl', className)}>
         {/* Mobile Layout - Horizontal Timeline */}
         <div className="lg:hidden flex flex-col gap-8">
           {/* Image Display */}
@@ -363,7 +362,6 @@ export function HistoryTimeline({
             </div>
           </div>
         </div>
-      </div>
-    </div>
+    </section>
   );
 }

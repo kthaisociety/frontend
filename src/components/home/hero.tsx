@@ -84,7 +84,7 @@ export function Hero() {
           </motion.h2>
 
           <motion.h1
-            className="text-2xl md:text-6xl text-black tracking-tight max-w-2xl mx-auto leading-tight"
+            className="text-2xl sm:text-5xl md:text-6xl text-black tracking-tight max-w-2xl mx-auto leading-tight"
             variants={childVariants}
           >
             Cultivating the next generation of AI leaders
@@ -108,7 +108,7 @@ export function Hero() {
               size="xl"
               asChild
             >
-              <Link href="mailto:business@kthais.com.">
+              <Link href="mailto:business@kthais.com">
                 For Sponsors
               </Link>
             </Button>

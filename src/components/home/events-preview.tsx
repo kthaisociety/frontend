@@ -116,7 +116,7 @@ export function EventsPreview() {
         </h2>
         <Button asChild>
           <Link href="/events">
-            See all events
+            <span className="hidden md:block">See all </span>Events
             <ArrowRight className="h-4 w-4" />
           </Link>
         </Button>
