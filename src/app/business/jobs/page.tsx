@@ -134,6 +134,7 @@ export default function JobListingPage() {
             enableDripping={false}
             className="w-full h-full"
           />
+          <div className="absolute bottom-0 left-0 right-0 h-32 bg-linear-to-t from-white via-white/50 to-transparent pointer-events-none" />
         </div>
         <div className="container max-w-7xl relative z-10 mx-auto px-4 md:px-6 pb-8">
           {/* Main Title */}
@@ -144,25 +145,25 @@ export default function JobListingPage() {
             Job Board
           </h1>
 
-          {/* Description */}
-          <p className="text-lg md:text-xl mb-8 max-w-3xl opacity-95 leading-relaxed font-serif">
-          Connecting our members with industry opportunities. Browse current openings below.
-          If you want to make a job posting contact us at <a href="mailto:jobs@kthais.com" className="text-primary">jobs@kthais.com</a>.
-          </p>
         </div>
       </section>
 
       {/* White Content Area */}
-      <section className="relative max-w-7xl mx-4 sm:mx-auto z-20 -mt-24 bg-neutral-50 rounded-3xl p-4 md:p-8 mb-24 shadow-lg border ">
-        <div className="container mx-auto">
-          <div className="flex justify-between items-center mb-8">
-            {/* Breadcrumbs */}
-            <div>
-              <Link href="/" className="text-secondary-gray hover:text-primary transition-colors text-sm font-medium">
-                Home
-              </Link>
-              <span className="text-gray-300 mx-2">/</span>
-              <span className="text-primary font-medium text-sm">Jobs</span>
+      <div className="px-4 sm:px-6 md:px-8 lg:px-8 xl:px-8">
+        <section className="relative max-w-7xl mx-auto z-20 -mt-24 bg-neutral-50 rounded-3xl p-4 md:p-8 mb-24 shadow-lg border">
+          <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-4 mb-8">
+            <div className="flex flex-col gap-2">
+              <div>
+                <Link href="/" className="text-secondary-gray hover:text-primary transition-colors text-sm font-medium">
+                  Home
+                </Link>
+                <span className="text-gray-300 mx-2">/</span>
+                <span className="text-primary font-medium text-sm">Jobs</span>
+              </div>
+              <p className="text-lg md:text-xl max-w-3xl opacity-95 leading-relaxed font-serif">
+                Connecting our members with industry opportunities. Browse current openings below.
+                If you want to make a job posting contact us at <a href="mailto:jobs@kthais.com" className="text-primary">jobs@kthais.com</a>.
+              </p>
             </div>
 
             {/* Filter Dropdown */}
@@ -173,7 +174,7 @@ export default function JobListingPage() {
                   <ChevronDown className="h-4 w-4 opacity-50 ml-2" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="min-w-[220px]">
+              <DropdownMenuContent align="end" side="bottom" className="min-w-[220px]">
                 <DropdownMenuItem onClick={() => setSelectedFilter("all")}>
                   Show all
                 </DropdownMenuItem>
@@ -204,7 +205,7 @@ export default function JobListingPage() {
 
           {/* Jobs Grid */}
           {loading ? (
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
               <JobsSkeleton />
             </div>
           ) : error ? (
@@ -212,7 +213,7 @@ export default function JobListingPage() {
               <p className="text-lg">Error: {error}</p>
             </div>
           ) : filteredJobs.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
               {filteredJobs.map((job) => (
                 <JobCard key={job.id} job={job} />
               ))}
@@ -222,8 +223,8 @@ export default function JobListingPage() {
               <p className="text-lg">No jobs found.</p>
             </div>
           )}
-        </div>
-      </section>
+        </section>
+      </div>
     </div>
   )
 }

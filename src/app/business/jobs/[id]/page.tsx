@@ -59,15 +59,18 @@ export default function JobDetailPage() {
               enableDripping={false}
               className="w-full h-full"
             />
+            <div className="absolute bottom-0 left-0 right-0 h-32 bg-linear-to-t from-white via-white/50 to-transparent pointer-events-none" />
           </div>
           <div className="container max-w-7xl relative z-10 mx-auto px-4 md:px-6">
             <Skeleton className="h-12 w-3/4 mb-4" />
             <Skeleton className="h-6 w-1/2" />
           </div>
         </section>
-        <section className="relative max-w-7xl mx-4 sm:mx-auto z-20 -mt-24 bg-neutral-50 rounded-3xl p-4 md:p-8 mb-24 shadow-lg border">
-          <Skeleton className="h-64 w-full" />
-        </section>
+        <div className="px-4 sm:px-6 md:px-8 lg:px-8 xl:px-8">
+          <section className="relative max-w-7xl mx-auto z-20 -mt-24 bg-neutral-50 rounded-3xl p-4 md:p-8 mb-24 shadow-lg border">
+            <Skeleton className="h-64 w-full" />
+          </section>
+        </div>
       </div>
     )
   }
@@ -86,6 +89,7 @@ export default function JobDetailPage() {
               enableDripping={false}
               className="w-full h-full"
             />
+            <div className="absolute bottom-0 left-0 right-0 h-32 bg-linear-to-t from-white via-white/50 to-transparent pointer-events-none" />
           </div>
           <div className="container max-w-7xl relative z-10 mx-auto px-4 md:px-6">
             <h1 className="text-5xl md:text-7xl font-bold mb-6 tracking-tighter">
@@ -167,8 +171,9 @@ export default function JobDetailPage() {
       </section>
 
       {/* Content Area */}
-      <section className="relative max-w-7xl mx-4 sm:mx-auto z-20 -mt-24 bg-neutral-50 rounded-3xl p-4 md:p-8 mb-24 shadow-lg border">
-        <div className="container mx-auto">
+      <div className="px-4 sm:px-6 md:px-8 lg:px-8 xl:px-8">
+        <section className="relative max-w-7xl mx-auto z-20 -mt-24 bg-neutral-50 rounded-3xl p-4 md:p-8 mb-24 shadow-lg border">
+          <div className="container mx-auto">
           {/* Breadcrumbs */}
           <div className="mb-8">
             <Link href="/" className="text-secondary-gray hover:text-primary transition-colors text-sm font-medium">
@@ -212,7 +217,8 @@ export default function JobDetailPage() {
             </div>
           </div>
         </div>
-      </section>
+        </section>
+      </div>
     </div>
   )
 }

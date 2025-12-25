@@ -156,6 +156,7 @@ export default function EventDetailPage() {
             enableDripping={false}
             className="w-full h-full"
           />
+          <div className="absolute bottom-0 left-0 right-0 h-32 bg-linear-to-t from-white via-white/50 to-transparent pointer-events-none" />
         </div>
         <div className="container max-w-7xl relative z-10 mx-auto px-4 md:px-6 pb-8">
           {/* Back Button */}
@@ -212,8 +213,9 @@ export default function EventDetailPage() {
       </section>
 
       {/* White Content Area */}
-      <section className="relative max-w-7xl mx-4 sm:mx-auto z-20 -mt-24 bg-neutral-50 rounded-3xl p-4 md:p-8 mb-24 shadow-lg border">
-        <div className="container mx-auto">
+      <div className="px-4 sm:px-6 md:px-8 lg:px-8 xl:px-8">
+        <section className="relative max-w-7xl mx-auto z-20 -mt-24 bg-neutral-50 rounded-3xl p-4 md:p-8 mb-24 shadow-lg border">
+          <div className="container mx-auto">
           {/* Breadcrumbs */}
           <div className="mb-8 flex items-center">
             <Link href="/" className="text-secondary-gray hover:text-primary transition-colors text-sm font-medium">
@@ -274,7 +276,8 @@ export default function EventDetailPage() {
             </Button>
           </div>
         </div>
-      </section>
+        </section>
+      </div>
     </div>
   )
 }
