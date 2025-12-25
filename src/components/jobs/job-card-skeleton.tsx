@@ -1,21 +1,36 @@
 import { Skeleton } from "@/components/ui/skeleton"
 import { Card } from "@/components/ui/card"
+import { ProgressiveBlur } from "@/components/ui/progressive-blur"
 
 export function JobCardSkeleton() {
   return (
-    <Card className="relative overflow-hidden h-[380px]">
+    <Card className="group relative overflow-hidden cursor-pointer w-full aspect-22/25">
       {/* Background Image Skeleton */}
       <div className="absolute inset-0">
         <Skeleton className="h-full w-full" />
       </div>
 
-      {/* Gradient overlay */}
-      <div className="absolute inset-0 bg-linear-to-t from-white/55 via-white/50 to-transparent pointer-events-none z-15" />
+      <ProgressiveBlur
+        position="bottom"
+        height="70%"
+        className="absolute left-0 right-0 bottom-0"
+      />
+
+      <div
+        className="absolute inset-0 pointer-events-none z-15"
+        style={{
+          background: `linear-gradient(to bottom, 
+            rgba(255, 255, 255, 0) 0%, 
+            rgba(255, 255, 255, 0.1) 50%, 
+            rgba(255, 255, 255, 0.6) 80%, 
+            rgba(255, 255, 255, 0.8) 100%)`
+        }}
+      />
 
       {/* Content Overlay */}
       <div className="absolute inset-0 flex flex-col justify-end p-6 z-20">
         {/* Title */}
-        <Skeleton className="h-7 w-3/4 mb-3" />
+        <Skeleton className="h-7 w-3/4 mb-1" />
 
         {/* Company & Location */}
         <div className="flex items-center gap-2 mb-2">
@@ -40,7 +55,7 @@ export function JobCardSkeleton() {
 
 export function JobsSkeleton() {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
       <JobCardSkeleton />
       <JobCardSkeleton />
       <JobCardSkeleton />
