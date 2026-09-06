@@ -75,7 +75,14 @@ export function TeamQuestionsDeliveryActivityCard() {
             style={{ transform: open ? "rotate(180deg)" : undefined }}
           />
         </div>
-        {!open && (
+        {!open && isError && (
+          <CardDescription className="text-destructive">
+            Failed to load delivery activity{error instanceof Error ? `: ${error.message}` : ""}. This
+            may be hiding failed sends or entries that need manual review — reload the page to try
+            again.
+          </CardDescription>
+        )}
+        {!open && !isError && (
           <CardDescription>
             What the automatic invite/reminder/final-call emails actually did — sent, failed,
             skipped, or needing manual review.
