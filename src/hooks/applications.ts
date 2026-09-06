@@ -881,7 +881,7 @@ export function useTeamQuestionsDeliveryEvents() {
 
 /** Renders the team questions invite or reminder email server-side, from the same code path used to send it. */
 async function previewTeamQuestionsTemplate(
-  args: { emailTemplate: string; emailSubject: string; kind?: "invite" | "reminder" },
+  args: { emailTemplate: string; emailSubject: string; kind?: "invite" | "reminder" | "final_call" },
 ): Promise<InterviewInvitePreview> {
   const response = await fetch(`${API_URL}/applications/admin/team-questions/template/preview`, {
     method: "POST",

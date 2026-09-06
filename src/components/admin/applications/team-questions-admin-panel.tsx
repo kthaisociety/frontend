@@ -85,10 +85,13 @@ function TeamQuestionsPreviewDialog({
 }: {
   emailTemplate: string;
   emailSubject: string;
-  kind: "invite" | "reminder";
+  kind: "invite" | "reminder" | "final_call";
   label: string;
 }) {
   const preview = usePreviewTeamQuestionsTemplate();
+  // Final call content isn't admin-editable — the backend ignores whatever
+  // is sent for that kind and always renders its own fixed copy, so there's
+  // no fallback text to compute here.
   const fallbackTemplate =
     kind === "reminder" ? DEFAULT_TEAM_QUESTIONS_REMINDER_TEMPLATE : DEFAULT_TEAM_QUESTIONS_TEMPLATE;
   const fallbackSubject =
@@ -332,6 +335,21 @@ function TeamQuestionsTemplatePanel() {
                   emailSubject={reminderEmailSubject}
                   kind="reminder"
                   label="reminder"
+                />
+              </div>
+
+              <div className="space-y-2 border-t pt-4">
+                <Label>Final call</Label>
+                <CardDescription>
+                  Sent automatically, once, when the final call window opens (set under the
+                  Deadlines section in Settings) to anyone who still hasn&apos;t submitted. Not yet
+                  editable here — this previews the fixed copy that actually goes out.
+                </CardDescription>
+                <TeamQuestionsPreviewDialog
+                  emailTemplate=""
+                  emailSubject=""
+                  kind="final_call"
+                  label="final call"
                 />
               </div>
 
