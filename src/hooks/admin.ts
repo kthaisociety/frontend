@@ -90,6 +90,47 @@ export function useDemoteAdmin() {
   });
 }
 
+export type ManualOnboardingInput = {
+  firstName: string;
+  lastName: string;
+  email: string;
+  assignedTeam: string;
+};
+
+async function createManualOnboarding(input: ManualOnboardingInput) {
+  const response = await fetch(`${API_URL}/admin/onboarding/manual`, {
+    method: "POST",
+    credentials: "include",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      first_name: input.firstName,
+      last_name: input.lastName,
+      email: input.email,
+      assigned_team: input.assignedTeam,
+    }),
+  });
+  if (!response.ok) {
+    const data = (await response.json().catch(() => null)) as { error?: string } | null;
+    throw new Error(data?.error || "Failed to start onboarding");
+  }
+  return response.json();
+}
+
+// No query invalidation here — nothing is persisted on the backend for a
+// manual onboarding (see manual-onboarding-form.tsx), so there's no list to
+// refresh.
+export function useCreateManualOnboarding() {
+  return useMutation({
+    mutationFn: createManualOnboarding,
+    onSuccess: () => {
+      toast.success("Onboarding started — an email is on its way to them.");
+    },
+    onError: (error: Error) => {
+      toast.error(error.message || "Failed to start onboarding.");
+    },
+  });
+}
+
 async function fetchAdminUserProfile(
   userId: string,
 ): Promise<AdminProfileData> {
