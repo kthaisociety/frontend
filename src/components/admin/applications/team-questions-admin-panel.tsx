@@ -249,8 +249,8 @@ function TeamQuestionsTemplatePanel() {
         {!open && (
           <CardDescription>
             The invite sent when applicants are asked to answer team questions, the automatic
-            reminder sent 7 days later if they haven&apos;t, and the final call sent when that
-            window opens. Shared by all admins, click to view or edit.
+            reminder sent 7 days later if they haven&apos;t, and the final call sent during the
+            final call window. Shared by all admins, click to view or edit.
             {template && !template.can_edit && " Only IT admins can edit it."} Deadlines are set
             under the Settings tab.
           </CardDescription>
@@ -385,9 +385,10 @@ function TeamQuestionsTemplatePanel() {
                   </Button>
                 </div>
                 <CardDescription>
-                  Sent automatically, once, when the final call window opens (set under the
-                  Deadlines section in Settings) to anyone who still hasn&apos;t submitted. Also
-                  gets a fresh form link, same as the reminder.
+                  Sent automatically, once per applicant, during the final call window (set under
+                  the Deadlines section in Settings) to anyone who still hasn&apos;t submitted —
+                  retried automatically if an earlier attempt failed. Also gets a fresh form link,
+                  same as the reminder.
                 </CardDescription>
                 <div className="space-y-1">
                   <Label htmlFor="tq-final-call-subject" className="text-xs text-muted-foreground">
