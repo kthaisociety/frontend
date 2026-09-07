@@ -131,6 +131,42 @@ export function useCreateManualOnboarding() {
   });
 }
 
+export type OnboardingRecord = {
+  ID: number;
+  application_id: string | null;
+  first_name: string;
+  last_name: string;
+  personal_email: string;
+  assigned_team: string;
+  state:
+    | "notified"
+    | "kth_email_submitted"
+    | "kth_email_confirmed"
+    | "provisioned"
+    | "emailed"
+    | "complete"
+    | "failed";
+  kth_email: string;
+  kthais_email: string;
+  failure_reason: string;
+  CreatedAt: string;
+};
+
+async function fetchOnboardingRecords(): Promise<OnboardingRecord[]> {
+  const response = await fetch(`${API_URL}/admin/onboarding/records`, {
+    credentials: "include",
+  });
+  if (!response.ok) throw new Error("Failed to fetch onboarding records");
+  return response.json();
+}
+
+export function useOnboardingRecords() {
+  return useQuery<OnboardingRecord[]>({
+    queryKey: ["onboarding-records"],
+    queryFn: fetchOnboardingRecords,
+  });
+}
+
 async function fetchAdminUserProfile(
   userId: string,
 ): Promise<AdminProfileData> {

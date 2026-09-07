@@ -30,6 +30,7 @@ import {
 } from "@/hooks/admin";
 import { AdminUserProfileForm } from "@/components/admin/users/admin-user-profile-form";
 import { ManualOnboardingForm } from "@/components/admin/users/manual-onboarding-form";
+import { OnboardingRecordsList } from "@/components/admin/users/onboarding-records-list";
 
 export function UserAdminPanel() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -130,6 +131,20 @@ export function UserAdminPanel() {
           </CardContent>
         </Card>
       )}
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Onboarding status</CardTitle>
+          <CardDescription>
+            Everyone who&apos;s been sent an onboarding link, manual or from
+            recruitment. Rows highlighted in red haven&apos;t completed
+            within a week — worth following up.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <OnboardingRecordsList />
+        </CardContent>
+      </Card>
 
       <div className="max-h-[min(70vh,720px)] space-y-3 overflow-y-auto pr-2">
         {filteredUsers.length === 0 ? (
