@@ -812,6 +812,8 @@ type TeamQuestionsTemplateUpdate = {
   emailSubject?: string;
   reminderEmailTemplate?: string;
   reminderEmailSubject?: string;
+  finalCallTemplate?: string;
+  finalCallSubject?: string;
   finalCallStartOverride?: string | null;
   submissionCutoffOverride?: string | null;
 };
@@ -822,6 +824,8 @@ async function updateTeamQuestionsTemplate(fields: TeamQuestionsTemplateUpdate):
   if (fields.emailSubject !== undefined) body.email_subject = fields.emailSubject;
   if (fields.reminderEmailTemplate !== undefined) body.reminder_email_template = fields.reminderEmailTemplate;
   if (fields.reminderEmailSubject !== undefined) body.reminder_email_subject = fields.reminderEmailSubject;
+  if (fields.finalCallTemplate !== undefined) body.final_call_template = fields.finalCallTemplate;
+  if (fields.finalCallSubject !== undefined) body.final_call_subject = fields.finalCallSubject;
   if (fields.finalCallStartOverride !== undefined) body.final_call_start_override = fields.finalCallStartOverride;
   if (fields.submissionCutoffOverride !== undefined) {
     body.submission_cutoff_override = fields.submissionCutoffOverride;
@@ -881,7 +885,7 @@ export function useTeamQuestionsDeliveryEvents() {
 
 /** Renders the team questions invite or reminder email server-side, from the same code path used to send it. */
 async function previewTeamQuestionsTemplate(
-  args: { emailTemplate: string; emailSubject: string; kind?: "invite" | "reminder" },
+  args: { emailTemplate: string; emailSubject: string; kind?: "invite" | "reminder" | "final_call" },
 ): Promise<InterviewInvitePreview> {
   const response = await fetch(`${API_URL}/applications/admin/team-questions/template/preview`, {
     method: "POST",

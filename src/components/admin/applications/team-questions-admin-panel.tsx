@@ -74,6 +74,14 @@ const DEFAULT_TEAM_QUESTIONS_REMINDER_TEMPLATE =
 const DEFAULT_TEAM_QUESTIONS_REMINDER_SUBJECT =
   "Reminder: {{first_name}}'s application for {{teams}}";
 
+// Mirrors defaultTeamQuestionsFinalCallTemplate/Subject in
+// internal/handlers/team_questions_handler.go.
+const DEFAULT_TEAM_QUESTIONS_FINAL_CALL_TEMPLATE =
+  "Final call — we still haven't received your answers to the team questions for your 2026 KTH AI Society application.\n\nPlease submit your answers by the end of September 8, 2026 (Europe/Stockholm). The form closes at 00:00 on September 9, and we cannot accept submissions after that.\n\nUse the button below for your new Team Questions link. It replaces any previous link.";
+
+const DEFAULT_TEAM_QUESTIONS_FINAL_CALL_SUBJECT =
+  "FINAL CALL: {{first_name}}'s application for {{teams}}";
+
 // Renders the invite/reminder by calling the backend, which builds it with the exact same
 // email.RenderTeamQuestionsInvite / RenderTeamQuestionsReminder used when actually sending —
 // so this can never drift from the real email the way a hand-rolled client-side mockup could.
@@ -85,14 +93,22 @@ function TeamQuestionsPreviewDialog({
 }: {
   emailTemplate: string;
   emailSubject: string;
-  kind: "invite" | "reminder";
+  kind: "invite" | "reminder" | "final_call";
   label: string;
 }) {
   const preview = usePreviewTeamQuestionsTemplate();
   const fallbackTemplate =
-    kind === "reminder" ? DEFAULT_TEAM_QUESTIONS_REMINDER_TEMPLATE : DEFAULT_TEAM_QUESTIONS_TEMPLATE;
+    kind === "reminder"
+      ? DEFAULT_TEAM_QUESTIONS_REMINDER_TEMPLATE
+      : kind === "final_call"
+        ? DEFAULT_TEAM_QUESTIONS_FINAL_CALL_TEMPLATE
+        : DEFAULT_TEAM_QUESTIONS_TEMPLATE;
   const fallbackSubject =
-    kind === "reminder" ? DEFAULT_TEAM_QUESTIONS_REMINDER_SUBJECT : DEFAULT_TEAM_QUESTIONS_SUBJECT;
+    kind === "reminder"
+      ? DEFAULT_TEAM_QUESTIONS_REMINDER_SUBJECT
+      : kind === "final_call"
+        ? DEFAULT_TEAM_QUESTIONS_FINAL_CALL_SUBJECT
+        : DEFAULT_TEAM_QUESTIONS_SUBJECT;
 
   return (
     <Dialog
@@ -148,6 +164,8 @@ function TeamQuestionsTemplatePanel() {
   const [emailSubject, setEmailSubject] = useState("");
   const [reminderEmailTemplate, setReminderEmailTemplate] = useState("");
   const [reminderEmailSubject, setReminderEmailSubject] = useState("");
+  const [finalCallTemplate, setFinalCallTemplate] = useState("");
+  const [finalCallSubject, setFinalCallSubject] = useState("");
   const [initialised, setInitialised] = useState(false);
 
   const savedEmailTemplate = template ? template.email_template || DEFAULT_TEAM_QUESTIONS_TEMPLATE : "";
@@ -158,12 +176,20 @@ function TeamQuestionsTemplatePanel() {
   const savedReminderEmailSubject = template
     ? template.reminder_email_subject || DEFAULT_TEAM_QUESTIONS_REMINDER_SUBJECT
     : "";
+  const savedFinalCallTemplate = template
+    ? template.final_call_template || DEFAULT_TEAM_QUESTIONS_FINAL_CALL_TEMPLATE
+    : "";
+  const savedFinalCallSubject = template
+    ? template.final_call_subject || DEFAULT_TEAM_QUESTIONS_FINAL_CALL_SUBJECT
+    : "";
 
   if (template && !initialised) {
     setEmailTemplate(savedEmailTemplate);
     setEmailSubject(savedEmailSubject);
     setReminderEmailTemplate(savedReminderEmailTemplate);
     setReminderEmailSubject(savedReminderEmailSubject);
+    setFinalCallTemplate(savedFinalCallTemplate);
+    setFinalCallSubject(savedFinalCallSubject);
     setInitialised(true);
   }
 
@@ -172,7 +198,9 @@ function TeamQuestionsTemplatePanel() {
     (emailTemplate !== savedEmailTemplate ||
       emailSubject !== savedEmailSubject ||
       reminderEmailTemplate !== savedReminderEmailTemplate ||
-      reminderEmailSubject !== savedReminderEmailSubject);
+      reminderEmailSubject !== savedReminderEmailSubject ||
+      finalCallTemplate !== savedFinalCallTemplate ||
+      finalCallSubject !== savedFinalCallSubject);
 
   // Deadline overrides live on this same backend settings row but are edited
   // from the Settings tab's Deadlines card (recruitment-period-panel.tsx) —
@@ -185,6 +213,8 @@ function TeamQuestionsTemplatePanel() {
       emailSubject,
       reminderEmailTemplate,
       reminderEmailSubject,
+      finalCallTemplate,
+      finalCallSubject,
     });
   }
 
@@ -197,6 +227,8 @@ function TeamQuestionsTemplatePanel() {
       setEmailSubject(savedEmailSubject);
       setReminderEmailTemplate(savedReminderEmailTemplate);
       setReminderEmailSubject(savedReminderEmailSubject);
+      setFinalCallTemplate(savedFinalCallTemplate);
+      setFinalCallSubject(savedFinalCallSubject);
     }
     setOpen((v) => !v);
   }
@@ -216,9 +248,9 @@ function TeamQuestionsTemplatePanel() {
         </div>
         {!open && (
           <CardDescription>
-            The invite sent when applicants are asked to answer team questions, and the automatic
-            reminder sent 7 days later if they haven&apos;t. Shared by all admins, click to view or
-            edit.
+            The invite sent when applicants are asked to answer team questions, the automatic
+            reminder sent 7 days later if they haven&apos;t, and the final call sent during the
+            final call window. Shared by all admins, click to view or edit.
             {template && !template.can_edit && " Only IT admins can edit it."} Deadlines are set
             under the Settings tab.
           </CardDescription>
@@ -332,6 +364,57 @@ function TeamQuestionsTemplatePanel() {
                   emailSubject={reminderEmailSubject}
                   kind="reminder"
                   label="reminder"
+                />
+              </div>
+
+              <div className="space-y-2 border-t pt-4">
+                <div className="flex items-center justify-between">
+                  <Label htmlFor="tq-final-call-template">Final call message</Label>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    className="h-auto py-0 text-xs"
+                    onClick={() => {
+                      setFinalCallTemplate(DEFAULT_TEAM_QUESTIONS_FINAL_CALL_TEMPLATE);
+                      setFinalCallSubject(DEFAULT_TEAM_QUESTIONS_FINAL_CALL_SUBJECT);
+                    }}
+                    disabled={!template?.can_edit}
+                  >
+                    Reset to default message
+                  </Button>
+                </div>
+                <CardDescription>
+                  Sent automatically, once per applicant, during the final call window (set under
+                  the Deadlines section in Settings) to anyone who still hasn&apos;t submitted —
+                  retried automatically if an earlier attempt failed. Also gets a fresh form link,
+                  same as the reminder.
+                </CardDescription>
+                <div className="space-y-1">
+                  <Label htmlFor="tq-final-call-subject" className="text-xs text-muted-foreground">
+                    Subject
+                  </Label>
+                  <Input
+                    id="tq-final-call-subject"
+                    placeholder={DEFAULT_TEAM_QUESTIONS_FINAL_CALL_SUBJECT}
+                    value={finalCallSubject}
+                    onChange={(e) => setFinalCallSubject(e.target.value)}
+                    disabled={!template?.can_edit}
+                  />
+                </div>
+                <Textarea
+                  id="tq-final-call-template"
+                  placeholder={DEFAULT_TEAM_QUESTIONS_FINAL_CALL_TEMPLATE}
+                  className="min-h-[140px] resize-y font-mono text-sm"
+                  value={finalCallTemplate}
+                  onChange={(e) => setFinalCallTemplate(e.target.value)}
+                  disabled={!template?.can_edit}
+                />
+                <TeamQuestionsPreviewDialog
+                  emailTemplate={finalCallTemplate}
+                  emailSubject={finalCallSubject}
+                  kind="final_call"
+                  label="final call"
                 />
               </div>
 

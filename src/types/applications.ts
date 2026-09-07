@@ -273,6 +273,8 @@ export type TeamQuestionsTemplate = {
   email_subject: string;
   reminder_email_template: string;
   reminder_email_subject: string;
+  final_call_template: string;
+  final_call_subject: string;
   // Resolved (effective) deadlines: the override below if set, else the
   // backend's hardcoded default.
   final_call_start: string;
