@@ -47,11 +47,15 @@ function Req() {
 
 // Mirrors the backend's isValidEmail (general_application_handler.go) —
 // same minimal shape check, not a full RFC validator, kept consistent with
-// what the backend will actually accept.
+// what the backend will actually accept. Requires every dot-separated
+// domain label to be non-empty (at least two labels) — merely checking for
+// a "." anywhere in the domain let "a@b." and "a@." through.
 function isValidEmail(email: string): boolean {
   if (email === "" || /\s/.test(email)) return false;
   const parts = email.split("@");
-  return parts.length === 2 && parts[0] !== "" && parts[1].includes(".");
+  if (parts.length !== 2 || parts[0] === "") return false;
+  const domainLabels = parts[1].split(".");
+  return domainLabels.length >= 2 && domainLabels.every((label) => label !== "");
 }
 
 export function ManualOnboardingForm({ onClose }: { onClose: () => void }) {
