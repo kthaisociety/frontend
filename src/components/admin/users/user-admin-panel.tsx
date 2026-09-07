@@ -2,7 +2,7 @@
 
 import { Fragment, useState } from "react";
 import { toast } from "sonner";
-import { Trash2, X } from "lucide-react";
+import { Plus, Trash2, X } from "lucide-react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -29,12 +29,14 @@ import {
   useDemoteAdmin,
 } from "@/hooks/admin";
 import { AdminUserProfileForm } from "@/components/admin/users/admin-user-profile-form";
+import { ManualOnboardingForm } from "@/components/admin/users/manual-onboarding-form";
 
 export function UserAdminPanel() {
   const [searchQuery, setSearchQuery] = useState("");
   const [adminsOnly, setAdminsOnly] = useState(false);
   const [editingUserId, setEditingUserId] = useState<string | null>(null);
   const [userToDelete, setUserToDelete] = useState<{ id: string; email: string } | null>(null);
+  const [showOnboardingForm, setShowOnboardingForm] = useState(false);
 
   const { data: users = [], isLoading, isError } = useAdminUsers();
   const promoteMutation = usePromoteAdmin();
@@ -78,22 +80,56 @@ export function UserAdminPanel() {
 
   return (
     <div className="space-y-4">
-      <div className="flex flex-wrap items-center gap-2">
-        <Input
-          placeholder="Search by email..."
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          className="max-w-md"
-        />
-        <Button
-          variant={adminsOnly ? "secondary" : "outline"}
-          size="sm"
-          aria-pressed={adminsOnly}
-          onClick={() => setAdminsOnly((prev) => !prev)}
-        >
-          Admins only
-        </Button>
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <div className="flex flex-wrap items-center gap-2">
+          <Input
+            placeholder="Search by email..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="max-w-md"
+          />
+          <Button
+            variant={adminsOnly ? "secondary" : "outline"}
+            size="sm"
+            aria-pressed={adminsOnly}
+            onClick={() => setAdminsOnly((prev) => !prev)}
+          >
+            Admins only
+          </Button>
+        </div>
+        {!showOnboardingForm && (
+          <Button size="sm" onClick={() => setShowOnboardingForm(true)}>
+            <Plus className="mr-2 h-4 w-4" /> Onboard Member
+          </Button>
+        )}
       </div>
+
+      {showOnboardingForm && (
+        <Card className="border-primary/30 shadow-sm">
+          <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-4">
+            <div>
+              <CardTitle>Onboard Member</CardTitle>
+              <CardDescription className="mt-1">
+                For members joining outside the recruitment pipeline (board
+                appointments, special cases). Creates a real @kthais.com
+                account and Mattermost invite.
+              </CardDescription>
+            </div>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="shrink-0"
+              onClick={() => setShowOnboardingForm(false)}
+              aria-label="Close onboarding form"
+            >
+              <X className="h-4 w-4" />
+            </Button>
+          </CardHeader>
+          <CardContent>
+            <ManualOnboardingForm onClose={() => setShowOnboardingForm(false)} />
+          </CardContent>
+        </Card>
+      )}
 
       <div className="max-h-[min(70vh,720px)] space-y-3 overflow-y-auto pr-2">
         {filteredUsers.length === 0 ? (
