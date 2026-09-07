@@ -45,6 +45,15 @@ function Req() {
   return <span className="text-destructive ml-0.5">*</span>;
 }
 
+// Mirrors the backend's isValidEmail (general_application_handler.go) —
+// same minimal shape check, not a full RFC validator, kept consistent with
+// what the backend will actually accept.
+function isValidEmail(email: string): boolean {
+  if (email === "" || /\s/.test(email)) return false;
+  const parts = email.split("@");
+  return parts.length === 2 && parts[0] !== "" && parts[1].includes(".");
+}
+
 export function ManualOnboardingForm({ onClose }: { onClose: () => void }) {
   const [form, setForm] = useState<FormState>(emptyForm);
   const { mutate: createOnboarding, isPending } = useCreateManualOnboarding();
@@ -54,14 +63,21 @@ export function ManualOnboardingForm({ onClose }: { onClose: () => void }) {
       setForm((prev) => ({ ...prev, [field]: e.target.value }));
     };
 
+  const normalized = {
+    firstName: form.firstName.trim(),
+    lastName: form.lastName.trim(),
+    email: form.email.trim(),
+    assignedTeam: form.assignedTeam,
+  };
+
   const isValid =
-    form.firstName.trim() !== "" &&
-    form.lastName.trim() !== "" &&
-    form.email.trim() !== "" &&
-    form.assignedTeam !== "";
+    normalized.firstName !== "" &&
+    normalized.lastName !== "" &&
+    isValidEmail(normalized.email) &&
+    normalized.assignedTeam !== "";
 
   const handleConfirm = () => {
-    createOnboarding(form, { onSuccess: onClose });
+    createOnboarding(normalized, { onSuccess: onClose });
   };
 
   return (
@@ -124,7 +140,7 @@ export function ManualOnboardingForm({ onClose }: { onClose: () => void }) {
           <AlertDialogContent>
             <AlertDialogHeader>
               <AlertDialogTitle>
-                Onboard {form.firstName} {form.lastName}?
+                Onboard {normalized.firstName} {normalized.lastName}?
               </AlertDialogTitle>
               <AlertDialogDescription>
                 This will create a real @kthais.com Workspace account and
