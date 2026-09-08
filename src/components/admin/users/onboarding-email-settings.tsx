@@ -138,7 +138,7 @@ const FIELD_BY_KIND: Record<OnboardingEmailKind, keyof OnboardingEmailSettings> 
 };
 
 export function OnboardingEmailSettingsPanel() {
-  const { data: settings, isLoading } = useOnboardingEmailSettings();
+  const { data: settings, isLoading, isError } = useOnboardingEmailSettings();
   const updateSettings = useUpdateOnboardingEmailSettings();
   const [open, setOpen] = useState(false);
   const [drafts, setDrafts] = useState<OnboardingEmailSettings>({
@@ -210,6 +210,10 @@ export function OnboardingEmailSettingsPanel() {
               <Skeleton className="h-32 w-full" />
               <Skeleton className="h-32 w-full" />
             </div>
+          ) : isError ? (
+            <p className="text-sm text-destructive">
+              Failed to load the current onboarding email settings. Try reopening this card.
+            </p>
           ) : (
             <>
               {SECTIONS.map((section) => {
