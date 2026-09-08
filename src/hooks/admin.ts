@@ -120,14 +120,52 @@ async function createManualOnboarding(input: ManualOnboardingInput) {
 // manual onboarding (see manual-onboarding-form.tsx), so there's no list to
 // refresh.
 export function useCreateManualOnboarding() {
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: createManualOnboarding,
     onSuccess: () => {
       toast.success("Onboarding started — an email is on its way to them.");
+      queryClient.invalidateQueries({ queryKey: ["onboarding-records"] });
     },
     onError: (error: Error) => {
       toast.error(error.message || "Failed to start onboarding.");
     },
+  });
+}
+
+export type OnboardingRecord = {
+  ID: number;
+  application_id: string | null;
+  first_name: string;
+  last_name: string;
+  personal_email: string;
+  assigned_team: string;
+  state:
+    | "notified"
+    | "kth_email_submitted"
+    | "kth_email_confirmed"
+    | "provisioned"
+    | "emailed"
+    | "complete"
+    | "failed";
+  kth_email: string;
+  kthais_email: string;
+  failure_reason: string;
+  CreatedAt: string;
+};
+
+async function fetchOnboardingRecords(): Promise<OnboardingRecord[]> {
+  const response = await fetch(`${API_URL}/admin/onboarding/records`, {
+    credentials: "include",
+  });
+  if (!response.ok) throw new Error("Failed to fetch onboarding records");
+  return response.json();
+}
+
+export function useOnboardingRecords() {
+  return useQuery<OnboardingRecord[]>({
+    queryKey: ["onboarding-records"],
+    queryFn: fetchOnboardingRecords,
   });
 }
 
