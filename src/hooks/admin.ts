@@ -120,10 +120,12 @@ async function createManualOnboarding(input: ManualOnboardingInput) {
 // manual onboarding (see manual-onboarding-form.tsx), so there's no list to
 // refresh.
 export function useCreateManualOnboarding() {
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: createManualOnboarding,
     onSuccess: () => {
       toast.success("Onboarding started — an email is on its way to them.");
+      queryClient.invalidateQueries({ queryKey: ["onboarding-records"] });
     },
     onError: (error: Error) => {
       toast.error(error.message || "Failed to start onboarding.");
