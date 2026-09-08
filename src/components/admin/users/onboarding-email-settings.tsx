@@ -25,35 +25,47 @@ import {
   useOnboardingEmailSettings,
   useUpdateOnboardingEmailSettings,
   usePreviewOnboardingEmailSettings,
+  type OnboardingEmailKind,
+  type OnboardingEmailSettings,
 } from "@/hooks/admin";
 
-const DEFAULT_INTRO_TEXT = "Congratulations on being accepted to KTH AI Society!";
+const DEFAULT_START_INTRO = "Congratulations on being accepted to KTH AI Society!";
+const DEFAULT_MATTERMOST_INTRO =
+  "You've been invited to the KTH AI Society Mattermost workspace — check your inbox for an invite link to get started.";
 
-// Renders by calling the backend, which builds it the exact same way the real
-// "start your onboarding" email is built — so this can never drift from the
-// real email the way a hand-rolled client-side mockup could.
-function OnboardingEmailPreviewDialog({ introText }: { introText: string }) {
+// Renders by calling the backend, which builds it the exact same way the
+// real email is built — so this can never drift from the real email the
+// way a hand-rolled client-side mockup could.
+function OnboardingEmailPreviewDialog({
+  kind,
+  title,
+  introText,
+}: {
+  kind: OnboardingEmailKind;
+  title: string;
+  introText: string;
+}) {
   const preview = usePreviewOnboardingEmailSettings();
 
   return (
     <Dialog
       onOpenChange={(open) => {
         if (open) {
-          preview.mutate({ intro_text: introText || DEFAULT_INTRO_TEXT });
+          preview.mutate({ kind, introText });
         } else {
           preview.reset();
         }
       }}
     >
       <DialogTrigger asChild>
-        <Button type="button" size="lg">
+        <Button type="button" variant="outline" size="sm">
           <Eye className="h-4 w-4" />
-          Preview email
+          Preview
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-lg">
         <DialogHeader>
-          <DialogTitle>Start-onboarding email preview</DialogTitle>
+          <DialogTitle>{title}</DialogTitle>
           <DialogDescription>
             {preview.data
               ? `Subject: ${preview.data.subject}`
@@ -66,7 +78,7 @@ function OnboardingEmailPreviewDialog({ introText }: { introText: string }) {
         )}
         {preview.data && (
           <iframe
-            title="Start-onboarding email preview"
+            title={title}
             srcDoc={preview.data.html}
             sandbox=""
             className="h-[500px] w-full rounded-md border bg-white"
@@ -77,32 +89,96 @@ function OnboardingEmailPreviewDialog({ introText }: { introText: string }) {
   );
 }
 
+type EmailSection = {
+  kind: OnboardingEmailKind;
+  label: string;
+  description: React.ReactNode;
+  placeholder: string;
+  defaultValue: string;
+};
+
+const SECTIONS: EmailSection[] = [
+  {
+    kind: "start",
+    label: "Start-onboarding email",
+    description: (
+      <>
+        The first message a new member sees, right after they&apos;re accepted. The greeting and the
+        numbered next-steps list are added automatically — just write the paragraph in between.
+      </>
+    ),
+    placeholder: DEFAULT_START_INTRO,
+    defaultValue: DEFAULT_START_INTRO,
+  },
+  {
+    kind: "account",
+    label: "Account-credentials email",
+    description: (
+      <>
+        Sent once their @kthais.com account is created. An optional personal note before the
+        credentials — leave it blank for just the credentials, no intro paragraph.
+      </>
+    ),
+    placeholder: "Optional — leave blank for no intro paragraph",
+    defaultValue: "",
+  },
+  {
+    kind: "mattermost",
+    label: "Mattermost getting-started email",
+    description: <>Sent right after the account-credentials email.</>,
+    placeholder: DEFAULT_MATTERMOST_INTRO,
+    defaultValue: DEFAULT_MATTERMOST_INTRO,
+  },
+];
+
+const FIELD_BY_KIND: Record<OnboardingEmailKind, keyof OnboardingEmailSettings> = {
+  start: "start_intro_text",
+  account: "account_intro_text",
+  mattermost: "mattermost_intro_text",
+};
+
 export function OnboardingEmailSettingsPanel() {
   const { data: settings, isLoading } = useOnboardingEmailSettings();
   const updateSettings = useUpdateOnboardingEmailSettings();
   const [open, setOpen] = useState(false);
-  const [introText, setIntroText] = useState("");
+  const [drafts, setDrafts] = useState<OnboardingEmailSettings>({
+    start_intro_text: "",
+    account_intro_text: "",
+    mattermost_intro_text: "",
+  });
   const [initialised, setInitialised] = useState(false);
 
-  const savedIntroText = settings ? settings.intro_text || DEFAULT_INTRO_TEXT : "";
+  const saved: OnboardingEmailSettings = settings ?? {
+    start_intro_text: "",
+    account_intro_text: "",
+    mattermost_intro_text: "",
+  };
 
   if (settings && !initialised) {
-    setIntroText(savedIntroText);
+    setDrafts(saved);
     setInitialised(true);
   }
 
-  const isDirty = initialised && introText !== savedIntroText;
+  const isDirty =
+    initialised &&
+    (drafts.start_intro_text !== saved.start_intro_text ||
+      drafts.account_intro_text !== saved.account_intro_text ||
+      drafts.mattermost_intro_text !== saved.mattermost_intro_text);
+
+  function setField(field: keyof OnboardingEmailSettings, value: string) {
+    setDrafts((prev) => ({ ...prev, [field]: value }));
+  }
 
   function handleSave() {
-    updateSettings.mutate({ intro_text: introText });
+    updateSettings.mutate(drafts);
   }
 
   // Collapsing with unsaved edits discards them — reverting to the last
-  // saved value here (rather than leaving it sitting in memory) means
+  // saved values here (rather than leaving them sitting in memory) means
   // there's never an invisible unsaved draft lingering after you close this.
   function handleToggle() {
     if (open && isDirty) {
-      setIntroText(savedIntroText);
+      setDrafts(saved);
     }
     setOpen((v) => !v);
   }
@@ -113,7 +189,7 @@ export function OnboardingEmailSettingsPanel() {
         <div className="flex items-center justify-between">
           <CardTitle className="flex items-center gap-2 text-base">
             <Settings className="h-4 w-4" />
-            Start-onboarding email
+            Onboarding emails
           </CardTitle>
           <ChevronDown
             className="h-4 w-4 text-muted-foreground transition-transform"
@@ -122,47 +198,54 @@ export function OnboardingEmailSettingsPanel() {
         </div>
         {!open && (
           <CardDescription>
-            The message a new member sees first, right after they&apos;re accepted. Click to view or edit.
+            The three emails sent over the course of an onboarding. Click to view or edit.
           </CardDescription>
         )}
       </CardHeader>
       {open && (
-        <CardContent className="space-y-4">
+        <CardContent className="space-y-6">
           {isLoading ? (
             <div className="space-y-3">
+              <Skeleton className="h-32 w-full" />
+              <Skeleton className="h-32 w-full" />
               <Skeleton className="h-32 w-full" />
             </div>
           ) : (
             <>
-              <CardDescription>
-                The greeting and the numbered next-steps list are added automatically — just write the
-                paragraph that goes in between. Use{" "}
-                <code className="rounded bg-muted px-1 text-xs">{"{{first_name}}"}</code> to address the
-                new member by name.
-              </CardDescription>
-              <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <Label htmlFor="onboarding-intro-text">Intro message</Label>
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="sm"
-                    className="h-auto py-0 text-xs"
-                    onClick={() => setIntroText(DEFAULT_INTRO_TEXT)}
-                  >
-                    Reset to default message
-                  </Button>
-                </div>
-                <Textarea
-                  id="onboarding-intro-text"
-                  placeholder={DEFAULT_INTRO_TEXT}
-                  className="min-h-[120px] resize-y font-mono text-sm"
-                  value={introText}
-                  onChange={(e) => setIntroText(e.target.value)}
-                />
-              </div>
+              {SECTIONS.map((section) => {
+                const field = FIELD_BY_KIND[section.kind];
+                const value = drafts[field];
+                return (
+                  <div key={section.kind} className="space-y-2 border-b pb-6 last:border-b-0 last:pb-0">
+                    <div className="flex items-center justify-between">
+                      <Label htmlFor={`onboarding-${section.kind}-intro`}>{section.label}</Label>
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        className="h-auto py-0 text-xs"
+                        onClick={() => setField(field, section.defaultValue)}
+                      >
+                        {section.defaultValue ? "Reset to default message" : "Clear"}
+                      </Button>
+                    </div>
+                    <CardDescription>
+                      {section.description} Use{" "}
+                      <code className="rounded bg-muted px-1 text-xs">{"{{first_name}}"}</code> to
+                      address the new member by name.
+                    </CardDescription>
+                    <Textarea
+                      id={`onboarding-${section.kind}-intro`}
+                      placeholder={section.placeholder}
+                      className="min-h-[100px] resize-y font-mono text-sm"
+                      value={value}
+                      onChange={(e) => setField(field, e.target.value)}
+                    />
+                    <OnboardingEmailPreviewDialog kind={section.kind} title={section.label} introText={value} />
+                  </div>
+                );
+              })}
               <div className="flex flex-wrap items-center gap-2">
-                <OnboardingEmailPreviewDialog introText={introText} />
                 <Button variant="outline" disabled={!isDirty || updateSettings.isPending} onClick={handleSave}>
                   {updateSettings.isPending ? "Saving…" : isDirty ? "Save changes" : "Saved"}
                 </Button>

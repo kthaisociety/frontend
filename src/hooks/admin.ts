@@ -213,7 +213,9 @@ export function useRestartOnboarding() {
 }
 
 export type OnboardingEmailSettings = {
-  intro_text: string;
+  start_intro_text: string;
+  account_intro_text: string;
+  mattermost_intro_text: string;
 };
 
 async function fetchOnboardingEmailSettings(): Promise<OnboardingEmailSettings> {
@@ -263,20 +265,23 @@ export function useUpdateOnboardingEmailSettings() {
   });
 }
 
+export type OnboardingEmailKind = "start" | "account" | "mattermost";
+
 export type OnboardingEmailPreview = {
   subject: string;
   html: string;
 };
 
-/** Renders the start-onboarding email server-side, from the same code path used to send it. */
-async function previewOnboardingEmailSettings(
-  settings: OnboardingEmailSettings,
-): Promise<OnboardingEmailPreview> {
+/** Renders one of the three onboarding emails server-side, from the same code path used to send it. */
+async function previewOnboardingEmailSettings(args: {
+  kind: OnboardingEmailKind;
+  introText: string;
+}): Promise<OnboardingEmailPreview> {
   const response = await fetch(`${API_URL}/admin/onboarding/email-settings/preview`, {
     method: "POST",
     credentials: "include",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(settings),
+    body: JSON.stringify({ kind: args.kind, intro_text: args.introText }),
   });
   if (!response.ok) {
     const data = (await response.json().catch(() => null)) as { error?: string } | null;
