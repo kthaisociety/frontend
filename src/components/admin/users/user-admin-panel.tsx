@@ -31,6 +31,7 @@ import {
 import { AdminUserProfileForm } from "@/components/admin/users/admin-user-profile-form";
 import { ManualOnboardingForm } from "@/components/admin/users/manual-onboarding-form";
 import { OnboardingRecordsList } from "@/components/admin/users/onboarding-records-list";
+import { OnboardingEmailSettingsPanel } from "@/components/admin/users/onboarding-email-settings";
 
 export function UserAdminPanel() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -145,6 +146,8 @@ export function UserAdminPanel() {
           <OnboardingRecordsList />
         </CardContent>
       </Card>
+
+      <OnboardingEmailSettingsPanel />
 
       <div className="max-h-[min(70vh,720px)] space-y-3 overflow-y-auto pr-2">
         {filteredUsers.length === 0 ? (
