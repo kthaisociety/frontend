@@ -11,7 +11,8 @@ export type OnboardingState =
   | "provisioned"
   | "emailed"
   | "complete"
-  | "failed";
+  | "failed"
+  | "cancelled";
 
 export type OnboardingRecord = {
   ID: number;
