@@ -147,7 +147,8 @@ export type OnboardingRecord = {
     | "provisioned"
     | "emailed"
     | "complete"
-    | "failed";
+    | "failed"
+    | "cancelled";
   kth_email: string;
   kthais_email: string;
   failure_reason: string;
@@ -166,6 +167,48 @@ export function useOnboardingRecords() {
   return useQuery<OnboardingRecord[]>({
     queryKey: ["onboarding-records"],
     queryFn: fetchOnboardingRecords,
+  });
+}
+
+async function postOnboardingRecordAction(action: "cancel" | "restart", id: number) {
+  const response = await fetch(`${API_URL}/admin/onboarding/${action}`, {
+    method: "POST",
+    credentials: "include",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ id }),
+  });
+  if (!response.ok) {
+    const data = (await response.json().catch(() => null)) as { error?: string } | null;
+    throw new Error(data?.error || `Failed to ${action} onboarding`);
+  }
+  return response.json();
+}
+
+export function useCancelOnboarding() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (id: number) => postOnboardingRecordAction("cancel", id),
+    onSuccess: () => {
+      toast.success("Onboarding cancelled.");
+      queryClient.invalidateQueries({ queryKey: ["onboarding-records"] });
+    },
+    onError: (error: Error) => {
+      toast.error(error.message || "Failed to cancel onboarding.");
+    },
+  });
+}
+
+export function useRestartOnboarding() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (id: number) => postOnboardingRecordAction("restart", id),
+    onSuccess: () => {
+      toast.success("Onboarding restarted — a new email is on its way.");
+      queryClient.invalidateQueries({ queryKey: ["onboarding-records"] });
+    },
+    onError: (error: Error) => {
+      toast.error(error.message || "Failed to restart onboarding.");
+    },
   });
 }
 

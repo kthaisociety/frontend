@@ -1,6 +1,7 @@
 "use client";
 
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   Table,
   TableBody,
@@ -9,7 +10,23 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { useOnboardingRecords, type OnboardingRecord } from "@/hooks/admin";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import {
+  useOnboardingRecords,
+  useCancelOnboarding,
+  useRestartOnboarding,
+  type OnboardingRecord,
+} from "@/hooks/admin";
 
 const STALE_AFTER_DAYS = 7;
 
@@ -21,6 +38,7 @@ const STATE_LABELS: Record<OnboardingRecord["state"], string> = {
   emailed: "Provisioned",
   complete: "Complete",
   failed: "Failed",
+  cancelled: "Cancelled",
 };
 
 function daysSince(dateString: string): number {
@@ -33,7 +51,90 @@ function StateBadge({ state }: { state: OnboardingRecord["state"] }) {
   if (state === "failed") {
     return <Badge variant="destructive">{STATE_LABELS[state]}</Badge>;
   }
+  if (state === "cancelled") {
+    return <Badge variant="outline">{STATE_LABELS[state]}</Badge>;
+  }
   return <Badge variant="secondary">{STATE_LABELS[state]}</Badge>;
+}
+
+function RecordActions({ record }: { record: OnboardingRecord }) {
+  const { mutate: cancelOnboarding, isPending: isCancelling } = useCancelOnboarding();
+  const { mutate: restartOnboarding, isPending: isRestarting } = useRestartOnboarding();
+  const name = `${record.first_name} ${record.last_name}`;
+  const isPending = isCancelling || isRestarting;
+
+  const canRestart = record.state !== "complete";
+  const canCancel = record.state !== "complete" && record.state !== "cancelled";
+
+  if (!canRestart && !canCancel) return null;
+
+  return (
+    <div className="flex flex-wrap gap-2">
+      {canRestart && (
+        <AlertDialog>
+          <AlertDialogTrigger asChild>
+            <Button variant="outline" size="sm" disabled={isPending}>
+              Restart
+            </Button>
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Restart onboarding for {name}?</AlertDialogTitle>
+              <AlertDialogDescription>
+                They&apos;ll get a new &quot;start onboarding&quot; email and
+                need to reconfirm their kth.se address. If an account
+                already exists, it won&apos;t be duplicated.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction
+                disabled={isPending}
+                onClick={() => restartOnboarding(record.ID)}
+              >
+                Yes, restart
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+      )}
+      {canCancel && (
+        <AlertDialog>
+          <AlertDialogTrigger asChild>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="text-destructive hover:text-destructive"
+              disabled={isPending}
+            >
+              Cancel
+            </Button>
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Cancel onboarding for {name}?</AlertDialogTitle>
+              <AlertDialogDescription>
+                They won&apos;t receive any further onboarding emails. If a
+                Google Workspace or Mattermost account was already created,
+                it needs to be cleaned up manually — this doesn&apos;t touch
+                either.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Never mind</AlertDialogCancel>
+              <AlertDialogAction
+                className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                disabled={isPending}
+                onClick={() => cancelOnboarding(record.ID)}
+              >
+                Yes, cancel
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+      )}
+    </div>
+  );
 }
 
 export function OnboardingRecordsList() {
@@ -76,12 +177,16 @@ export function OnboardingRecordsList() {
             <TableHead>Source</TableHead>
             <TableHead>Status</TableHead>
             <TableHead>Days pending</TableHead>
+            <TableHead>Actions</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {sorted.map((record) => {
             const days = daysSince(record.CreatedAt);
-            const isStale = record.state !== "complete" && days >= STALE_AFTER_DAYS;
+            const isStale =
+              record.state !== "complete" &&
+              record.state !== "cancelled" &&
+              days >= STALE_AFTER_DAYS;
             return (
               <TableRow
                 key={record.ID}
@@ -112,6 +217,9 @@ export function OnboardingRecordsList() {
                 <TableCell className={isStale ? "font-medium text-destructive" : undefined}>
                   {days} {days === 1 ? "day" : "days"}
                   {isStale && " — needs follow-up"}
+                </TableCell>
+                <TableCell>
+                  <RecordActions record={record} />
                 </TableCell>
               </TableRow>
             );
