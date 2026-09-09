@@ -30,6 +30,7 @@ import {
   useDemoteAdmin,
   useDeactivateAccount,
   useDeleteAccount,
+  useTransferHeadOfIT,
 } from "@/hooks/admin";
 import { useInterviewSettings } from "@/hooks/applications";
 import { ConfirmPhraseDialog } from "@/components/admin/confirm-phrase-dialog";
@@ -109,10 +110,12 @@ export function UserAdminPanel() {
 
   const { data: users = [], isLoading, isError } = useAdminUsers();
   const { data: interviewSettings } = useInterviewSettings();
-  const isHeadOfIT = interviewSettings?.admin_team === "IT";
+  const isHeadOfIT = interviewSettings?.is_head_of_it === true;
+  const myEmail = interviewSettings?.email;
   const promoteMutation = usePromoteAdmin();
   const demoteMutation = useDemoteAdmin();
   const deleteMutation = useDeleteUser();
+  const transferHeadOfIT = useTransferHeadOfIT();
 
   const filteredUsers = users
     .filter((user) => user.email.toLowerCase().includes(searchQuery.toLowerCase()))
@@ -285,6 +288,34 @@ export function UserAdminPanel() {
                     >
                       <Trash2 className="h-4 w-4" />
                     </Button>
+                    {isHeadOfIT && isAdmin && user.email !== myEmail && (
+                      <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                          <Button variant="outline" size="sm" disabled={transferHeadOfIT.isPending}>
+                            Make Head of IT
+                          </Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>Make {user.email} the head of IT?</AlertDialogTitle>
+                            <AlertDialogDescription>
+                              You will immediately lose head-of-IT status yourself — there&apos;s
+                              always exactly one. You&apos;d need {user.email} to hand it back to
+                              you the same way if you change your mind.
+                            </AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter>
+                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+                            <AlertDialogAction
+                              disabled={transferHeadOfIT.isPending}
+                              onClick={() => transferHeadOfIT.mutate(user.email)}
+                            >
+                              Yes, transfer
+                            </AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
+                    )}
                     {isHeadOfIT && user.email.toLowerCase().endsWith("@kthais.com") && (
                       <OffboardingActions email={user.email} />
                     )}

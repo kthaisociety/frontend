@@ -144,6 +144,37 @@ export function useDeleteAccount() {
   });
 }
 
+// Handing off the Head of IT flag itself — see backend
+// Profile.IsHeadOfIT/TransferHeadOfIT doc comments for why this can't be
+// self-declared. Refetches interview-settings on success since it flips
+// is_head_of_it for the caller (loses it) as much as for the target.
+async function transferHeadOfIT(email: string): Promise<void> {
+  const response = await fetch(`${API_URL}/admin/head-of-it/transfer`, {
+    method: "POST",
+    credentials: "include",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email }),
+  });
+  if (!response.ok) {
+    const data = (await response.json().catch(() => null)) as { error?: string } | null;
+    throw new Error(data?.error || "Failed to transfer head of IT");
+  }
+}
+
+export function useTransferHeadOfIT() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: transferHeadOfIT,
+    onSuccess: (_data, email) => {
+      toast.success(`${email} is now the head of IT.`);
+      queryClient.invalidateQueries({ queryKey: ["interview-settings"] });
+    },
+    onError: (error: Error) => {
+      toast.error(error.message || "Failed to transfer head of IT.");
+    },
+  });
+}
+
 export type ManualOnboardingInput = {
   firstName: string;
   lastName: string;

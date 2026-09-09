@@ -384,10 +384,13 @@ async function deleteApplicationSharedNote({
 }
 
 export type InterviewSettings = {
+  email: string;
   booking_page_url: string;
   interview_email_template: string;
   /** The team this admin declared themselves head of, or "none" if advisor/no team, or "" if unset. */
   admin_team: string;
+  /** Not self-editable — only true via a TransferHeadOfIT handover. Gates offboarding. */
+  is_head_of_it: boolean;
 };
 
 async function fetchInterviewSettings(): Promise<InterviewSettings> {
@@ -398,7 +401,16 @@ async function fetchInterviewSettings(): Promise<InterviewSettings> {
   return response.json();
 }
 
-async function updateInterviewSettings(settings: InterviewSettings): Promise<InterviewSettings> {
+// Only the fields the PUT endpoint actually accepts — email and
+// is_head_of_it are server-computed/read-only (the backend request struct
+// doesn't bind them at all), so they're deliberately excluded here rather
+// than round-tripped from a read.
+export type InterviewSettingsInput = Pick<
+  InterviewSettings,
+  "booking_page_url" | "interview_email_template" | "admin_team"
+>;
+
+async function updateInterviewSettings(settings: InterviewSettingsInput): Promise<InterviewSettings> {
   const response = await fetch(`${API_URL}/profile/me/interview-settings`, {
     method: "PUT",
     credentials: "include",
