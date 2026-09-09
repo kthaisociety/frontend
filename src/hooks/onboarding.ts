@@ -1,4 +1,4 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 
 // Types mirror onboarding-service's OnboardingRecord JSON shape exactly
 // (internal/models/onboarding_record.go) — this hits onboarding-service via
@@ -65,5 +65,30 @@ async function confirmOnboarding(input: { token: string }): Promise<OnboardingRe
 export function useConfirmOnboarding() {
   return useMutation({
     mutationFn: confirmOnboarding,
+  });
+}
+
+export type OnboardingConfirmInfo = {
+  first_name: string;
+  kth_email: string;
+};
+
+async function fetchOnboardingConfirmInfo(token: string): Promise<OnboardingConfirmInfo> {
+  const response = await fetch(`/api/onboarding/confirm?token=${encodeURIComponent(token)}`);
+  if (!response.ok) {
+    const data = (await response.json().catch(() => null)) as { error?: string } | null;
+    throw new Error(data?.error || "This link is invalid or has expired.");
+  }
+  return response.json();
+}
+
+// Read-only — never consumes the token — so the confirm page can show who
+// the link is for before the real confirming action happens.
+export function useOnboardingConfirmInfo(token: string) {
+  return useQuery({
+    queryKey: ["onboarding-confirm-info", token],
+    queryFn: () => fetchOnboardingConfirmInfo(token),
+    enabled: Boolean(token),
+    retry: false,
   });
 }

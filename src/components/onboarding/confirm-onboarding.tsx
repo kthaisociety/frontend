@@ -4,7 +4,12 @@ import { AlertCircle, CheckCircle2, Loader2 } from "lucide-react";
 
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
-import { useConfirmOnboarding, type OnboardingRecord } from "@/hooks/onboarding";
+import { Skeleton } from "@/components/ui/skeleton";
+import {
+  useConfirmOnboarding,
+  useOnboardingConfirmInfo,
+  type OnboardingRecord,
+} from "@/hooks/onboarding";
 
 // Renders an explicit "Confirm" button that must be clicked — never
 // auto-confirms on page load/render. KTH's Microsoft-hosted mail almost
@@ -30,6 +35,10 @@ function resultMessage(record: OnboardingRecord): { title: string; body: string;
 
 export function ConfirmOnboarding({ token }: { token: string }) {
   const confirm = useConfirmOnboarding();
+  // Read-only lookup, never consumes the token — just so this page can show
+  // who it's for (and catch an already-used/expired link) before the real
+  // action happens. See onboarding-service's PortalHandler.ConfirmInfo.
+  const info = useOnboardingConfirmInfo(token);
 
   if (!token) {
     return (
@@ -46,16 +55,15 @@ export function ConfirmOnboarding({ token }: { token: string }) {
     );
   }
 
-  if (confirm.error) {
+  if (confirm.error || (info.isError && !confirm.isSuccess)) {
+    const error = confirm.error ?? info.error;
     return (
       <div className="mx-auto w-full max-w-xl py-24">
         <Alert variant="destructive">
           <AlertCircle className="h-4 w-4" />
           <AlertTitle>Link invalid or expired</AlertTitle>
           <AlertDescription>
-            {confirm.error instanceof Error
-              ? confirm.error.message
-              : "This link is invalid or has expired."}
+            {error instanceof Error ? error.message : "This link is invalid or has expired."}
           </AlertDescription>
         </Alert>
       </div>
@@ -75,10 +83,21 @@ export function ConfirmOnboarding({ token }: { token: string }) {
     );
   }
 
+  if (info.isLoading) {
+    return (
+      <div className="mx-auto w-full max-w-xl py-24">
+        <Skeleton className="mx-auto h-8 w-2/3" />
+        <Skeleton className="mx-auto mt-4 h-11 w-64" />
+      </div>
+    );
+  }
+
   return (
     <div className="mx-auto flex w-full max-w-xl flex-col gap-6 py-24 text-center">
       <div>
-        <h1 className="text-2xl font-semibold">Confirm your KTH email</h1>
+        <h1 className="text-2xl font-semibold">
+          {info.data ? `Hi ${info.data.first_name}, confirm your KTH email` : "Confirm your KTH email"}
+        </h1>
         <p className="mt-1 text-sm text-muted-foreground">
           Click below to confirm this is your KTH email address and finish
           setting up your account.
@@ -91,7 +110,9 @@ export function ConfirmOnboarding({ token }: { token: string }) {
         className="mx-auto"
       >
         {confirm.isPending && <Loader2 className="h-4 w-4 animate-spin" />}
-        Confirm this is me
+        {info.data
+          ? `I confirm that ${info.data.kth_email} is my own email address`
+          : "Confirm this is me"}
       </Button>
     </div>
   );
