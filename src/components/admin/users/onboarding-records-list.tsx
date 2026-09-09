@@ -168,7 +168,9 @@ export function OnboardingRecordsList() {
 
   return (
     <div className="space-y-2">
-      <p className="text-xs text-muted-foreground">Right-click a row for retry/restart/cancel.</p>
+      <p className="text-xs text-muted-foreground">
+        Right-click a row for retry/restart/cancel (or focus it with Tab and press the menu key / Shift+F10).
+      </p>
       <div className="overflow-x-auto rounded-md border">
         <Table>
           <TableHeader>
@@ -196,7 +198,14 @@ export function OnboardingRecordsList() {
                   onRequestConfirm={setPendingAction}
                   isActionPending={isActionPending}
                 >
-                  <TableRow className={isStale ? "bg-destructive/5" : undefined}>
+                  <TableRow
+                    tabIndex={0}
+                    className={
+                      isStale
+                        ? "bg-destructive/5 focus-visible:outline-2 focus-visible:outline-ring focus-visible:-outline-offset-2"
+                        : "focus-visible:outline-2 focus-visible:outline-ring focus-visible:-outline-offset-2"
+                    }
+                  >
                     <TableCell className="font-medium">
                       {record.first_name} {record.last_name}
                     </TableCell>
