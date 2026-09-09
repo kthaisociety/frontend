@@ -12,6 +12,7 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
+  AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -27,11 +28,80 @@ import {
   useDeleteUser,
   usePromoteAdmin,
   useDemoteAdmin,
+  useDeactivateAccount,
+  useDeleteAccount,
+  useHeadsOfIT,
+  useGrantHeadOfIT,
+  useRevokeHeadOfIT,
 } from "@/hooks/admin";
+import { useInterviewSettings } from "@/hooks/applications";
+import { ConfirmPhraseDialog } from "@/components/admin/confirm-phrase-dialog";
 import { AdminUserProfileForm } from "@/components/admin/users/admin-user-profile-form";
 import { ManualOnboardingForm } from "@/components/admin/users/manual-onboarding-form";
 import { OnboardingRecordsList } from "@/components/admin/users/onboarding-records-list";
 import { OnboardingEmailSettingsPanel } from "@/components/admin/users/onboarding-email-settings";
+
+const DELETE_ACCOUNT_CONFIRM_PHRASE = "DELETE THIS ACCOUNT";
+
+// Offboarding a real @kthais.com account (Google Workspace + Mattermost) —
+// entirely separate from the plain "Delete user" trash icon below, which
+// only removes this app's own login record. Rendered only for the head of
+// IT (see isHeadOfIT below) and only for users who actually have a
+// @kthais.com address to offboard.
+function OffboardingActions({ email }: { email: string }) {
+  const deactivate = useDeactivateAccount();
+  const deleteAccount = useDeleteAccount();
+
+  return (
+    <>
+      <AlertDialog>
+        <AlertDialogTrigger asChild>
+          <Button variant="outline" size="sm" disabled={deactivate.isPending}>
+            Deactivate account
+          </Button>
+        </AlertDialogTrigger>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Deactivate {email}?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Suspends their Google Workspace account and deactivates their Mattermost account.
+              Reversible any time from each system&apos;s own admin console.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              disabled={deactivate.isPending}
+              onClick={() => deactivate.mutate(email)}
+            >
+              Yes, deactivate
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      <ConfirmPhraseDialog
+        trigger={
+          <Button variant="destructive" size="sm" disabled={deleteAccount.isPending}>
+            Delete account
+          </Button>
+        }
+        title={`Permanently delete ${email}?`}
+        description={
+          <>
+            Permanently deletes their Google Workspace account and attempts to permanently
+            delete their Mattermost account. This cannot be undone. Type{" "}
+            <span className="font-mono font-semibold">{DELETE_ACCOUNT_CONFIRM_PHRASE}</span>{" "}
+            exactly to confirm.
+          </>
+        }
+        phrase={DELETE_ACCOUNT_CONFIRM_PHRASE}
+        isPending={deleteAccount.isPending}
+        onConfirm={() => deleteAccount.mutate({ email, confirm: DELETE_ACCOUNT_CONFIRM_PHRASE })}
+      />
+    </>
+  );
+}
 
 export function UserAdminPanel() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -41,9 +111,14 @@ export function UserAdminPanel() {
   const [showOnboardingForm, setShowOnboardingForm] = useState(false);
 
   const { data: users = [], isLoading, isError } = useAdminUsers();
+  const { data: interviewSettings } = useInterviewSettings();
+  const isHeadOfIT = interviewSettings?.is_head_of_it === true;
+  const { data: headsOfIT = [] } = useHeadsOfIT();
   const promoteMutation = usePromoteAdmin();
   const demoteMutation = useDemoteAdmin();
   const deleteMutation = useDeleteUser();
+  const grantHeadOfIT = useGrantHeadOfIT();
+  const revokeHeadOfIT = useRevokeHeadOfIT();
 
   const filteredUsers = users
     .filter((user) => user.email.toLowerCase().includes(searchQuery.toLowerCase()))
@@ -216,6 +291,66 @@ export function UserAdminPanel() {
                     >
                       <Trash2 className="h-4 w-4" />
                     </Button>
+                    {isHeadOfIT && isAdmin && (
+                      headsOfIT.includes(user.email) ? (
+                        <AlertDialog>
+                          <AlertDialogTrigger asChild>
+                            <Button variant="outline" size="sm" disabled={revokeHeadOfIT.isPending}>
+                              Remove Head of IT
+                            </Button>
+                          </AlertDialogTrigger>
+                          <AlertDialogContent>
+                            <AlertDialogHeader>
+                              <AlertDialogTitle>Remove {user.email} as head of IT?</AlertDialogTitle>
+                              <AlertDialogDescription>
+                                They&apos;ll lose access to account offboarding. Refused if
+                                they&apos;re currently the only head of IT — there always has to be
+                                at least one.
+                              </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                              <AlertDialogCancel>Cancel</AlertDialogCancel>
+                              <AlertDialogAction
+                                disabled={revokeHeadOfIT.isPending}
+                                onClick={() => revokeHeadOfIT.mutate(user.email)}
+                              >
+                                Yes, remove
+                              </AlertDialogAction>
+                            </AlertDialogFooter>
+                          </AlertDialogContent>
+                        </AlertDialog>
+                      ) : (
+                        <AlertDialog>
+                          <AlertDialogTrigger asChild>
+                            <Button variant="outline" size="sm" disabled={grantHeadOfIT.isPending}>
+                              Make Head of IT
+                            </Button>
+                          </AlertDialogTrigger>
+                          <AlertDialogContent>
+                            <AlertDialogHeader>
+                              <AlertDialogTitle>Make {user.email} a head of IT?</AlertDialogTitle>
+                              <AlertDialogDescription>
+                                They&apos;ll be able to deactivate or permanently delete any
+                                @kthais.com member&apos;s account, alongside every other current
+                                head of IT — this doesn&apos;t affect your own access.
+                              </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                              <AlertDialogCancel>Cancel</AlertDialogCancel>
+                              <AlertDialogAction
+                                disabled={grantHeadOfIT.isPending}
+                                onClick={() => grantHeadOfIT.mutate(user.email)}
+                              >
+                                Yes, make them head of IT
+                              </AlertDialogAction>
+                            </AlertDialogFooter>
+                          </AlertDialogContent>
+                        </AlertDialog>
+                      )
+                    )}
+                    {isHeadOfIT && user.email.toLowerCase().endsWith("@kthais.com") && (
+                      <OffboardingActions email={user.email} />
+                    )}
                   </div>
                 </div>
 

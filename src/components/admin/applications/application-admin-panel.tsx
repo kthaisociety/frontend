@@ -2247,7 +2247,7 @@ export function ApplicationAdminPanel({
         <RecruitmentPeriodPanel />
         <FinalizeRecruitmentPanel
           isITAdmin={effectiveTeam === "IT"}
-          isHeadOfIT={declaredTeam === "IT"}
+          canCloseFinalizePhase={declaredTeam === "IT" || interviewSettings?.is_head_of_it === true}
           myTeam={effectiveTeam}
         />
       </TabsContent>

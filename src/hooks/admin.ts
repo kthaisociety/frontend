@@ -90,6 +90,136 @@ export function useDemoteAdmin() {
   });
 }
 
+// Offboarding — head-of-IT only, enforced server-side (403 for anyone
+// else); the UI hides these entirely for other admins, see
+// user-admin-panel.tsx's own isHeadOfIT check.
+
+async function deactivateAccount(email: string): Promise<void> {
+  const response = await fetch(`${API_URL}/admin/offboarding/deactivate`, {
+    method: "POST",
+    credentials: "include",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email }),
+  });
+  if (!response.ok) {
+    const data = (await response.json().catch(() => null)) as { error?: string } | null;
+    throw new Error(data?.error || "Failed to deactivate the account");
+  }
+}
+
+export function useDeactivateAccount() {
+  return useMutation({
+    mutationFn: deactivateAccount,
+    onSuccess: () => {
+      toast.success("Account deactivated.");
+    },
+    onError: (error: Error) => {
+      toast.error(error.message || "Failed to deactivate the account.");
+    },
+  });
+}
+
+async function deleteAccount(input: { email: string; confirm: string }): Promise<void> {
+  const response = await fetch(`${API_URL}/admin/offboarding/delete`, {
+    method: "POST",
+    credentials: "include",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(input),
+  });
+  if (!response.ok) {
+    const data = (await response.json().catch(() => null)) as { error?: string } | null;
+    throw new Error(data?.error || "Failed to delete the account");
+  }
+}
+
+export function useDeleteAccount() {
+  return useMutation({
+    mutationFn: deleteAccount,
+    onSuccess: () => {
+      toast.success("Account permanently deleted.");
+    },
+    onError: (error: Error) => {
+      toast.error(error.message || "Failed to delete the account.");
+    },
+  });
+}
+
+// Who holds the Head of IT flag — see backend Profile.IsHeadOfIT's doc
+// comment: any number of admins can hold it at once (granting is
+// unrestricted; revoking is refused if it would leave zero), so this is a
+// set of emails, not a single "the" head of IT.
+async function fetchHeadsOfIT(): Promise<string[]> {
+  const response = await fetch(`${API_URL}/admin/head-of-it`, {
+    credentials: "include",
+  });
+  if (!response.ok) throw new Error("Failed to fetch heads of IT");
+  const data = (await response.json()) as { emails: string[] };
+  return data.emails;
+}
+
+export function useHeadsOfIT() {
+  return useQuery({
+    queryKey: ["heads-of-it"],
+    queryFn: fetchHeadsOfIT,
+  });
+}
+
+async function grantHeadOfIT(email: string): Promise<void> {
+  const response = await fetch(`${API_URL}/admin/head-of-it/grant`, {
+    method: "POST",
+    credentials: "include",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email }),
+  });
+  if (!response.ok) {
+    const data = (await response.json().catch(() => null)) as { error?: string } | null;
+    throw new Error(data?.error || "Failed to grant head of IT");
+  }
+}
+
+export function useGrantHeadOfIT() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: grantHeadOfIT,
+    onSuccess: (_data, email) => {
+      toast.success(`${email} is now a head of IT.`);
+      queryClient.invalidateQueries({ queryKey: ["heads-of-it"] });
+      queryClient.invalidateQueries({ queryKey: ["interview-settings"] });
+    },
+    onError: (error: Error) => {
+      toast.error(error.message || "Failed to grant head of IT.");
+    },
+  });
+}
+
+async function revokeHeadOfIT(email: string): Promise<void> {
+  const response = await fetch(`${API_URL}/admin/head-of-it/revoke`, {
+    method: "POST",
+    credentials: "include",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email }),
+  });
+  if (!response.ok) {
+    const data = (await response.json().catch(() => null)) as { error?: string } | null;
+    throw new Error(data?.error || "Failed to revoke head of IT");
+  }
+}
+
+export function useRevokeHeadOfIT() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: revokeHeadOfIT,
+    onSuccess: (_data, email) => {
+      toast.success(`${email} is no longer a head of IT.`);
+      queryClient.invalidateQueries({ queryKey: ["heads-of-it"] });
+      queryClient.invalidateQueries({ queryKey: ["interview-settings"] });
+    },
+    onError: (error: Error) => {
+      toast.error(error.message || "Failed to revoke head of IT.");
+    },
+  });
+}
+
 export type ManualOnboardingInput = {
   firstName: string;
   lastName: string;
