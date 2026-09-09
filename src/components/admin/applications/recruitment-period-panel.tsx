@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { format } from "date-fns";
 import { CalendarClock, Eye } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -51,6 +52,7 @@ export function RecruitmentPeriodPanel() {
   const { data: template, isLoading: templateLoading } = useTeamQuestionsTemplate();
   const updateTemplate = useUpdateTeamQuestionsTemplate();
 
+  const [opensAtDraft, setOpensAtDraft] = useState("");
   const [deadlineDraft, setDeadlineDraft] = useState("");
   const [headingDraft, setHeadingDraft] = useState("");
   const [messageDraft, setMessageDraft] = useState("");
@@ -60,11 +62,13 @@ export function RecruitmentPeriodPanel() {
   const [tqSubmissionCutoffDraft, setTqSubmissionCutoffDraft] = useState("");
   const [tqInitialised, setTqInitialised] = useState(false);
 
+  const savedOpensAt = settings?.recruitment_opens_at ? toDatetimeLocalValue(settings.recruitment_opens_at) : "";
   const savedDeadline = settings ? toDatetimeLocalValue(settings.submission_deadline) : "";
   const savedHeading = settings?.closed_heading ?? "";
   const savedMessage = settings?.closed_message ?? "";
 
   if (settings && !initialised) {
+    setOpensAtDraft(savedOpensAt);
     setDeadlineDraft(savedDeadline);
     setHeadingDraft(savedHeading);
     setMessageDraft(savedMessage);
@@ -86,7 +90,8 @@ export function RecruitmentPeriodPanel() {
 
   const isDirty =
     initialised &&
-    (deadlineDraft !== savedDeadline ||
+    (opensAtDraft !== savedOpensAt ||
+      deadlineDraft !== savedDeadline ||
       headingDraft !== savedHeading ||
       messageDraft !== savedMessage);
   const isTqDirty =
@@ -97,6 +102,7 @@ export function RecruitmentPeriodPanel() {
   function handleSave() {
     if (isDirty && deadlineDraft) {
       updateSettings.mutate({
+        recruitmentOpensAtIso: opensAtDraft ? new Date(opensAtDraft).toISOString() : null,
         submissionDeadlineIso: new Date(deadlineDraft).toISOString(),
         closedHeading: headingDraft,
         closedMessage: messageDraft,
@@ -124,11 +130,16 @@ export function RecruitmentPeriodPanel() {
         <CardTitle className="flex items-center gap-2 text-base">
           <CalendarClock className="h-4 w-4" />
           Deadlines
+          {settings && (
+            <Badge variant={settings.is_recruitment_open ? "default" : "outline"} className="ml-1">
+              Recruitment {settings.is_recruitment_open ? "open" : "closed"}
+            </Badge>
+          )}
         </CardTitle>
         <CardDescription>
-          When applications close, when Team Questions final calls go out and close entirely, and
-          what applicants see at /apply once the application deadline passes. All enforced
-          server-side too &mdash; no deploy needed to change any of this.
+          When recruitment opens and closes, when Team Questions final calls go out and close
+          entirely, and what applicants see at /apply once the application deadline passes. All
+          enforced server-side too &mdash; no deploy needed to change any of this.
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
@@ -140,6 +151,36 @@ export function RecruitmentPeriodPanel() {
         ) : (
           <>
             <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <Label htmlFor="recruitment-opens">Recruitment opens at (your local time)</Label>
+                {opensAtDraft && (
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    className="h-auto py-0 text-xs"
+                    onClick={() => setOpensAtDraft("")}
+                  >
+                    Clear
+                  </Button>
+                )}
+              </div>
+              <Input
+                id="recruitment-opens"
+                type="datetime-local"
+                className="max-w-xs"
+                value={opensAtDraft}
+                onChange={(e) => setOpensAtDraft(e.target.value)}
+              />
+              <CardDescription>
+                Once this passes, the Apply buttons on the landing page appear. Leave blank to show
+                them right away (as long as before the close date below).{" "}
+                {settings?.recruitment_opens_at &&
+                  `Currently ${format(new Date(settings.recruitment_opens_at), "EEEE, MMMM d 'at' HH:mm")}.`}
+              </CardDescription>
+            </div>
+
+            <div className="space-y-2 border-t pt-6">
               <Label htmlFor="recruitment-deadline">Applications close at (your local time)</Label>
               <Input
                 id="recruitment-deadline"

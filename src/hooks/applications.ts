@@ -1107,7 +1107,26 @@ export function useApplicationSettings() {
   return useQuery({
     queryKey: ["application-settings"],
     queryFn: fetchApplicationSettings,
+    // A visitor can leave the landing page open across the exact moment
+    // recruitment opens or closes; without a periodic refetch the nav/hero
+    // CTA would just sit stale until some unrelated refetch happened to
+    // fire. This is a small, unauthenticated, non-rate-limited read (see
+    // the backend route comment), so polling it is cheap.
+    refetchInterval: 60_000,
   });
+}
+
+/**
+ * Whether the site's Apply CTAs (nav, hero) should render. Fails open on a
+ * loading or errored settings fetch — same "showing is safer than silently
+ * hiding over a transient API blip" reasoning as ApplicationPage's own
+ * deadline handling — and only hides once we positively know recruitment is
+ * closed.
+ */
+export function useShowApplyCta(): boolean {
+  const { data, isError } = useApplicationSettings();
+  if (!data || isError) return true;
+  return data.is_recruitment_open;
 }
 
 async function fetchAdminApplicationSettings(): Promise<AdminApplicationSettings> {
@@ -1133,6 +1152,9 @@ async function updateApplicationSettings(
     credentials: "include",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
+      // null clears it — "no lower bound" — matching the backend's nullable
+      // *time.Time; an empty string would fail to parse as a date there.
+      recruitment_opens_at: input.recruitmentOpensAtIso || null,
       submission_deadline: input.submissionDeadlineIso,
       closed_heading: input.closedHeading,
       closed_message: input.closedMessage,
@@ -1153,9 +1175,11 @@ export function useUpdateApplicationSettings() {
       toast.success("Application settings saved.");
       queryClient.setQueryData(["admin-application-settings"], data);
       queryClient.setQueryData<ApplicationSettings>(["application-settings"], {
+        recruitment_opens_at: data.recruitment_opens_at,
         submission_deadline: data.submission_deadline,
         closed_heading: data.closed_heading,
         closed_message: data.closed_message,
+        is_recruitment_open: data.is_recruitment_open,
       });
     },
     onError: (error: Error) => {
