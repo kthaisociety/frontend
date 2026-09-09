@@ -31,7 +31,7 @@ import {
 
 const DEFAULT_START_INTRO = "Congratulations on being accepted to KTH AI Society!";
 const DEFAULT_MATTERMOST_INTRO =
-  "You've been invited to the KTH AI Society Mattermost workspace — check your inbox for an invite link to get started.";
+  "You've been invited to the KTH AI Society Mattermost workspace — check your new @kthais.com inbox for an invite link to get started.";
 
 // Renders by calling the backend, which builds it the exact same way the
 // real email is built — so this can never drift from the real email the
