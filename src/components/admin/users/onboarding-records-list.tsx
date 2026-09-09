@@ -48,6 +48,7 @@ const STATE_LABELS: Record<OnboardingRecord["state"], string> = {
   complete: "Complete",
   failed: "Failed",
   cancelled: "Cancelled",
+  offboarded: "Offboarded",
 };
 
 function daysSince(dateString: string): number {
@@ -60,7 +61,7 @@ function StateBadge({ state }: { state: OnboardingRecord["state"] }) {
   if (state === "failed") {
     return <Badge variant="destructive">{STATE_LABELS[state]}</Badge>;
   }
-  if (state === "cancelled") {
+  if (state === "cancelled" || state === "offboarded") {
     return <Badge variant="outline">{STATE_LABELS[state]}</Badge>;
   }
   return <Badge variant="secondary">{STATE_LABELS[state]}</Badge>;
@@ -86,8 +87,16 @@ function OnboardingRowContextMenu({
   children: React.ReactNode;
 }) {
   const canRetry = record.state === "failed" || record.state === "kth_email_confirmed";
-  const canRestart = record.state !== "complete";
-  const canCancel = record.state !== "complete" && record.state !== "cancelled";
+  // Restarting means "send a new onboarding email" — never appropriate
+  // once someone's been fully offboarded, same as while still complete.
+  const canRestart = record.state !== "complete" && record.state !== "offboarded";
+  // Cancel doubles as "clear a stale record" here: a delete via the member
+  // offboarding flow now marks the record offboarded automatically going
+  // forward, but a record that completed before that existed (or was
+  // deleted through some other path) can still be stuck at "complete"
+  // indefinitely with no other way to acknowledge it. Only the two
+  // already-terminal states are excluded.
+  const canCancel = record.state !== "cancelled" && record.state !== "offboarded";
   const name = `${record.first_name} ${record.last_name}`;
 
   if (!canRetry && !canRestart && !canCancel) {
@@ -189,6 +198,7 @@ export function OnboardingRecordsList() {
               const isStale =
                 record.state !== "complete" &&
                 record.state !== "cancelled" &&
+                record.state !== "offboarded" &&
                 days >= STALE_AFTER_DAYS;
               return (
                 <OnboardingRowContextMenu
@@ -270,9 +280,9 @@ export function OnboardingRecordsList() {
               <AlertDialogHeader>
                 <AlertDialogTitle>Cancel onboarding for {pendingName}?</AlertDialogTitle>
                 <AlertDialogDescription>
-                  They won&apos;t receive any further onboarding emails. If a Google Workspace or
-                  Mattermost account was already created, it needs to be cleaned up manually — this
-                  doesn&apos;t touch either.
+                  {pendingAction.record.state === "complete"
+                    ? "Clears this stale record without touching anything else — use this when the member's account was already removed some other way (e.g. before member offboarding tracked this automatically), so this record stops sitting at \"Complete\" indefinitely."
+                    : "They won't receive any further onboarding emails. If a Google Workspace or Mattermost account was already created, it needs to be cleaned up manually — this doesn't touch either."}
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>

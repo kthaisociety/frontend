@@ -284,7 +284,8 @@ export type OnboardingRecord = {
     | "emailed"
     | "complete"
     | "failed"
-    | "cancelled";
+    | "cancelled"
+    | "offboarded";
   kth_email: string;
   kthais_email: string;
   failure_reason: string;
