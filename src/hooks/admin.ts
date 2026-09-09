@@ -212,6 +212,93 @@ export function useRestartOnboarding() {
   });
 }
 
+export type OnboardingEmailSettings = {
+  start_intro_text: string;
+  account_intro_text: string;
+  mattermost_intro_text: string;
+};
+
+async function fetchOnboardingEmailSettings(): Promise<OnboardingEmailSettings> {
+  const response = await fetch(`${API_URL}/admin/onboarding/email-settings`, {
+    credentials: "include",
+  });
+  if (!response.ok) {
+    throw new Error("Failed to load the onboarding email settings");
+  }
+  return response.json();
+}
+
+export function useOnboardingEmailSettings() {
+  return useQuery<OnboardingEmailSettings>({
+    queryKey: ["onboarding-email-settings"],
+    queryFn: fetchOnboardingEmailSettings,
+  });
+}
+
+async function updateOnboardingEmailSettings(
+  settings: OnboardingEmailSettings,
+): Promise<OnboardingEmailSettings> {
+  const response = await fetch(`${API_URL}/admin/onboarding/email-settings`, {
+    method: "PUT",
+    credentials: "include",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(settings),
+  });
+  if (!response.ok) {
+    const data = (await response.json().catch(() => null)) as { error?: string } | null;
+    throw new Error(data?.error || "Failed to save the onboarding email settings");
+  }
+  return response.json();
+}
+
+export function useUpdateOnboardingEmailSettings() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: updateOnboardingEmailSettings,
+    onSuccess: (data) => {
+      toast.success("Saved.");
+      queryClient.setQueryData(["onboarding-email-settings"], data);
+    },
+    onError: (error: Error) => {
+      toast.error(error.message || "Failed to save the onboarding email settings.");
+    },
+  });
+}
+
+export type OnboardingEmailKind = "start" | "account" | "mattermost";
+
+export type OnboardingEmailPreview = {
+  subject: string;
+  html: string;
+};
+
+/** Renders one of the three onboarding emails server-side, from the same code path used to send it. */
+async function previewOnboardingEmailSettings(args: {
+  kind: OnboardingEmailKind;
+  introText: string;
+}): Promise<OnboardingEmailPreview> {
+  const response = await fetch(`${API_URL}/admin/onboarding/email-settings/preview`, {
+    method: "POST",
+    credentials: "include",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ kind: args.kind, intro_text: args.introText }),
+  });
+  if (!response.ok) {
+    const data = (await response.json().catch(() => null)) as { error?: string } | null;
+    throw new Error(data?.error || "Failed to render preview");
+  }
+  return response.json();
+}
+
+export function usePreviewOnboardingEmailSettings() {
+  return useMutation({
+    mutationFn: previewOnboardingEmailSettings,
+    onError: (error: Error) => {
+      toast.error(error.message || "Failed to render preview.");
+    },
+  });
+}
+
 async function fetchAdminUserProfile(
   userId: string,
 ): Promise<AdminProfileData> {
