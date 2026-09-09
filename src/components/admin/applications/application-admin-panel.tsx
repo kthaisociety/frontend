@@ -2247,7 +2247,7 @@ export function ApplicationAdminPanel({
         <RecruitmentPeriodPanel />
         <FinalizeRecruitmentPanel
           isITAdmin={effectiveTeam === "IT"}
-          isHeadOfIT={declaredTeam === "IT"}
+          isDeclaredITHead={declaredTeam === "IT"}
           myTeam={effectiveTeam}
         />
       </TabsContent>
