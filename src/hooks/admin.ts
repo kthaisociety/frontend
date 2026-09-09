@@ -90,6 +90,60 @@ export function useDemoteAdmin() {
   });
 }
 
+// Offboarding — head-of-IT only, enforced server-side (403 for anyone
+// else); the UI hides these entirely for other admins, see
+// user-admin-panel.tsx's own isHeadOfIT check.
+
+async function deactivateAccount(email: string): Promise<void> {
+  const response = await fetch(`${API_URL}/admin/offboarding/deactivate`, {
+    method: "POST",
+    credentials: "include",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email }),
+  });
+  if (!response.ok) {
+    const data = (await response.json().catch(() => null)) as { error?: string } | null;
+    throw new Error(data?.error || "Failed to deactivate the account");
+  }
+}
+
+export function useDeactivateAccount() {
+  return useMutation({
+    mutationFn: deactivateAccount,
+    onSuccess: () => {
+      toast.success("Account deactivated.");
+    },
+    onError: (error: Error) => {
+      toast.error(error.message || "Failed to deactivate the account.");
+    },
+  });
+}
+
+async function deleteAccount(input: { email: string; confirm: string }): Promise<void> {
+  const response = await fetch(`${API_URL}/admin/offboarding/delete`, {
+    method: "POST",
+    credentials: "include",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(input),
+  });
+  if (!response.ok) {
+    const data = (await response.json().catch(() => null)) as { error?: string } | null;
+    throw new Error(data?.error || "Failed to delete the account");
+  }
+}
+
+export function useDeleteAccount() {
+  return useMutation({
+    mutationFn: deleteAccount,
+    onSuccess: () => {
+      toast.success("Account permanently deleted.");
+    },
+    onError: (error: Error) => {
+      toast.error(error.message || "Failed to delete the account.");
+    },
+  });
+}
+
 export type ManualOnboardingInput = {
   firstName: string;
   lastName: string;
