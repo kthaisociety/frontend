@@ -2,7 +2,7 @@
 
 import { Fragment, useState } from "react";
 import { toast } from "sonner";
-import { Plus, X } from "lucide-react";
+import { MoreVertical, Plus, X } from "lucide-react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -29,6 +29,13 @@ import {
   ContextMenuSeparator,
   ContextMenuTrigger,
 } from "@/components/ui/context-menu";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   useAdminUsers,
@@ -213,83 +220,141 @@ export function UserAdminPanel({
                   const isAdmin = user.roles.includes("admin");
                   const isEditing = editingUserId === user.user_id;
                   const isTargetHeadOfIT = headsOfIT.includes(user.email);
+                  // Deactivate/Delete call onboarding-service, which 400s
+                  // on anything outside @kthais.com — most accounts are
+                  // that domain, but Google OAuth here isn't actually
+                  // restricted to it (dev-seed's own admin account isn't,
+                  // for instance), so this can't be assumed universally.
+                  const canOffboard = user.email.toLowerCase().endsWith("@kthais.com");
+
+                  // Shared between the right-click menu (mouse) and the
+                  // kebab dropdown (keyboard/touch) so neither can drift
+                  // out of sync with the other.
+                  const menuActions: {
+                    key: string;
+                    label: string;
+                    onSelect: () => void;
+                    variant?: "destructive";
+                    separatorBefore?: boolean;
+                  }[] = [
+                    {
+                      key: "edit",
+                      label: isEditing ? "Close editor" : "Edit Profile",
+                      onSelect: () => setEditingUserId(isEditing ? null : user.user_id),
+                    },
+                    {
+                      key: "admin",
+                      label: isAdmin ? "Remove Admin" : "Make Admin",
+                      onSelect: () =>
+                        isAdmin
+                          ? handleDemote(user.user_id, user.email)
+                          : handlePromote(user.user_id, user.email),
+                    },
+                    ...(isHeadOfIT && isAdmin
+                      ? [
+                          {
+                            key: "head-of-it",
+                            label: isTargetHeadOfIT ? "Remove Head of IT" : "Make Head of IT",
+                            onSelect: () =>
+                              setPendingAction(
+                                isTargetHeadOfIT
+                                  ? { type: "revoke-head-of-it" as const, email: user.email }
+                                  : { type: "grant-head-of-it" as const, email: user.email },
+                              ),
+                          },
+                        ]
+                      : []),
+                    ...(isHeadOfIT && canOffboard
+                      ? [
+                          {
+                            key: "deactivate",
+                            label: "Deactivate Account",
+                            separatorBefore: true,
+                            onSelect: () =>
+                              setPendingAction({ type: "deactivate" as const, email: user.email }),
+                          },
+                          {
+                            key: "delete",
+                            label: "Delete account",
+                            variant: "destructive" as const,
+                            onSelect: () =>
+                              setPendingAction({
+                                type: "delete-account" as const,
+                                email: user.email,
+                              }),
+                          },
+                        ]
+                      : []),
+                  ];
 
                   return (
                     <Fragment key={user.user_id}>
                       <ContextMenu>
                         <ContextMenuTrigger asChild>
-                          <div className="rounded-lg border p-4 transition-colors hover:bg-secondary/20">
-                            <h3 className="font-medium">{user.email}</h3>
-                            <div className="mt-2 flex flex-wrap gap-2">
-                              {user.roles.map((role) => (
-                                <span
-                                  key={role}
-                                  className="rounded-full bg-primary/10 px-2 py-1 text-[10px] font-bold tracking-wider text-primary uppercase"
-                                >
-                                  {role}
+                          <div className="flex items-start justify-between gap-2 rounded-lg border p-4 transition-colors hover:bg-secondary/20">
+                            <div className="min-w-0">
+                              <h3 className="font-medium">{user.email}</h3>
+                              <div className="mt-2 flex flex-wrap gap-2">
+                                {user.roles.map((role) => (
+                                  <span
+                                    key={role}
+                                    className="rounded-full bg-primary/10 px-2 py-1 text-[10px] font-bold tracking-wider text-primary uppercase"
+                                  >
+                                    {role}
+                                  </span>
+                                ))}
+                                <span className="rounded-full bg-secondary px-2 py-1 text-[10px] font-bold tracking-wider text-secondary-foreground uppercase">
+                                  {user.provider}
                                 </span>
-                              ))}
-                              <span className="rounded-full bg-secondary px-2 py-1 text-[10px] font-bold tracking-wider text-secondary-foreground uppercase">
-                                {user.provider}
-                              </span>
-                              {isTargetHeadOfIT && (
-                                <span className="rounded-full bg-amber-500/15 px-2 py-1 text-[10px] font-bold tracking-wider text-amber-700 uppercase dark:text-amber-400">
-                                  Head of IT
-                                </span>
-                              )}
+                                {isTargetHeadOfIT && (
+                                  <span className="rounded-full bg-amber-500/15 px-2 py-1 text-[10px] font-bold tracking-wider text-amber-700 uppercase dark:text-amber-400">
+                                    Head of IT
+                                  </span>
+                                )}
+                              </div>
                             </div>
+                            {/* Visible, keyboard-focusable equivalent of the
+                                right-click menu above — the context menu's
+                                trigger is a plain div and can't be reached
+                                by Tab, so without this every action here
+                                (including basic Edit Profile / Make Admin)
+                                would be mouse-only. */}
+                            <DropdownMenu>
+                              <DropdownMenuTrigger asChild>
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  className="shrink-0"
+                                  aria-label={`Actions for ${user.email}`}
+                                >
+                                  <MoreVertical className="h-4 w-4" />
+                                </Button>
+                              </DropdownMenuTrigger>
+                              <DropdownMenuContent align="end">
+                                {menuActions.map((action) => (
+                                  <Fragment key={action.key}>
+                                    {action.separatorBefore && <DropdownMenuSeparator />}
+                                    <DropdownMenuItem
+                                      variant={action.variant}
+                                      onSelect={action.onSelect}
+                                    >
+                                      {action.label}
+                                    </DropdownMenuItem>
+                                  </Fragment>
+                                ))}
+                              </DropdownMenuContent>
+                            </DropdownMenu>
                           </div>
                         </ContextMenuTrigger>
                         <ContextMenuContent>
-                          <ContextMenuItem
-                            onSelect={() => setEditingUserId(isEditing ? null : user.user_id)}
-                          >
-                            {isEditing ? "Close editor" : "Edit Profile"}
-                          </ContextMenuItem>
-                          <ContextMenuItem
-                            onSelect={() =>
-                              isAdmin
-                                ? handleDemote(user.user_id, user.email)
-                                : handlePromote(user.user_id, user.email)
-                            }
-                          >
-                            {isAdmin ? "Remove Admin" : "Make Admin"}
-                          </ContextMenuItem>
-
-                          {isHeadOfIT && isAdmin && (
-                            <ContextMenuItem
-                              onSelect={() =>
-                                setPendingAction(
-                                  isTargetHeadOfIT
-                                    ? { type: "revoke-head-of-it", email: user.email }
-                                    : { type: "grant-head-of-it", email: user.email },
-                                )
-                              }
-                            >
-                              {isTargetHeadOfIT ? "Remove Head of IT" : "Make Head of IT"}
-                            </ContextMenuItem>
-                          )}
-
-                          {isHeadOfIT && (
-                            <>
-                              <ContextMenuSeparator />
-                              <ContextMenuItem
-                                onSelect={() =>
-                                  setPendingAction({ type: "deactivate", email: user.email })
-                                }
-                              >
-                                Deactivate Account
+                          {menuActions.map((action) => (
+                            <Fragment key={action.key}>
+                              {action.separatorBefore && <ContextMenuSeparator />}
+                              <ContextMenuItem variant={action.variant} onSelect={action.onSelect}>
+                                {action.label}
                               </ContextMenuItem>
-                              <ContextMenuItem
-                                variant="destructive"
-                                onSelect={() =>
-                                  setPendingAction({ type: "delete-account", email: user.email })
-                                }
-                              >
-                                Delete account
-                              </ContextMenuItem>
-                            </>
-                          )}
+                            </Fragment>
+                          ))}
                         </ContextMenuContent>
                       </ContextMenu>
 
