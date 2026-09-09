@@ -313,9 +313,12 @@ export type TeamQuestionsDeliveryEvent = {
 };
 
 export type ApplicationSettings = {
+  // null means "no lower bound" — see GeneralApplicationSettings.RecruitmentOpensAt.
+  recruitment_opens_at: string | null;
   submission_deadline: string;
   closed_heading: string;
   closed_message: string;
+  is_recruitment_open: boolean;
 };
 
 export type AdminApplicationSettings = ApplicationSettings & {
@@ -323,6 +326,8 @@ export type AdminApplicationSettings = ApplicationSettings & {
 };
 
 export type UpdateApplicationSettingsInput = {
+  // null (or empty string) means "no lower bound".
+  recruitmentOpensAtIso: string | null;
   submissionDeadlineIso: string;
   closedHeading: string;
   closedMessage: string;

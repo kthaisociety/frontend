@@ -5,6 +5,7 @@ import Link from "next/link"
 import { motion, useReducedMotion } from "framer-motion"
 import { AsciiGrid } from "@/components/ui/ascii-grid"
 import { Button } from "@/components/ui/button"
+import { useShowApplyCta } from "@/hooks/applications"
 
 const easeOutQuart = [0.25, 1, 0.5, 1] as const
 
@@ -87,6 +88,7 @@ export function Hero() {
   )
   const prefersReducedMotion = useReducedMotion()
   const enableInteractionMotion = isHydrated && !prefersReducedMotion
+  const showApplyCta = useShowApplyCta()
 
   return (
     <section className="relative min-h-screen pb-12 w-full flex items-end justify-center">
@@ -129,7 +131,7 @@ export function Hero() {
             className="mx-auto max-w-2xl text-base leading-7 text-black/72 sm:text-xl sm:leading-8"
             variants={descriptionVariants}
           >
-            Applications are open, join now!
+            {showApplyCta ? "Applications are open, join now!" : "Building the AI community at KTH."}
           </motion.p>
 
           <motion.div
@@ -142,21 +144,23 @@ export function Hero() {
             className="flex flex-col sm:flex-row items-center justify-center gap-6 pt-4"
             variants={buttonGroupVariants}
           >
-            <motion.div
-              whileHover={enableInteractionMotion ? { y: -2, scale: 1.015 } : undefined}
-              whileTap={enableInteractionMotion ? { y: 0, scale: 0.985 } : undefined}
-              transition={{ duration: 0.18, ease: easeOutQuart }}
-            >
-              <Button
-                size="lg"
-                asChild
-                className='px-12 py-8 text-xl max-sm:px-6 max-sm:py-4 max-sm:text-base'
+            {showApplyCta && (
+              <motion.div
+                whileHover={enableInteractionMotion ? { y: -2, scale: 1.015 } : undefined}
+                whileTap={enableInteractionMotion ? { y: 0, scale: 0.985 } : undefined}
+                transition={{ duration: 0.18, ease: easeOutQuart }}
               >
-                <Link href="/apply" className="flex items-center gap-1">
-                  Apply now
-                </Link>
-              </Button>
-            </motion.div>
+                <Button
+                  size="lg"
+                  asChild
+                  className='px-12 py-8 text-xl max-sm:px-6 max-sm:py-4 max-sm:text-base'
+                >
+                  <Link href="/apply" className="flex items-center gap-1">
+                    Apply now
+                  </Link>
+                </Button>
+              </motion.div>
+            )}
 
             <motion.div
               whileHover={enableInteractionMotion ? { y: -2, scale: 1.015 } : undefined}

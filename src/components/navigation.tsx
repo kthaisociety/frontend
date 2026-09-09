@@ -15,10 +15,12 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ProgressiveBlur } from "@/components/ui/progressive-blur";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/lib/providers/auth-provider/authProvider";
+import { useShowApplyCta } from "@/hooks/applications";
 
 export function Navigation() {
   // const { user, isLoggedIn, logoutUser: logout } = useAuth();
   const { isAuthenticated, user, logout } = useAuth();
+  const showApplyCta = useShowApplyCta();
   const router = useRouter();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -232,9 +234,11 @@ export function Navigation() {
           Newsletter
         </Link>
         {renderAuthDropdown()}
-        <Button asChild>
-          <Link href="/apply">Apply</Link>
-        </Button>
+        {showApplyCta && (
+          <Button asChild>
+            <Link href="/apply">Apply</Link>
+          </Button>
+        )}
       </div>
     );
   }
@@ -256,11 +260,13 @@ export function Navigation() {
             className="md:hidden fixed top-0 left-0 right-0 bg-white shadow-md z-40 overflow-hidden"
           >
             <div className="max-w-7xl mx-auto px-6 pt-18 pb-6 flex flex-col gap-1">
-              <Button asChild className="mb-3 w-full" size="lg">
-                <Link href="/apply" onClick={handleMobileLinkClick}>
-                  Apply
-                </Link>
-              </Button>
+              {showApplyCta && (
+                <Button asChild className="mb-3 w-full" size="lg">
+                  <Link href="/apply" onClick={handleMobileLinkClick}>
+                    Apply
+                  </Link>
+                </Button>
+              )}
               <Link
                 href="/about"
                 className="block py-3 text-base text-foreground/70 hover:text-foreground"
