@@ -170,7 +170,7 @@ export function useOnboardingRecords() {
   });
 }
 
-async function postOnboardingRecordAction(action: "cancel" | "restart", id: number) {
+async function postOnboardingRecordAction(action: "retry" | "cancel" | "restart", id: number) {
   const response = await fetch(`${API_URL}/admin/onboarding/${action}`, {
     method: "POST",
     credentials: "include",
@@ -182,6 +182,20 @@ async function postOnboardingRecordAction(action: "cancel" | "restart", id: numb
     throw new Error(data?.error || `Failed to ${action} onboarding`);
   }
   return response.json();
+}
+
+export function useRetryOnboarding() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (id: number) => postOnboardingRecordAction("retry", id),
+    onSuccess: () => {
+      toast.success("Retrying onboarding.");
+      queryClient.invalidateQueries({ queryKey: ["onboarding-records"] });
+    },
+    onError: (error: Error) => {
+      toast.error(error.message || "Failed to retry onboarding.");
+    },
+  });
 }
 
 export function useCancelOnboarding() {
