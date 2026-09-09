@@ -34,6 +34,7 @@ import {
   useRetryOnboarding,
   useCancelOnboarding,
   useRestartOnboarding,
+  useDeleteOnboardingRecord,
   type OnboardingRecord,
 } from "@/hooks/admin";
 
@@ -71,7 +72,7 @@ function StateBadge({ state }: { state: OnboardingRecord["state"] }) {
 // set from a context-menu item, rendered by the single shared AlertDialog
 // below (same lifted-state pattern as the applications table's delete
 // confirmation), rather than nesting a dialog inside each menu.
-type PendingAction = { kind: "restart" | "cancel"; record: OnboardingRecord };
+type PendingAction = { kind: "restart" | "cancel" | "delete"; record: OnboardingRecord };
 
 function OnboardingRowContextMenu({
   record,
@@ -97,9 +98,17 @@ function OnboardingRowContextMenu({
   // indefinitely with no other way to acknowledge it. Only the two
   // already-terminal states are excluded.
   const canCancel = record.state !== "cancelled" && record.state !== "offboarded";
+  // Only once a record is done with — the backend refuses anything still
+  // in progress, so this can't destroy the only tracking of an active
+  // onboarding.
+  const canDelete =
+    record.state === "complete" ||
+    record.state === "cancelled" ||
+    record.state === "offboarded" ||
+    record.state === "failed";
   const name = `${record.first_name} ${record.last_name}`;
 
-  if (!canRetry && !canRestart && !canCancel) {
+  if (!canRetry && !canRestart && !canCancel && !canDelete) {
     return children;
   }
 
@@ -132,6 +141,18 @@ function OnboardingRowContextMenu({
             Cancel onboarding
           </ContextMenuItem>
         )}
+        {canDelete && (
+          <>
+            {(canRetry || canRestart || canCancel) && <ContextMenuSeparator />}
+            <ContextMenuItem
+              disabled={isActionPending}
+              className="text-destructive focus:text-destructive"
+              onClick={() => onRequestConfirm({ kind: "delete", record })}
+            >
+              Delete record
+            </ContextMenuItem>
+          </>
+        )}
       </ContextMenuContent>
     </ContextMenu>
   );
@@ -142,9 +163,10 @@ export function OnboardingRecordsList() {
   const { mutate: retryOnboarding, isPending: isRetrying } = useRetryOnboarding();
   const { mutate: cancelOnboarding, isPending: isCancelling } = useCancelOnboarding();
   const { mutate: restartOnboarding, isPending: isRestarting } = useRestartOnboarding();
+  const { mutate: deleteRecord, isPending: isDeleting } = useDeleteOnboardingRecord();
   const [pendingAction, setPendingAction] = useState<PendingAction | null>(null);
 
-  const isActionPending = isRetrying || isCancelling || isRestarting;
+  const isActionPending = isRetrying || isCancelling || isRestarting || isDeleting;
 
   if (isLoading) {
     return (
@@ -296,6 +318,31 @@ export function OnboardingRecordsList() {
                   }}
                 >
                   Yes, cancel
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </>
+          )}
+          {pendingAction?.kind === "delete" && (
+            <>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Delete this onboarding record for {pendingName}?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  Removes it from this list entirely — it won&apos;t show up in search or
+                  filters anymore. Only removes this tracking record; if a Google Workspace or
+                  Mattermost account exists, it&apos;s untouched.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Never mind</AlertDialogCancel>
+                <AlertDialogAction
+                  className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                  disabled={isActionPending}
+                  onClick={() => {
+                    deleteRecord(pendingAction.record.ID);
+                    setPendingAction(null);
+                  }}
+                >
+                  Yes, delete
                 </AlertDialogAction>
               </AlertDialogFooter>
             </>
