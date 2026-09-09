@@ -146,16 +146,15 @@ function RejectButton({
 
 export function FinalizeRecruitmentPanel({
   isITAdmin,
-  isDeclaredITHead,
+  canCloseFinalizePhase,
   myTeam,
 }: {
   isITAdmin: boolean;
-  // Self-declared admin_team === "IT" — the same lower-stakes trust model
-  // the backend's requesterIsHeadOfTeam uses for closing this phase.
-  // Deliberately unrelated to the verified is_head_of_it flag that gates
-  // member offboarding (see user-admin-panel.tsx) — two separate
-  // permission axes that happen to share a real-world job title.
-  isDeclaredITHead: boolean;
+  // Mirrors the backend's requesterIsHeadOfTeam(db, userID, "IT"): true for
+  // a self-declared admin_team === "IT" OR a verified is_head_of_it grant
+  // (see user-admin-panel.tsx) — either is sufficient, so compute this as
+  // an OR of both, not just the self-declared field alone.
+  canCloseFinalizePhase: boolean;
   myTeam: string;
 }) {
   const { data: phase, isLoading: phaseLoading } = useFinalizePhaseStatus();
@@ -219,7 +218,7 @@ export function FinalizeRecruitmentPanel({
                   <> · {formatDistanceToNow(new Date(phase.opened_at), { addSuffix: true })}</>
                 )}
               </span>
-              {isDeclaredITHead ? (
+              {canCloseFinalizePhase ? (
                 <ConfirmPhraseDialog
                   trigger={
                     <Button variant="destructive" size="sm" className="ml-auto">
