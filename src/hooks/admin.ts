@@ -133,10 +133,16 @@ async function deleteAccount(input: { email: string; confirm: string }): Promise
 }
 
 export function useDeleteAccount() {
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: deleteAccount,
     onSuccess: () => {
       toast.success("Account permanently deleted.");
+      // Unlike Deactivate, a successful Delete removes the local user
+      // record too (see landingpage-backend's OffboardingHandler.Delete),
+      // so the Members list needs to actually drop this row rather than
+      // keep showing it until an unrelated refetch happens to occur.
+      queryClient.invalidateQueries({ queryKey: ["admin-users"] });
     },
     onError: (error: Error) => {
       toast.error(error.message || "Failed to delete the account.");

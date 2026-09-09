@@ -2,7 +2,7 @@
 
 import { Fragment, useState } from "react";
 import { toast } from "sonner";
-import { Plus, Trash2, X } from "lucide-react";
+import { MoreVertical, Plus, X } from "lucide-react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -12,7 +12,6 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -24,8 +23,22 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import {
+  ContextMenu,
+  ContextMenuContent,
+  ContextMenuItem,
+  ContextMenuSeparator,
+  ContextMenuTrigger,
+} from "@/components/ui/context-menu";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
   useAdminUsers,
-  useDeleteUser,
   usePromoteAdmin,
   useDemoteAdmin,
   useDeactivateAccount,
@@ -43,72 +56,31 @@ import { OnboardingEmailSettingsPanel } from "@/components/admin/users/onboardin
 
 const DELETE_ACCOUNT_CONFIRM_PHRASE = "DELETE THIS ACCOUNT";
 
-// Offboarding a real @kthais.com account (Google Workspace + Mattermost) —
-// entirely separate from the plain "Delete user" trash icon below, which
-// only removes this app's own login record. Rendered only for the head of
-// IT (see isHeadOfIT below) and only for users who actually have a
-// @kthais.com address to offboard.
-function OffboardingActions({ email }: { email: string }) {
-  const deactivate = useDeactivateAccount();
-  const deleteAccount = useDeleteAccount();
+// Right-click on a member row for the actions below, rather than a row of
+// buttons — everyone gets Edit Profile / Make Admin; only the head of IT
+// sees the account-offboarding and Head-of-IT actions, on top of those.
+// Every account is @kthais.com (that's the only domain allowed to log in
+// at all), so there's no separate "just remove this login" action anymore —
+// permanently deleting the real account (see PendingAction below) is the
+// only delete, and it takes the local record with it too.
+type PendingAction =
+  | { type: "deactivate"; email: string }
+  | { type: "delete-account"; email: string }
+  | { type: "grant-head-of-it"; email: string }
+  | { type: "revoke-head-of-it"; email: string };
 
-  return (
-    <>
-      <AlertDialog>
-        <AlertDialogTrigger asChild>
-          <Button variant="outline" size="sm" disabled={deactivate.isPending}>
-            Deactivate account
-          </Button>
-        </AlertDialogTrigger>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Deactivate {email}?</AlertDialogTitle>
-            <AlertDialogDescription>
-              Suspends their Google Workspace account and deactivates their Mattermost account.
-              Reversible any time from each system&apos;s own admin console.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction
-              disabled={deactivate.isPending}
-              onClick={() => deactivate.mutate(email)}
-            >
-              Yes, deactivate
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
-
-      <ConfirmPhraseDialog
-        trigger={
-          <Button variant="destructive" size="sm" disabled={deleteAccount.isPending}>
-            Delete account
-          </Button>
-        }
-        title={`Permanently delete ${email}?`}
-        description={
-          <>
-            Permanently deletes their Google Workspace account and attempts to permanently
-            delete their Mattermost account. This cannot be undone. Type{" "}
-            <span className="font-mono font-semibold">{DELETE_ACCOUNT_CONFIRM_PHRASE}</span>{" "}
-            exactly to confirm.
-          </>
-        }
-        phrase={DELETE_ACCOUNT_CONFIRM_PHRASE}
-        isPending={deleteAccount.isPending}
-        onConfirm={() => deleteAccount.mutate({ email, confirm: DELETE_ACCOUNT_CONFIRM_PHRASE })}
-      />
-    </>
-  );
-}
-
-export function UserAdminPanel() {
+export function UserAdminPanel({
+  activeTab,
+  onActiveTabChange,
+}: {
+  activeTab: "members" | "onboarding";
+  onActiveTabChange: (tab: "members" | "onboarding") => void;
+}) {
   const [searchQuery, setSearchQuery] = useState("");
   const [adminsOnly, setAdminsOnly] = useState(false);
   const [editingUserId, setEditingUserId] = useState<string | null>(null);
-  const [userToDelete, setUserToDelete] = useState<{ id: string; email: string } | null>(null);
   const [showOnboardingForm, setShowOnboardingForm] = useState(false);
+  const [pendingAction, setPendingAction] = useState<PendingAction | null>(null);
 
   const { data: users = [], isLoading, isError } = useAdminUsers();
   const { data: interviewSettings } = useInterviewSettings();
@@ -116,9 +88,12 @@ export function UserAdminPanel() {
   const { data: headsOfIT = [] } = useHeadsOfIT();
   const promoteMutation = usePromoteAdmin();
   const demoteMutation = useDemoteAdmin();
-  const deleteMutation = useDeleteUser();
   const grantHeadOfIT = useGrantHeadOfIT();
   const revokeHeadOfIT = useRevokeHeadOfIT();
+  const deactivate = useDeactivateAccount();
+  const deleteAccount = useDeleteAccount();
+
+  const clearPendingAction = () => setPendingAction(null);
 
   const filteredUsers = users
     .filter((user) => user.email.toLowerCase().includes(searchQuery.toLowerCase()))
@@ -142,275 +117,391 @@ export function UserAdminPanel() {
     }
   };
 
-  if (isLoading)
-    return (
-      <div className="py-8 text-center text-muted-foreground">
-        Loading users...
-      </div>
-    );
-  if (isError)
-    return (
-      <div className="py-8 text-center text-destructive">
-        Failed to load users.
-      </div>
-    );
-
   return (
-    <div className="space-y-4">
-      <div className="flex flex-wrap items-center justify-between gap-2">
-        <div className="flex flex-wrap items-center gap-2">
-          <Input
-            placeholder="Search by email..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="max-w-md"
-          />
-          <Button
-            variant={adminsOnly ? "secondary" : "outline"}
-            size="sm"
-            aria-pressed={adminsOnly}
-            onClick={() => setAdminsOnly((prev) => !prev)}
-          >
-            Admins only
-          </Button>
-        </div>
-        {!showOnboardingForm && (
-          <Button size="sm" onClick={() => setShowOnboardingForm(true)}>
-            <Plus className="mr-2 h-4 w-4" /> Onboard Member
-          </Button>
-        )}
-      </div>
+    <Tabs
+      value={activeTab}
+      onValueChange={(value) => onActiveTabChange(value as "members" | "onboarding")}
+      className="space-y-4"
+    >
+      <TabsList>
+        <TabsTrigger value="members">Members</TabsTrigger>
+        <TabsTrigger value="onboarding">Onboarding</TabsTrigger>
+      </TabsList>
 
-      {showOnboardingForm && (
-        <Card className="border-primary/30 shadow-sm">
-          <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-4">
-            <div>
-              <CardTitle>Onboard Member</CardTitle>
-              <CardDescription className="mt-1">
-                For members joining outside the recruitment pipeline (board
-                appointments, special cases). Creates a real @kthais.com
-                account and Mattermost invite.
-              </CardDescription>
-            </div>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="shrink-0"
-              onClick={() => setShowOnboardingForm(false)}
-              aria-label="Close onboarding form"
-            >
-              <X className="h-4 w-4" />
+      <TabsContent value="onboarding" className="space-y-4">
+        <div className="flex justify-end">
+          {!showOnboardingForm && (
+            <Button size="sm" onClick={() => setShowOnboardingForm(true)}>
+              <Plus className="mr-2 h-4 w-4" /> Onboard Member
             </Button>
+          )}
+        </div>
+
+        {showOnboardingForm && (
+          <Card className="border-primary/30 shadow-sm">
+            <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-4">
+              <div>
+                <CardTitle>Onboard Member</CardTitle>
+                <CardDescription className="mt-1">
+                  For members joining outside the recruitment pipeline (board
+                  appointments, special cases). Creates a real @kthais.com
+                  account and Mattermost invite.
+                </CardDescription>
+              </div>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="shrink-0"
+                onClick={() => setShowOnboardingForm(false)}
+                aria-label="Close onboarding form"
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            </CardHeader>
+            <CardContent>
+              <ManualOnboardingForm onClose={() => setShowOnboardingForm(false)} />
+            </CardContent>
+          </Card>
+        )}
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Onboarding status</CardTitle>
+            <CardDescription>
+              Everyone who&apos;s been sent an onboarding link, manual or from
+              recruitment. Rows highlighted in red haven&apos;t completed
+              within a week — worth following up.
+            </CardDescription>
           </CardHeader>
           <CardContent>
-            <ManualOnboardingForm onClose={() => setShowOnboardingForm(false)} />
+            <OnboardingRecordsList />
           </CardContent>
         </Card>
-      )}
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Onboarding status</CardTitle>
-          <CardDescription>
-            Everyone who&apos;s been sent an onboarding link, manual or from
-            recruitment. Rows highlighted in red haven&apos;t completed
-            within a week — worth following up.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <OnboardingRecordsList />
-        </CardContent>
-      </Card>
+        <OnboardingEmailSettingsPanel />
+      </TabsContent>
 
-      <OnboardingEmailSettingsPanel />
-
-      <div className="max-h-[min(70vh,720px)] space-y-3 overflow-y-auto pr-2">
-        {filteredUsers.length === 0 ? (
-          <p className="py-4 text-muted-foreground">No users found.</p>
+      <TabsContent value="members" className="space-y-4">
+        {isLoading ? (
+          <div className="py-8 text-center text-muted-foreground">
+            Loading users...
+          </div>
+        ) : isError ? (
+          <div className="py-8 text-center text-destructive">
+            Failed to load users.
+          </div>
         ) : (
-          filteredUsers.map((user) => {
-            const isAdmin = user.roles.includes("admin");
-            const isWorking =
-              promoteMutation.isPending || demoteMutation.isPending;
-            const isEditing = editingUserId === user.user_id;
+          <>
+            <div className="flex flex-wrap items-center gap-2">
+              <Input
+                placeholder="Search by email..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="max-w-md"
+              />
+              <Button
+                variant={adminsOnly ? "secondary" : "outline"}
+                size="sm"
+                aria-pressed={adminsOnly}
+                onClick={() => setAdminsOnly((prev) => !prev)}
+              >
+                Admins only
+              </Button>
+              <p className="ml-auto text-xs text-muted-foreground">
+                Right-click a row for actions.
+              </p>
+            </div>
 
-            return (
-              <Fragment key={user.user_id}>
-                <div className="flex flex-col justify-between gap-4 rounded-lg border p-4 transition-colors hover:bg-secondary/20 sm:flex-row sm:items-center">
-                  <div className="min-w-0">
-                    <h3 className="font-medium">{user.email}</h3>
-                    <div className="mt-2 flex flex-wrap gap-2">
-                      {user.roles.map((role) => (
-                        <span
-                          key={role}
-                          className="rounded-full bg-primary/10 px-2 py-1 text-[10px] font-bold tracking-wider text-primary uppercase"
-                        >
-                          {role}
-                        </span>
-                      ))}
-                      <span className="rounded-full bg-secondary px-2 py-1 text-[10px] font-bold tracking-wider text-secondary-foreground uppercase">
-                        {user.provider}
-                      </span>
-                    </div>
-                  </div>
+            <div className="max-h-[min(70vh,720px)] space-y-3 overflow-y-auto pr-2">
+              {filteredUsers.length === 0 ? (
+                <p className="py-4 text-muted-foreground">No users found.</p>
+              ) : (
+                filteredUsers.map((user) => {
+                  const isAdmin = user.roles.includes("admin");
+                  const isEditing = editingUserId === user.user_id;
+                  const isTargetHeadOfIT = headsOfIT.includes(user.email);
+                  // Deactivate/Delete call onboarding-service, which 400s
+                  // on anything outside @kthais.com — most accounts are
+                  // that domain, but Google OAuth here isn't actually
+                  // restricted to it (dev-seed's own admin account isn't,
+                  // for instance), so this can't be assumed universally.
+                  const canOffboard = user.email.toLowerCase().endsWith("@kthais.com");
 
-                  <div className="flex shrink-0 flex-wrap items-center gap-2">
-                    <Button
-                      variant={isEditing ? "secondary" : "outline"}
-                      size="sm"
-                      onClick={() =>
-                        setEditingUserId(isEditing ? null : user.user_id)
-                      }
-                    >
-                      {isEditing ? "Close editor" : "Edit profile"}
-                    </Button>
-                    {isAdmin ? (
-                      <Button
-                        variant="destructive"
-                        size="sm"
-                        disabled={isWorking}
-                        onClick={() => handleDemote(user.user_id, user.email)}
-                      >
-                        Remove Admin
-                      </Button>
-                    ) : (
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        disabled={isWorking}
-                        onClick={() => handlePromote(user.user_id, user.email)}
-                      >
-                        Make Admin
-                      </Button>
-                    )}
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="text-destructive hover:text-destructive"
-                      onClick={() => setUserToDelete({ id: user.user_id, email: user.email })}
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
-                    {isHeadOfIT && isAdmin && (
-                      headsOfIT.includes(user.email) ? (
-                        <AlertDialog>
-                          <AlertDialogTrigger asChild>
-                            <Button variant="outline" size="sm" disabled={revokeHeadOfIT.isPending}>
-                              Remove Head of IT
+                  // Shared between the right-click menu (mouse) and the
+                  // kebab dropdown (keyboard/touch) so neither can drift
+                  // out of sync with the other.
+                  const menuActions: {
+                    key: string;
+                    label: string;
+                    onSelect: () => void;
+                    variant?: "destructive";
+                    separatorBefore?: boolean;
+                  }[] = [
+                    {
+                      key: "edit",
+                      label: isEditing ? "Close editor" : "Edit Profile",
+                      onSelect: () => setEditingUserId(isEditing ? null : user.user_id),
+                    },
+                    {
+                      key: "admin",
+                      label: isAdmin ? "Remove Admin" : "Make Admin",
+                      onSelect: () =>
+                        isAdmin
+                          ? handleDemote(user.user_id, user.email)
+                          : handlePromote(user.user_id, user.email),
+                    },
+                    ...(isHeadOfIT && isAdmin
+                      ? [
+                          {
+                            key: "head-of-it",
+                            label: isTargetHeadOfIT ? "Remove Head of IT" : "Make Head of IT",
+                            onSelect: () =>
+                              setPendingAction(
+                                isTargetHeadOfIT
+                                  ? { type: "revoke-head-of-it" as const, email: user.email }
+                                  : { type: "grant-head-of-it" as const, email: user.email },
+                              ),
+                          },
+                        ]
+                      : []),
+                    ...(isHeadOfIT && canOffboard
+                      ? [
+                          {
+                            key: "deactivate",
+                            label: "Deactivate Account",
+                            separatorBefore: true,
+                            onSelect: () =>
+                              setPendingAction({ type: "deactivate" as const, email: user.email }),
+                          },
+                          {
+                            key: "delete",
+                            label: "Delete account",
+                            variant: "destructive" as const,
+                            onSelect: () =>
+                              setPendingAction({
+                                type: "delete-account" as const,
+                                email: user.email,
+                              }),
+                          },
+                        ]
+                      : []),
+                  ];
+
+                  return (
+                    <Fragment key={user.user_id}>
+                      <ContextMenu>
+                        <ContextMenuTrigger asChild>
+                          <div className="flex items-start justify-between gap-2 rounded-lg border p-4 transition-colors hover:bg-secondary/20">
+                            <div className="min-w-0">
+                              <h3 className="font-medium">{user.email}</h3>
+                              <div className="mt-2 flex flex-wrap gap-2">
+                                {user.roles.map((role) => (
+                                  <span
+                                    key={role}
+                                    className="rounded-full bg-primary/10 px-2 py-1 text-[10px] font-bold tracking-wider text-primary uppercase"
+                                  >
+                                    {role}
+                                  </span>
+                                ))}
+                                <span className="rounded-full bg-secondary px-2 py-1 text-[10px] font-bold tracking-wider text-secondary-foreground uppercase">
+                                  {user.provider}
+                                </span>
+                                {isTargetHeadOfIT && (
+                                  <span className="rounded-full bg-amber-500/15 px-2 py-1 text-[10px] font-bold tracking-wider text-amber-700 uppercase dark:text-amber-400">
+                                    Head of IT
+                                  </span>
+                                )}
+                              </div>
+                            </div>
+                            {/* Visible, keyboard-focusable equivalent of the
+                                right-click menu above — the context menu's
+                                trigger is a plain div and can't be reached
+                                by Tab, so without this every action here
+                                (including basic Edit Profile / Make Admin)
+                                would be mouse-only. */}
+                            <DropdownMenu>
+                              <DropdownMenuTrigger asChild>
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  className="shrink-0"
+                                  aria-label={`Actions for ${user.email}`}
+                                >
+                                  <MoreVertical className="h-4 w-4" />
+                                </Button>
+                              </DropdownMenuTrigger>
+                              <DropdownMenuContent align="end">
+                                {menuActions.map((action) => (
+                                  <Fragment key={action.key}>
+                                    {action.separatorBefore && <DropdownMenuSeparator />}
+                                    <DropdownMenuItem
+                                      variant={action.variant}
+                                      onSelect={action.onSelect}
+                                    >
+                                      {action.label}
+                                    </DropdownMenuItem>
+                                  </Fragment>
+                                ))}
+                              </DropdownMenuContent>
+                            </DropdownMenu>
+                          </div>
+                        </ContextMenuTrigger>
+                        <ContextMenuContent>
+                          {menuActions.map((action) => (
+                            <Fragment key={action.key}>
+                              {action.separatorBefore && <ContextMenuSeparator />}
+                              <ContextMenuItem variant={action.variant} onSelect={action.onSelect}>
+                                {action.label}
+                              </ContextMenuItem>
+                            </Fragment>
+                          ))}
+                        </ContextMenuContent>
+                      </ContextMenu>
+
+                      {isEditing && (
+                        <Card className="border-primary/30 shadow-sm">
+                          <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-4">
+                            <div className="min-w-0 pr-2">
+                              <CardTitle className="text-lg">
+                                Edit member profile
+                              </CardTitle>
+                              <CardDescription className="mt-1 font-mono text-xs break-all">
+                                {user.email} · {user.user_id}
+                              </CardDescription>
+                            </div>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="shrink-0"
+                              onClick={() => setEditingUserId(null)}
+                              aria-label="Close profile editor"
+                            >
+                              <X className="h-4 w-4" />
                             </Button>
-                          </AlertDialogTrigger>
-                          <AlertDialogContent>
-                            <AlertDialogHeader>
-                              <AlertDialogTitle>Remove {user.email} as head of IT?</AlertDialogTitle>
-                              <AlertDialogDescription>
-                                They&apos;ll lose access to account offboarding. Refused if
-                                they&apos;re currently the only head of IT — there always has to be
-                                at least one.
-                              </AlertDialogDescription>
-                            </AlertDialogHeader>
-                            <AlertDialogFooter>
-                              <AlertDialogCancel>Cancel</AlertDialogCancel>
-                              <AlertDialogAction
-                                disabled={revokeHeadOfIT.isPending}
-                                onClick={() => revokeHeadOfIT.mutate(user.email)}
-                              >
-                                Yes, remove
-                              </AlertDialogAction>
-                            </AlertDialogFooter>
-                          </AlertDialogContent>
-                        </AlertDialog>
-                      ) : (
-                        <AlertDialog>
-                          <AlertDialogTrigger asChild>
-                            <Button variant="outline" size="sm" disabled={grantHeadOfIT.isPending}>
-                              Make Head of IT
-                            </Button>
-                          </AlertDialogTrigger>
-                          <AlertDialogContent>
-                            <AlertDialogHeader>
-                              <AlertDialogTitle>Make {user.email} a head of IT?</AlertDialogTitle>
-                              <AlertDialogDescription>
-                                They&apos;ll be able to deactivate or permanently delete any
-                                @kthais.com member&apos;s account, alongside every other current
-                                head of IT — this doesn&apos;t affect your own access.
-                              </AlertDialogDescription>
-                            </AlertDialogHeader>
-                            <AlertDialogFooter>
-                              <AlertDialogCancel>Cancel</AlertDialogCancel>
-                              <AlertDialogAction
-                                disabled={grantHeadOfIT.isPending}
-                                onClick={() => grantHeadOfIT.mutate(user.email)}
-                              >
-                                Yes, make them head of IT
-                              </AlertDialogAction>
-                            </AlertDialogFooter>
-                          </AlertDialogContent>
-                        </AlertDialog>
-                      )
-                    )}
-                    {isHeadOfIT && user.email.toLowerCase().endsWith("@kthais.com") && (
-                      <OffboardingActions email={user.email} />
-                    )}
-                  </div>
-                </div>
-
-                {isEditing && (
-                  <Card className="border-primary/30 shadow-sm">
-                    <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-4">
-                      <div className="min-w-0 pr-2">
-                        <CardTitle className="text-lg">
-                          Edit member profile
-                        </CardTitle>
-                        <CardDescription className="mt-1 font-mono text-xs break-all">
-                          {user.email} · {user.user_id}
-                        </CardDescription>
-                      </div>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="shrink-0"
-                        onClick={() => setEditingUserId(null)}
-                        aria-label="Close profile editor"
-                      >
-                        <X className="h-4 w-4" />
-                      </Button>
-                    </CardHeader>
-                    <CardContent>
-                      <AdminUserProfileForm
-                        userId={user.user_id}
-                        onClose={() => setEditingUserId(null)}
-                      />
-                    </CardContent>
-                  </Card>
-                )}
-              </Fragment>
-            );
-          })
+                          </CardHeader>
+                          <CardContent>
+                            <AdminUserProfileForm
+                              userId={user.user_id}
+                              onClose={() => setEditingUserId(null)}
+                            />
+                          </CardContent>
+                        </Card>
+                      )}
+                    </Fragment>
+                  );
+                })
+              )}
+            </div>
+          </>
         )}
-      </div>
 
-      <AlertDialog open={Boolean(userToDelete)} onOpenChange={(open) => { if (!open) setUserToDelete(null); }}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Delete user</AlertDialogTitle>
-            <AlertDialogDescription>
-              This will permanently delete <strong>{userToDelete?.email}</strong> and their profile. This cannot be undone.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction
-              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-              onClick={() => {
-                if (userToDelete) deleteMutation.mutate(userToDelete.id);
-                setUserToDelete(null);
-              }}
-            >
-              Delete
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
-    </div>
+        <AlertDialog
+          open={pendingAction?.type === "deactivate"}
+          onOpenChange={(open) => { if (!open) clearPendingAction(); }}
+        >
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Deactivate {pendingAction?.email}?</AlertDialogTitle>
+              <AlertDialogDescription>
+                Suspends their Google Workspace account and deactivates their Mattermost
+                account. Reversible any time from each system&apos;s own admin console.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction
+                disabled={deactivate.isPending}
+                onClick={() => {
+                  if (pendingAction) deactivate.mutate(pendingAction.email);
+                  clearPendingAction();
+                }}
+              >
+                Yes, deactivate
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+
+        <ConfirmPhraseDialog
+          open={pendingAction?.type === "delete-account"}
+          onOpenChange={(open) => { if (!open) clearPendingAction(); }}
+          title={`Permanently delete ${pendingAction?.email}?`}
+          description={
+            <>
+              Permanently deletes their Google Workspace account, attempts to permanently
+              delete their Mattermost account, and removes their login from this site. This
+              cannot be undone. Type{" "}
+              <span className="font-mono font-semibold">{DELETE_ACCOUNT_CONFIRM_PHRASE}</span>{" "}
+              exactly to confirm.
+            </>
+          }
+          phrase={DELETE_ACCOUNT_CONFIRM_PHRASE}
+          isPending={deleteAccount.isPending}
+          onConfirm={() => {
+            if (pendingAction) {
+              deleteAccount.mutate({
+                email: pendingAction.email,
+                confirm: DELETE_ACCOUNT_CONFIRM_PHRASE,
+              });
+            }
+          }}
+        />
+
+        <AlertDialog
+          open={pendingAction?.type === "grant-head-of-it"}
+          onOpenChange={(open) => { if (!open) clearPendingAction(); }}
+        >
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Make {pendingAction?.email} a head of IT?</AlertDialogTitle>
+              <AlertDialogDescription>
+                They&apos;ll be able to deactivate or permanently delete any @kthais.com
+                member&apos;s account, alongside every other current head of IT — this
+                doesn&apos;t affect your own access.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction
+                disabled={grantHeadOfIT.isPending}
+                onClick={() => {
+                  if (pendingAction) grantHeadOfIT.mutate(pendingAction.email);
+                  clearPendingAction();
+                }}
+              >
+                Yes, make them head of IT
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+
+        <AlertDialog
+          open={pendingAction?.type === "revoke-head-of-it"}
+          onOpenChange={(open) => { if (!open) clearPendingAction(); }}
+        >
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Remove {pendingAction?.email} as head of IT?</AlertDialogTitle>
+              <AlertDialogDescription>
+                They&apos;ll lose access to account offboarding. Refused if they&apos;re
+                currently the only head of IT — there always has to be at least one.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction
+                disabled={revokeHeadOfIT.isPending}
+                onClick={() => {
+                  if (pendingAction) revokeHeadOfIT.mutate(pendingAction.email);
+                  clearPendingAction();
+                }}
+              >
+                Yes, remove
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+      </TabsContent>
+    </Tabs>
   );
 }
