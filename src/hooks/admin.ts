@@ -385,6 +385,7 @@ export function useDeleteOnboardingRecord() {
 
 export type OnboardingEmailSettings = {
   start_intro_text: string;
+  confirm_intro_text: string;
   account_intro_text: string;
   mattermost_intro_text: string;
 };
@@ -436,14 +437,14 @@ export function useUpdateOnboardingEmailSettings() {
   });
 }
 
-export type OnboardingEmailKind = "start" | "account" | "mattermost";
+export type OnboardingEmailKind = "start" | "confirm" | "account" | "mattermost";
 
 export type OnboardingEmailPreview = {
   subject: string;
   html: string;
 };
 
-/** Renders one of the three onboarding emails server-side, from the same code path used to send it. */
+/** Renders one of the four onboarding emails server-side, from the same code path used to send it. */
 async function previewOnboardingEmailSettings(args: {
   kind: OnboardingEmailKind;
   introText: string;
