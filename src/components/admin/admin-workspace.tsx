@@ -34,9 +34,12 @@ const adminSections: AdminSection[] = [
   {
     id: "users",
     label: "Users",
+    // Unused for rendering — Users has its own sub-tabs (Members /
+    // Onboarding), so AdminWorkspace computes its title from usersTab
+    // instead. Kept here for type-shape consistency.
     title: "Users",
     description: "Manage users and assign admin roles.",
-    content: <UserAdminPanel />,
+    content: null,
   },
   {
     id: "applications",
@@ -71,6 +74,17 @@ const adminSections: AdminSection[] = [
   },
 ];
 
+const USERS_TAB_COPY = {
+  members: {
+    title: "Members",
+    description: "Search, edit, and manage admin and Head-of-IT access.",
+  },
+  onboarding: {
+    title: "Onboarding",
+    description: "Manually onboard members and track outstanding invites.",
+  },
+} as const;
+
 const APPLICATIONS_TAB_COPY = {
   general: {
     title: "General Information",
@@ -96,6 +110,7 @@ export function AdminWorkspace() {
   const [applicationsTab, setApplicationsTab] = useState<
     "general" | "team-questions" | "analytics" | "recruitment-period"
   >("general");
+  const [usersTab, setUsersTab] = useState<"members" | "onboarding">("members");
 
   const activeSection = useMemo(() => {
     return (
@@ -105,9 +120,12 @@ export function AdminWorkspace() {
   }, [activeSectionId]);
 
   const isApplications = activeSectionId === "applications";
+  const isUsers = activeSectionId === "users";
   const { title, description } = isApplications
     ? APPLICATIONS_TAB_COPY[applicationsTab]
-    : activeSection;
+    : isUsers
+      ? USERS_TAB_COPY[usersTab]
+      : activeSection;
 
   return (
     <section className="space-y-4">
@@ -165,6 +183,8 @@ export function AdminWorkspace() {
             activeTab={applicationsTab}
             onActiveTabChange={setApplicationsTab}
           />
+        ) : isUsers ? (
+          <UserAdminPanel activeTab={usersTab} onActiveTabChange={setUsersTab} />
         ) : (
           activeSection.content
         )}
