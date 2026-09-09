@@ -30,7 +30,9 @@ import {
   useDemoteAdmin,
   useDeactivateAccount,
   useDeleteAccount,
-  useTransferHeadOfIT,
+  useHeadsOfIT,
+  useGrantHeadOfIT,
+  useRevokeHeadOfIT,
 } from "@/hooks/admin";
 import { useInterviewSettings } from "@/hooks/applications";
 import { ConfirmPhraseDialog } from "@/components/admin/confirm-phrase-dialog";
@@ -111,11 +113,12 @@ export function UserAdminPanel() {
   const { data: users = [], isLoading, isError } = useAdminUsers();
   const { data: interviewSettings } = useInterviewSettings();
   const isHeadOfIT = interviewSettings?.is_head_of_it === true;
-  const myEmail = interviewSettings?.email;
+  const { data: headsOfIT = [] } = useHeadsOfIT();
   const promoteMutation = usePromoteAdmin();
   const demoteMutation = useDemoteAdmin();
   const deleteMutation = useDeleteUser();
-  const transferHeadOfIT = useTransferHeadOfIT();
+  const grantHeadOfIT = useGrantHeadOfIT();
+  const revokeHeadOfIT = useRevokeHeadOfIT();
 
   const filteredUsers = users
     .filter((user) => user.email.toLowerCase().includes(searchQuery.toLowerCase()))
@@ -288,33 +291,62 @@ export function UserAdminPanel() {
                     >
                       <Trash2 className="h-4 w-4" />
                     </Button>
-                    {isHeadOfIT && isAdmin && user.email !== myEmail && (
-                      <AlertDialog>
-                        <AlertDialogTrigger asChild>
-                          <Button variant="outline" size="sm" disabled={transferHeadOfIT.isPending}>
-                            Make Head of IT
-                          </Button>
-                        </AlertDialogTrigger>
-                        <AlertDialogContent>
-                          <AlertDialogHeader>
-                            <AlertDialogTitle>Make {user.email} the head of IT?</AlertDialogTitle>
-                            <AlertDialogDescription>
-                              You will immediately lose head-of-IT status yourself — there&apos;s
-                              always exactly one. You&apos;d need {user.email} to hand it back to
-                              you the same way if you change your mind.
-                            </AlertDialogDescription>
-                          </AlertDialogHeader>
-                          <AlertDialogFooter>
-                            <AlertDialogCancel>Cancel</AlertDialogCancel>
-                            <AlertDialogAction
-                              disabled={transferHeadOfIT.isPending}
-                              onClick={() => transferHeadOfIT.mutate(user.email)}
-                            >
-                              Yes, transfer
-                            </AlertDialogAction>
-                          </AlertDialogFooter>
-                        </AlertDialogContent>
-                      </AlertDialog>
+                    {isHeadOfIT && isAdmin && (
+                      headsOfIT.includes(user.email) ? (
+                        <AlertDialog>
+                          <AlertDialogTrigger asChild>
+                            <Button variant="outline" size="sm" disabled={revokeHeadOfIT.isPending}>
+                              Remove Head of IT
+                            </Button>
+                          </AlertDialogTrigger>
+                          <AlertDialogContent>
+                            <AlertDialogHeader>
+                              <AlertDialogTitle>Remove {user.email} as head of IT?</AlertDialogTitle>
+                              <AlertDialogDescription>
+                                They&apos;ll lose access to account offboarding. Refused if
+                                they&apos;re currently the only head of IT — there always has to be
+                                at least one.
+                              </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                              <AlertDialogCancel>Cancel</AlertDialogCancel>
+                              <AlertDialogAction
+                                disabled={revokeHeadOfIT.isPending}
+                                onClick={() => revokeHeadOfIT.mutate(user.email)}
+                              >
+                                Yes, remove
+                              </AlertDialogAction>
+                            </AlertDialogFooter>
+                          </AlertDialogContent>
+                        </AlertDialog>
+                      ) : (
+                        <AlertDialog>
+                          <AlertDialogTrigger asChild>
+                            <Button variant="outline" size="sm" disabled={grantHeadOfIT.isPending}>
+                              Make Head of IT
+                            </Button>
+                          </AlertDialogTrigger>
+                          <AlertDialogContent>
+                            <AlertDialogHeader>
+                              <AlertDialogTitle>Make {user.email} a head of IT?</AlertDialogTitle>
+                              <AlertDialogDescription>
+                                They&apos;ll be able to deactivate or permanently delete any
+                                @kthais.com member&apos;s account, alongside every other current
+                                head of IT — this doesn&apos;t affect your own access.
+                              </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                              <AlertDialogCancel>Cancel</AlertDialogCancel>
+                              <AlertDialogAction
+                                disabled={grantHeadOfIT.isPending}
+                                onClick={() => grantHeadOfIT.mutate(user.email)}
+                              >
+                                Yes, make them head of IT
+                              </AlertDialogAction>
+                            </AlertDialogFooter>
+                          </AlertDialogContent>
+                        </AlertDialog>
+                      )
                     )}
                     {isHeadOfIT && user.email.toLowerCase().endsWith("@kthais.com") && (
                       <OffboardingActions email={user.email} />

@@ -144,12 +144,28 @@ export function useDeleteAccount() {
   });
 }
 
-// Handing off the Head of IT flag itself — see backend
-// Profile.IsHeadOfIT/TransferHeadOfIT doc comments for why this can't be
-// self-declared. Refetches interview-settings on success since it flips
-// is_head_of_it for the caller (loses it) as much as for the target.
-async function transferHeadOfIT(email: string): Promise<void> {
-  const response = await fetch(`${API_URL}/admin/head-of-it/transfer`, {
+// Who holds the Head of IT flag — see backend Profile.IsHeadOfIT's doc
+// comment: any number of admins can hold it at once (granting is
+// unrestricted; revoking is refused if it would leave zero), so this is a
+// set of emails, not a single "the" head of IT.
+async function fetchHeadsOfIT(): Promise<string[]> {
+  const response = await fetch(`${API_URL}/admin/head-of-it`, {
+    credentials: "include",
+  });
+  if (!response.ok) throw new Error("Failed to fetch heads of IT");
+  const data = (await response.json()) as { emails: string[] };
+  return data.emails;
+}
+
+export function useHeadsOfIT() {
+  return useQuery({
+    queryKey: ["heads-of-it"],
+    queryFn: fetchHeadsOfIT,
+  });
+}
+
+async function grantHeadOfIT(email: string): Promise<void> {
+  const response = await fetch(`${API_URL}/admin/head-of-it/grant`, {
     method: "POST",
     credentials: "include",
     headers: { "Content-Type": "application/json" },
@@ -157,20 +173,49 @@ async function transferHeadOfIT(email: string): Promise<void> {
   });
   if (!response.ok) {
     const data = (await response.json().catch(() => null)) as { error?: string } | null;
-    throw new Error(data?.error || "Failed to transfer head of IT");
+    throw new Error(data?.error || "Failed to grant head of IT");
   }
 }
 
-export function useTransferHeadOfIT() {
+export function useGrantHeadOfIT() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: transferHeadOfIT,
+    mutationFn: grantHeadOfIT,
     onSuccess: (_data, email) => {
-      toast.success(`${email} is now the head of IT.`);
+      toast.success(`${email} is now a head of IT.`);
+      queryClient.invalidateQueries({ queryKey: ["heads-of-it"] });
       queryClient.invalidateQueries({ queryKey: ["interview-settings"] });
     },
     onError: (error: Error) => {
-      toast.error(error.message || "Failed to transfer head of IT.");
+      toast.error(error.message || "Failed to grant head of IT.");
+    },
+  });
+}
+
+async function revokeHeadOfIT(email: string): Promise<void> {
+  const response = await fetch(`${API_URL}/admin/head-of-it/revoke`, {
+    method: "POST",
+    credentials: "include",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email }),
+  });
+  if (!response.ok) {
+    const data = (await response.json().catch(() => null)) as { error?: string } | null;
+    throw new Error(data?.error || "Failed to revoke head of IT");
+  }
+}
+
+export function useRevokeHeadOfIT() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: revokeHeadOfIT,
+    onSuccess: (_data, email) => {
+      toast.success(`${email} is no longer a head of IT.`);
+      queryClient.invalidateQueries({ queryKey: ["heads-of-it"] });
+      queryClient.invalidateQueries({ queryKey: ["interview-settings"] });
+    },
+    onError: (error: Error) => {
+      toast.error(error.message || "Failed to revoke head of IT.");
     },
   });
 }
