@@ -1095,6 +1095,12 @@ export function useApplicationSettings() {
   return useQuery({
     queryKey: ["application-settings"],
     queryFn: fetchApplicationSettings,
+    // A visitor can leave the landing page open across the exact moment
+    // recruitment opens or closes; without a periodic refetch the nav/hero
+    // CTA would just sit stale until some unrelated refetch happened to
+    // fire. This is a small, unauthenticated, non-rate-limited read (see
+    // the backend route comment), so polling it is cheap.
+    refetchInterval: 60_000,
   });
 }
 
