@@ -30,6 +30,8 @@ import {
 } from "@/hooks/admin";
 
 const DEFAULT_START_INTRO = "Congratulations on being accepted to KTH AI Society!";
+const DEFAULT_CONFIRM_INTRO =
+  "Please confirm this is your KTH email address to continue setting up your KTH AI Society account.";
 const DEFAULT_MATTERMOST_INTRO =
   "You've been invited to the KTH AI Society Mattermost workspace — check your new @kthais.com inbox for an invite link to get started.";
 
@@ -111,6 +113,19 @@ const SECTIONS: EmailSection[] = [
     defaultValue: DEFAULT_START_INTRO,
   },
   {
+    kind: "confirm",
+    label: "Confirm-KTH-email email",
+    description: (
+      <>
+        Sent once they submit their kth.se address, with the link that confirms it. The
+        anti-scanner explanation below the link is added automatically — just write the paragraph
+        in between.
+      </>
+    ),
+    placeholder: DEFAULT_CONFIRM_INTRO,
+    defaultValue: DEFAULT_CONFIRM_INTRO,
+  },
+  {
     kind: "account",
     label: "Account-credentials email",
     description: (
@@ -133,6 +148,7 @@ const SECTIONS: EmailSection[] = [
 
 const FIELD_BY_KIND: Record<OnboardingEmailKind, keyof OnboardingEmailSettings> = {
   start: "start_intro_text",
+  confirm: "confirm_intro_text",
   account: "account_intro_text",
   mattermost: "mattermost_intro_text",
 };
@@ -143,6 +159,7 @@ export function OnboardingEmailSettingsPanel() {
   const [open, setOpen] = useState(false);
   const [drafts, setDrafts] = useState<OnboardingEmailSettings>({
     start_intro_text: "",
+    confirm_intro_text: "",
     account_intro_text: "",
     mattermost_intro_text: "",
   });
@@ -150,6 +167,7 @@ export function OnboardingEmailSettingsPanel() {
 
   const saved: OnboardingEmailSettings = settings ?? {
     start_intro_text: "",
+    confirm_intro_text: "",
     account_intro_text: "",
     mattermost_intro_text: "",
   };
@@ -162,6 +180,7 @@ export function OnboardingEmailSettingsPanel() {
   const isDirty =
     initialised &&
     (drafts.start_intro_text !== saved.start_intro_text ||
+      drafts.confirm_intro_text !== saved.confirm_intro_text ||
       drafts.account_intro_text !== saved.account_intro_text ||
       drafts.mattermost_intro_text !== saved.mattermost_intro_text);
 
@@ -198,7 +217,7 @@ export function OnboardingEmailSettingsPanel() {
         </div>
         {!open && (
           <CardDescription>
-            The three emails sent over the course of an onboarding. Click to view or edit.
+            The four emails sent over the course of an onboarding. Click to view or edit.
           </CardDescription>
         )}
       </CardHeader>
