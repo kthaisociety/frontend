@@ -307,7 +307,10 @@ export function useOnboardingRecords() {
   });
 }
 
-async function postOnboardingRecordAction(action: "retry" | "cancel" | "restart", id: number) {
+async function postOnboardingRecordAction(
+  action: "retry" | "cancel" | "restart" | "delete-record",
+  id: number,
+) {
   const response = await fetch(`${API_URL}/admin/onboarding/${action}`, {
     method: "POST",
     credentials: "include",
@@ -316,7 +319,7 @@ async function postOnboardingRecordAction(action: "retry" | "cancel" | "restart"
   });
   if (!response.ok) {
     const data = (await response.json().catch(() => null)) as { error?: string } | null;
-    throw new Error(data?.error || `Failed to ${action} onboarding`);
+    throw new Error(data?.error || `Failed to ${action === "delete-record" ? "delete the" : action} onboarding record`);
   }
   return response.json();
 }
@@ -359,6 +362,23 @@ export function useRestartOnboarding() {
     },
     onError: (error: Error) => {
       toast.error(error.message || "Failed to restart onboarding.");
+    },
+  });
+}
+
+// Only for a record already in a terminal state (complete, cancelled,
+// offboarded, failed) — the backend refuses anything still in progress, so
+// there's no risk of this destroying an active onboarding's only record.
+export function useDeleteOnboardingRecord() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (id: number) => postOnboardingRecordAction("delete-record", id),
+    onSuccess: () => {
+      toast.success("Onboarding record deleted.");
+      queryClient.invalidateQueries({ queryKey: ["onboarding-records"] });
+    },
+    onError: (error: Error) => {
+      toast.error(error.message || "Failed to delete the onboarding record.");
     },
   });
 }
